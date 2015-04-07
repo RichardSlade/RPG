@@ -1,0 +1,5 @@
+Mass 1.0
+WalkSpeed 1.0
+RunSpeed 3.0
+MaxForce 10.0
+MaxTurnRate 0.1
