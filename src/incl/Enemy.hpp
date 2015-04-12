@@ -1,20 +1,22 @@
-#ifndef SHEEP_HPP
-#define SHEEP_HPP
+#ifndef ENEMY_HPP
+#define ENEMY_HPP
 
 #include <memory>
 
 #include "MovingEntity.hpp"
 #include "StateMachine.hpp"
 
-class Sheep : public MovingEntity
+class Enemy : public MovingEntity
 {
 public:
+    typedef std::vector<std::unique_ptr<State<Enemy>>> StateContainer;
+
     enum States
     {
         LookOut,
         Evade,
         Relax,
-        Exit,
+//        Exit,
         NumSheepStates
     };
 
@@ -22,28 +24,35 @@ public:
     const float                 mSightRange;
 
     const float                 mAngleOfVision;
-    const float                 mPanicDistance;
+//    const float                 mPanicDistance;
 
 private:
     sf::Vector2i                mTargetBlockIndex;
-    StateMachine<Sheep>         mStateMachine;
+
+//    std::vector<State<Enemy>>&  mStates;
+    StateContainer&             mStates;
+    StateMachine<Enemy>         mStateMachine;
 
     virtual void                updateCurrent(sf::Time);
     virtual void                drawCurrent(sf::RenderTarget&
                                             , sf::RenderStates) const;
 
 public:
-                                Sheep(World*
+                                Enemy(Level*
                                       , const sf::Texture&
                                       , const sf::Font&
                                       , sf::Vector2f
-                                      , State<Sheep>*
-                                      , State<Sheep>*
                                       , EntityStats
                                       , const Params&
+                                      , State<Enemy>*
+                                      , State<Enemy>*
+                                      , StateContainer&
                                       , float = 1.f);
 
-    virtual                    ~Sheep(){};
+    virtual                    ~Enemy(){};
+
+    void                        changeState(Enemy::States newState)
+                                { mStateMachine.changeState(mStates.at(newState).get()); }
 
     // Getters
     LevelBlock*                 getTargetBlock()
@@ -52,8 +61,6 @@ public:
 
 
     // Setters
-    void                        changeState(Sheep::States newState);
-
     void                        setVelocity(sf::Vector2f vel)
                                 { mVelocity = vel; }
 
@@ -70,4 +77,4 @@ public:
                                 { mStateMachine.returnToPreviousState(); }
 };
 
-#endif // SHEEP_HPP
+#endif // ENEMY_HPP

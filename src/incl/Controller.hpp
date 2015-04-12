@@ -34,8 +34,8 @@ public:
 
     enum Textures
     {
-//        Dog,
-//        Sheep,
+        Character,
+        Enemy,
         Grass,
         Wall,
         Corner,
@@ -48,7 +48,7 @@ public:
     {
         Sansation,
 //        Smoke,
-//        Sheepy,
+//        Enemyy,
         NumFonts
     };
 

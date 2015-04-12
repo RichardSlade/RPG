@@ -1,26 +1,34 @@
 /*
-*   Dog.cpp
+*   Character.cpp
 *
 *   @Author Richard Slade
 *   @Date 12/2014
 */
 
-#include "incl/Dog.hpp"
+#include "incl/Character.hpp"
 #include "incl/World.hpp"
 
-Dog::Dog(World* world
+Character::Character(Level* level
          , const sf::Texture& texture
          , const sf::Font& font
          , sf::Vector2f startPos
          , EntityStats stats
-         , const Params& params)
-: MovingEntity(world
+         , const Params& params
+         , State<Character>* globalState
+         , State<Character>* initState
+         , StateContainer& states
+         , float scale)
+: MovingEntity(level
                , texture
                , font
                , startPos
                , stats
                , params
-               , MovingEntity::EntityType::Dog)
+               , MovingEntity::EntityType::Character
+               , params.CharacterPanicDistance
+               , scale)
+, mStates(states)
+, mStateMachine(this, globalState, initState)
 {
     setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
     mText.setString("Woof!");
@@ -29,7 +37,7 @@ Dog::Dog(World* world
 /*
 *   Main update for sheep dog
 */
-void Dog::updateCurrent(sf::Time dt)
+void Character::updateCurrent(sf::Time dt)
 {
     sf::Color currentTextColor = mText.getColor();
 
@@ -61,7 +69,7 @@ void Dog::updateCurrent(sf::Time dt)
 
     move(mVelocity);
 
-    adjustPosition();
+//    adjustPosition();
 
     sf::FloatRect bounds = mText.getLocalBounds();
     mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
@@ -74,7 +82,7 @@ void Dog::updateCurrent(sf::Time dt)
 /*
 *   Draw function used by SFML to render to sf::RenderTarget
 */
-void Dog::drawCurrent(sf::RenderTarget& target
+void Character::drawCurrent(sf::RenderTarget& target
                                     , sf::RenderStates states) const
 {
     target.draw(mSprite, states);

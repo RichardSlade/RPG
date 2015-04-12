@@ -1,8 +1,8 @@
-#ifndef DOG_HPP
-#define DOG_HPP
+#ifndef CHARACTER_HPP
+#define CHARACTER_HPP
 
 /*
-*   Class for sheep dog controlled by player
+*   Class for Character controlled by player
 *
 *   @Author Richard Slade
 *   @Date 12/2014
@@ -14,38 +14,52 @@
 
 #include "MovingEntity.hpp"
 #include "Path.hpp"
+#include "StateMachine.hpp"
 
-class Dog : public MovingEntity
+class Character : public MovingEntity
 {
 public:
+    typedef std::vector<std::unique_ptr<State<Character>>> StateContainer;
+
     enum States
     {
         LookOut,
-        Waypoints,
-        DogRelax,
+        Evade,
+        Relax,
+//        Exit,
         NumDogStates
     };
 
 private:
+    StateContainer&                 mStates;
+    StateMachine<Character>         mStateMachine;
+
     virtual void                    updateCurrent(sf::Time);
     virtual void                    drawCurrent(sf::RenderTarget&
                                             , sf::RenderStates) const;
 
 public:
-                                    Dog(World*
+                                    Character(Level*
                                         , const sf::Texture&
                                         , const sf::Font&
                                         , sf::Vector2f
                                         , EntityStats
-                                        , const Params&);
+                                        , const Params&
+                                        , State<Character>*
+                                        , State<Character>*
+                                        , StateContainer&
+                                        , float = 1.f);
 
-    virtual                         ~Dog(){};
+    virtual                         ~Character(){};
 
     void                            addToPath(sf::Vector2f pos)
                                     { mSteering.addToPath(pos); }
 
     void                            startNewPath(sf::Vector2f pos)
                                     { mSteering.startNewPath(pos); }
+
+    void                            changeState(Character::States newState)
+                                    { mStateMachine.changeState(mStates.at(newState).get()); }
 };
 
-#endif // DOG_HPP
+#endif // CHARACTER_HPP

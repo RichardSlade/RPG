@@ -22,6 +22,7 @@ public:
     float       runMaxSpeed;
     float       maxForce;
     float       maxTurnRate;
+    float       health;
 
                 EntityStats(std::string fileName)
                 {
@@ -39,6 +40,9 @@ public:
     {
         in.ignore(255, ' ');
         in >> stats.mass;
+
+        in.ignore(255, ' ');
+        in >> stats.health;
 
         in.ignore(255, ' ');
         in >> stats.walkMaxSpeed;

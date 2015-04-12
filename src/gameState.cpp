@@ -8,24 +8,24 @@ GameState::GameState(Controller& cntrl
                      , sf::RenderWindow& window
                      , std::string username)
 : mWorldDimMax(cntrl.getParams().WorldDimMax)
-, mNumSheepMax(cntrl.getParams().NumSheepMax)
+, mNumEnemyMax(cntrl.getParams().NumEnemyMax)
 , mLevelTimeMin(cntrl.getParams().LevelTimeMin)
 , mResetWorldDim(cntrl.getParams().WorldDimMin)
-, mResetNumSheep(cntrl.getParams().NumSheepMin)
+, mResetNumEnemy(cntrl.getParams().NumEnemyMin)
 , mResetLevelTime(cntrl.getParams().LevelTimeMax)
 , mController(cntrl)
 , mWindow(window)
 , mWorldDim(mResetWorldDim)
-, mNumSheep(mResetNumSheep)
+, mNumEnemy(mResetNumEnemy)
 , mLevelTime(sf::seconds(mResetLevelTime * 60.f))
-, mTotalSheepHerded(0)
+, mTotalEnemyHerded(0)
 , mUsername(username)
 , mWorld(new World(*this
                    , cntrl
                    , window
                    , username
                    , mWorldDim
-                   , mNumSheep
+                   , mNumEnemy
                    , mLevelTime))
 , mPausedScreen(mController
                 , *this
@@ -50,7 +50,7 @@ void GameState::restartWorld()
                                               , mWindow
                                               , mUsername
                                               , mWorldDim
-                                              , mNumSheep
+                                              , mNumEnemy
                                               , mLevelTime));
 
     mNewScreen = GameState::Screen::Game;
@@ -129,7 +129,7 @@ void GameState::gameComplete(int sheepFromLastLevel)
 {
     mNewScreen = GameState::Screen::GameComplete;
 
-    mGameCompleteScreen.setup(mWindow.getView(), mTotalSheepHerded + sheepFromLastLevel);
+    mGameCompleteScreen.setup(mWindow.getView(), mTotalEnemyHerded + sheepFromLastLevel);
 }
 
 void GameState::nextLevel()
@@ -137,11 +137,11 @@ void GameState::nextLevel()
     const float blockSize = mController.getParams().LevelBlockSize;
 
     mWorldDim += blockSize * 4;
-    mNumSheep += 10;
+    mNumEnemy += 10;
     mLevelTime -= mWorld->getTimeTaken();
     mLevelTime += sf::seconds(mLevelTimeMin * 60.f);
 
-    mTotalSheepHerded += mWorld->getSheepHerded();
+//    mTotalEnemyHerded += mWorld->getEnemyHerded();
 
     if(mWorldDim > mWorldDimMax)
         mWorldDim = mWorldDimMax;
@@ -152,10 +152,10 @@ void GameState::nextLevel()
 void GameState::resetGame()
 {
     mWorldDim = mResetWorldDim;
-    mNumSheep = mResetNumSheep;
+    mNumEnemy = mResetNumEnemy;
     mLevelTime = sf::seconds(mResetLevelTime * 60.f);
 
-    mTotalSheepHerded = 0;
+    mTotalEnemyHerded = 0;
 
     restartWorld();
 }

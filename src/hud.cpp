@@ -25,16 +25,16 @@ void HUD::draw(sf::RenderTarget& target
     target.draw(mHUDBackground);
 
     target.draw(mHUDText.at(HUD::DataType::Name));
-    target.draw(mHUDText.at(HUD::DataType::Sheep));
+    target.draw(mHUDText.at(HUD::DataType::Enemy));
     target.draw(mHUDText.at(HUD::DataType::Time));
 }
 
 void HUD::update()
 {
-    mHUDText.at(HUD::DataType::Sheep).setString("Sheep: "
-                                                + std::to_string(mWorld->getSheepHerded())
-                                                + "/"
-                                                + std::to_string(mWorld->getSheepNum()));
+    mHUDText.at(HUD::DataType::Enemy).setString("Enemy: "
+//                                                + std::to_string(mWorld->getEnemyHerded())
+//                                                + "/"
+                                                + std::to_string(mWorld->getEnemyNum()));
 
     int time = static_cast<int>(mWorld->getTimeLeft().asSeconds());
     int mins = time / 60;
@@ -71,10 +71,10 @@ void HUD::setHUDPosition(sf::FloatRect viewBounds)
 
     mHUDText.at(HUD::DataType::Name).setPosition(viewBounds.left
                                                     + (viewBounds.width / 4.f)
-                                                 , viewBounds.top);
+                                                 , viewBounds.top + 10.f);
 
-    mHUDText.at(HUD::DataType::Sheep).setPosition(viewBounds.left
-                                                    + (viewBounds.width / 4.f)
+    mHUDText.at(HUD::DataType::Enemy).setPosition(viewBounds.left
+                                                    + (viewBounds.width / 2.f)
                                                   , viewBounds.top + 10.f);
 
     mHUDText.at(HUD::DataType::Time).setPosition(viewBounds.left

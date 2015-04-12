@@ -3,21 +3,26 @@
 #include "incl/LevelBlock.hpp"
 
 
-MovingEntity::MovingEntity(World* world
+MovingEntity::MovingEntity(//World* world
+                           Level* level
                            , const sf::Texture& texture
                            , const sf::Font& font
                            , sf::Vector2f startPos
                            , EntityStats stats
                            , const Params& params
                            , EntityType type
+                           , float panicDist
                            , float scale)
-: mWorld(world)
+//: mLevel(world)
+: mLevel(level)
 , mMass(stats.mass)
+, mHealth(stats.health)
 , mWalkMaxSpeed(stats.walkMaxSpeed)
 , mRunMaxSpeed(stats.runMaxSpeed)
 , mMaxForce(stats.maxForce)
 , mMaxTurnRate(stats.maxTurnRate)
 , mMaxSpeed(mWalkMaxSpeed)
+, mPanicDistance(panicDist)
 , mType(type)
 , mCurrentBlock(nullptr)
 , mSprite(texture)
@@ -72,7 +77,7 @@ void MovingEntity::updateCurrent(sf::Time dt)
     truncateVec(mVelocity, mMaxSpeed);
     move(mVelocity);
 
-    adjustPosition();
+//    adjustPosition();
 
     sf::FloatRect bounds = mText.getLocalBounds();
     mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
@@ -82,19 +87,19 @@ void MovingEntity::updateCurrent(sf::Time dt)
     mText.setPosition(textPos);
 }
 
-void MovingEntity::adjustPosition()
-{
-    sf::IntRect worldBounds = mWorld->getWorldBounds();
-
-    sf::Vector2f pos = getWorldPosition();
-
-    pos.x = std::min(pos.x, static_cast<float>(worldBounds.width));
-    pos.x = std::max(pos.x, 0.f);
-    pos.y = std::min(pos.y, static_cast<float>(worldBounds.height));
-    pos.y = std::max(pos.y, 0.f);
-
-    setPosition(pos);
-}
+//void MovingEntity::adjustPosition()
+//{
+//    sf::IntRect worldBounds = mLevel->getWorldBounds();
+//
+//    sf::Vector2f pos = getWorldPosition();
+//
+//    pos.x = std::min(pos.x, static_cast<float>(worldBounds.width));
+//    pos.x = std::max(pos.x, 0.f);
+//    pos.y = std::min(pos.y, static_cast<float>(worldBounds.height));
+//    pos.y = std::max(pos.y, 0.f);
+//
+//    setPosition(pos);
+//}
 
 void MovingEntity::ensureZeroOverlap()
 {
@@ -120,21 +125,21 @@ void MovingEntity::ensureZeroOverlap()
 
 std::vector<MovingEntity*> MovingEntity::getNeighbours(float radius) const
 {
-    return mWorld->getEntitiesInRange(const_cast<MovingEntity*>(this)
+    return mLevel->getEntitiesInRange(const_cast<MovingEntity*>(this)
                                    , radius);
 }
 
 std::vector<LevelBlock*> MovingEntity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const
 {
-    return mWorld->getBlockTypeInRange(const_cast<MovingEntity*>(this), blockType, radius);
+    return mLevel->getBlockTypeInRange(const_cast<MovingEntity*>(this), radius, blockType);
 }
 
 LevelBlock* MovingEntity::getLevelBlock(sf::Vector2i index)
 {
-    return mWorld->getLevelBlock(index);
+    return mLevel->getBlock(index);
 }
 
 std::vector<LevelBlock*> MovingEntity::getLevelExit()
 {
-    return mWorld->getLevelExit();
+    return mLevel->getLevelExit();
 }

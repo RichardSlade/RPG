@@ -19,7 +19,7 @@ Controller::Controller()
 : mParams()
 , mWindowX(mParams.WindowX)
 , mWindowY(mParams.WindowY)
-, mWindow(sf::VideoMode(mWindowX, mWindowY), "AI Steering behaviours", sf::Style::Fullscreen)
+, mWindow(sf::VideoMode(mWindowX, mWindowY), "AI Steering behaviours")// sf::Style::Fullscreen)
 , mCountDown(mFPS)
 , mResetViewCenter(mWindow.getView().getCenter())
 , mAppStateType(AppState::StateType::Menu)
@@ -29,8 +29,12 @@ Controller::Controller()
     loadMedia();
 
     // Initialise menu state
-    mCurrentAppState = std::unique_ptr<MenuState>(new MenuState(*this,
-                                                                mWindow));
+//    mCurrentAppState = std::unique_ptr<MenuState>(new MenuState(*this,
+//                                                                mWindow));
+
+    mCurrentAppState = std::unique_ptr<GameState>(new GameState(*this,
+                                                                mWindow
+                                                                , "Debug"));
 };
 
 /*
@@ -43,8 +47,8 @@ void Controller::loadMedia()
         mTextures.push_back(sf::Texture());
 
     std::vector<std::string> fileNames;
-//    fileNames.push_back("media/textures/dog.png");
-//    fileNames.push_back("media/textures/sheep.png");
+    fileNames.push_back("media/textures/character.png");
+    fileNames.push_back("media/textures/enemy.png");
     fileNames.push_back("media/textures/grass.png");
     fileNames.push_back("media/textures/wall.png");
     fileNames.push_back("media/textures/corner.png");

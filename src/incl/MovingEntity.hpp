@@ -8,30 +8,37 @@
 #include "SceneNode.hpp"
 #include "SteeringBehaviour.hpp"
 #include "Utility.hpp"
-#include "LevelBlock.hpp"
+#include "Level.hpp"
+//#include "LevelBlock.hpp"
 #include "EntityStats.hpp"
 #include "MovingTarget.hpp"
 #include "Params.hpp"
 
-class World;
+//class World;
 
 class MovingEntity : public SceneNode, public MovingTarget
 {
 public:
     enum EntityType
     {
-        Dog,
-        Sheep
+        Character,
+        Enemy,
+        NumEntityTypes
     };
 
+    const float                 mPanicDistance;
+
 protected:
-    World*                      mWorld;
+//    World*                      mWorld;
+    Level*                      mLevel;
 
     const float                 mMass;
+    const float                 mHealth;
     const float                 mWalkMaxSpeed;
     const float                 mRunMaxSpeed;
     const float                 mMaxForce;
     const float                 mMaxTurnRate;
+
 
     float                       mMaxSpeed;
     EntityType                  mType;
@@ -57,13 +64,15 @@ protected:
     void                        ensureZeroOverlap();
 
 public:
-                                MovingEntity(World*
+                                MovingEntity(//World*
+                                             Level*
                                              , const sf::Texture&
                                              , const sf::Font&
                                              , sf::Vector2f
                                              , EntityStats
                                              , const Params&
                                              , EntityType
+                                             , float
                                              , float = 1.f);
 
     virtual                     ~MovingEntity(){};

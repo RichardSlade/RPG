@@ -9,10 +9,11 @@
 #include "incl/SpriteNode.hpp"
 #include "incl/Utility.hpp"
 #include "incl/LevelBlock.hpp"
-#include "incl/Dog.hpp"
-#include "incl/Sheep.hpp"
+#include "incl/Character.hpp"
+#include "incl/Enemy.hpp"
 #include "incl/Scenery.hpp"
-#include "incl/SheepStates.hpp"
+#include "incl/EnemyStates.hpp"
+#include "incl/CharacterStates.hpp"
 #include "incl/HUD.hpp"
 #include "incl/GameState.hpp"
 #include "incl/SpriteNode.hpp"
@@ -24,13 +25,13 @@ World::World(GameState& gameState
              , sf::RenderWindow& window
              , std::string username
              , int worldDim
-             , int numSheep
+             , int numEnemy
              , sf::Time levelTime)
 : mWorldX(worldDim)
 , mWorldY(worldDim)
 , mExitRadius(controller.getParams().ExitRadius)
 , mLevelBlockSize(controller.getParams().LevelBlockSize)
-, mNumSheep(numSheep)
+, mNumEnemy(numEnemy)
 , mWaypointRadius(controller.getParams().WaypointRadius)
 , mScrollSpeed(controller.getParams().ScrollSpeed)
 , mGameState(gameState)
@@ -38,33 +39,40 @@ World::World(GameState& gameState
 , mWorldView(mWindow.getDefaultView())
 , mWorldBounds(sf::Vector2i(0, 0), sf::Vector2i(mWorldX, mWorldY))
 , mFocusPoint(mWorldBounds.width / 2.f, mWorldBounds.height / 2.f)
-, mSheepHerded(0)
+//, mEnemyHerded(0)
 , mTimeLeft(levelTime)
 , mTimeTaken(sf::Time::Zero)
-, mLevel(mLevelBlockSize
-         , controller.getParams().ExitWidth
-         , mWorldBounds)
+
 , mHUD(this
        , controller.getFont(Controller::Fonts::Sansation)
        , getViewBounds()
        , username)
 , mExitPos(mWorldBounds.width / 2.f, 0.f)
-, mDog(nullptr)
+, mLeadCharacter(nullptr)
 {
+    mLevel = std::unique_ptr<Level>(new Level(mLevelBlockSize
+                                            , controller.getParams().ExitWidth
+                                            , mWorldBounds));
+
     initialiseStatesAndStats();
     buildScene(controller);
 }
 
 void World::initialiseStatesAndStats()
 {
-    // Initialise sheep states
-    mSheepStates.push_back(std::unique_ptr<LookOutForDog>(new LookOutForDog));
-    mSheepStates.push_back(std::unique_ptr<EvadeDog>(new EvadeDog));
-    mSheepStates.push_back(std::unique_ptr<Relax>(new Relax));
-    mSheepStates.push_back(std::unique_ptr<Exit>(new Exit));
+    // Initialise enemy states
+    mEnemyStates.push_back(std::unique_ptr<LookOutForCharacter>(new LookOutForCharacter));
+    mEnemyStates.push_back(std::unique_ptr<EvadeCharacter>(new EvadeCharacter));
+    mEnemyStates.push_back(std::unique_ptr<RelaxEnemy>(new RelaxEnemy));
+//    mEnemyStates.push_back(std::unique_ptr<Exit>(new Exit));
 
-    mEntityStats.push_back(EntityStats("data/entityStats/sheepStats.dat"));
-    mEntityStats.push_back(EntityStats("data/entityStats/dogStats.dat"));
+    mCharacterStates.push_back(std::unique_ptr<LookOutForEnemy>(new LookOutForEnemy));
+    mCharacterStates.push_back(std::unique_ptr<EvadeEnemy>(new EvadeEnemy));
+    mCharacterStates.push_back(std::unique_ptr<RelaxChar>(new RelaxChar));
+//    mCharacterStates.push_back(std::unique_ptr<Exit>(new Exit));
+
+    mEntityStats.push_back(EntityStats("data/entityStats/enemyStats.dat"));
+    mEntityStats.push_back(EntityStats("data/entityStats/characterStats.dat"));
 }
 
 void World::buildScene(const Controller& controller)
@@ -88,32 +96,43 @@ void World::buildScene(const Controller& controller)
     mBackground = backgroundSprite.get();
     mSceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(backgroundSprite));
 
-    mLevel.generateLevel(mSceneLayers, controller);
+    mLevel->generateLevel(mSceneLayers, controller);
 
     generateAgents(controller);
 }
 
 void World::generateAgents(const Controller& controller)
 {
-    // Initialise dog and add to scene graph
-//    std::unique_ptr<Dog> dogNode(new Dog(const_cast<World*>(this)
-//                                         , controller.getTexture(Controller::Textures::Dog)
-//                                         , controller.getFont(Controller::Fonts::Sansation)
-//                                         , sf::Vector2f(mWorldBounds.width / 2.f, mWorldBounds.height / 2.f)
-//                                         , mEntityStats.at(StatsType::DogStats)
-//                                         , controller.getParams()));
-
-    // Save pointer to dog for sheep initialisation
-//    Dog* dogPtr = dogNode.get();
-//    mDog = dogPtr;
-
-//    mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(dogNode));
-
-    // Initialise sheep and add to scene graph
-//    for(int i = 0 ; i < mNumSheep; i++)
-    for(int i = 0 ; i < 0; i++)
+    // Initialise characters and add to scene graph
+    for(int i = 0; i < 2; i++)
     {
-        // Find square for sheep to start in
+        float inc = i * 40.f;
+
+        std::unique_ptr<Character> characterNode(new Character(mLevel.get()
+                                             , controller.getTexture(Controller::Textures::Character)
+                                             , controller.getFont(Controller::Fonts::Sansation)
+                                             , sf::Vector2f((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc)
+                                             , mEntityStats.at(StatsType::CharacterStats)
+                                             , controller.getParams()
+                                             , mCharacterStates.at(Character::States::LookOut).get()
+                                             , mCharacterStates.at(Character::States::Relax).get()
+                                             , mCharacterStates
+                                             , rangedClamped(0.75f, 1.25f)));
+
+        // Save pointer to character for enemy initialisation
+        Character* characterPtr = characterNode.get();
+        mCharacters.push_back(characterPtr);
+
+        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(characterNode));
+    }
+
+    mLeadCharacter = mCharacters.at(0);
+
+    // Initialise enemy and add to scene graph
+//    for(int i = 0 ; i < mNumEnemy; i++)
+    for(int i = 0 ; i < 10; i++)
+    {
+        // Find square for enemy to start in
         LevelBlock* levelBlock;
         sf::Vector2i index;
         sf::Vector2f pos;
@@ -130,27 +149,28 @@ void World::generateAgents(const Controller& controller)
 //
 //        } while(levelBlock->getType() == LevelBlock::Type::ObstacleBlock);
 
-        int maxX = mLevel.getLevelX();
+        int maxX = mLevel->getLevelX();
 
         index = sf::Vector2i(rangedClamped(1, maxX - 2)
                              , rangedClamped(1, maxX - 2));
 
-        levelBlock = mLevel.getBlock(index);
+        levelBlock = mLevel->getBlock(index);
 
         pos = levelBlock->getMiddle();
 
-//        std::unique_ptr<Sheep> sheepNode(new Sheep(const_cast<World*>(this)
-//                                                    , controller.getTexture(Controller::Textures::Sheep)
-//                                                    , controller.getFont(Controller::Fonts::Sansation)
-//                                                    , pos
-//                                                    , mSheepStates.at(Sheep::States::LookOut).get()
-//                                                    , mSheepStates.at(Sheep::States::Relax).get()
-//                                                    , mEntityStats.at(StatsType::SheepStats)
-//                                                    , controller.getParams()
-//                                                    , rangedClamped(0.75f, 1.25f)));
+        std::unique_ptr<Enemy> enemyNode(new Enemy(mLevel.get()
+                                                    , controller.getTexture(Controller::Textures::Enemy)
+                                                    , controller.getFont(Controller::Fonts::Sansation)
+                                                    , pos
+                                                    , mEntityStats.at(StatsType::EnemyStats)
+                                                    , controller.getParams()
+                                                    , mEnemyStates.at(Enemy::States::LookOut).get()
+                                                    , mEnemyStates.at(Enemy::States::Relax).get()
+                                                    , mEnemyStates
+                                                    , rangedClamped(0.75f, 1.25f)));
 
-//        sheepNode->setMovingTarget(dogPtr);
-//        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(sheepNode));
+        enemyNode->setMovingTarget(mCharacters.at(0));
+        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(enemyNode));
     }
 }
 
@@ -213,10 +233,10 @@ void World::update(sf::Time dt)
 
     mHUD.update();
 
-    if(mSheepHerded == mNumSheep)
-        mGameState.levelComplete();
-    else if(mTimeLeft < sf::Time::Zero)
-        mGameState.gameComplete(mSheepHerded);
+//    if(mEnemyHerded == mNumEnemy)
+//        mGameState.levelComplete();
+//    else if(mTimeLeft < sf::Time::Zero)
+//        mGameState.gameComplete(mEnemyHerded);
 }
 
 void World::handleInput()
@@ -230,7 +250,8 @@ void World::handleInput()
         else if(event.type == sf::Event::KeyReleased)
         {
             if(event.key.code == sf::Keyboard::Escape)
-                mGameState.pause();
+                mWindow.close();
+//                mGameState.pause();
         }
         else if(event.type == sf::Event::MouseButtonPressed)
         {
@@ -252,13 +273,13 @@ void World::handleInput()
 
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
                 {
-                    if(mDog)
-                        mDog->addToPath(mousePosF);
+                    if(mCharacters.at(0))
+                        mCharacters.at(0)->addToPath(mousePosF);
                 }
                 else
                 {
-                    if(mDog)
-                        mDog->startNewPath(mousePosF);
+                    if(mCharacters.at(0))
+                        mCharacters.at(0)->startNewPath(mousePosF);
                 }
             }
         }
@@ -289,20 +310,20 @@ std::vector<LevelBlock*> World::getBlockTypeInRange(const MovingEntity* entity
                                                     , LevelBlock::Type blockType
                                                     , float radius = 0.f) const
 {
-    return mLevel.getBlockTypeInRange(entity
+    return mLevel->getBlockTypeInRange(entity
                                            , radius
                                            , blockType);
 }
 
 LevelBlock* World::insertEntityIntoLevel(MovingEntity* entity) const
 {
-    return mLevel.insertEntityIntoLevel(entity);
+    return mLevel->insertEntityIntoLevel(entity);
 }
 
 std::vector<MovingEntity*> World::getEntitiesInRange(const MovingEntity* entity
                                                      , float neighbourhoodRadius) const
 {
-    return mLevel.getEntitiesInRange(entity
+    return mLevel->getEntitiesInRange(entity
                                      , neighbourhoodRadius);
 }
 

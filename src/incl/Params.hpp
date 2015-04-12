@@ -30,15 +30,16 @@ public:
     float LevelBlockSize;
     float WorldDimMin;
     float WorldDimMax;
-    float NumSheepMin;
-    float NumSheepMax;
+    float NumEnemyMin;
+    float NumEnemyMax;
     float LevelTimeMin;
     float LevelTimeMax;
     float WaypointRadius;
     float ScrollSpeed;
-    float SheepSightRange;
-    float SheepAngleOfVision;
-    float SheepPanicDistance;
+    float EnemySightRange;
+    float EnemyAngleOfVision;
+    float EnemyPanicDistance;
+    float CharacterPanicDistance;
     float PI;
     float WanderRadius;
     float WanderDistance;
@@ -79,10 +80,10 @@ public:
         in >> params.WorldDimMax;
 
         in.ignore(255, ' ');
-        in >> params.NumSheepMin;
+        in >> params.NumEnemyMin;
 
         in.ignore(255, ' ');
-        in >> params.NumSheepMax;
+        in >> params.NumEnemyMax;
 
         in.ignore(255, ' ');
         in >> params.LevelTimeMin;
@@ -97,13 +98,16 @@ public:
         in >> params.ScrollSpeed;
 
         in.ignore(255, ' ');
-        in >> params.SheepSightRange;
+        in >> params.EnemySightRange;
 
         in.ignore(255, ' ');
-        in >> params.SheepAngleOfVision;
+        in >> params.EnemyAngleOfVision;
 
         in.ignore(255, ' ');
-        in >> params.SheepPanicDistance;
+        in >> params.EnemyPanicDistance;
+
+        in.ignore(255, ' ');
+        in >> params.CharacterPanicDistance;
 
         in.ignore(255, ' ');
         in >> params.PI;

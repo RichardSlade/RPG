@@ -1,12 +1,12 @@
 # depslib dependency file v1.0
-1428434330 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/controller.cpp
+1428610142 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/controller.cpp
 	<iostream>
 	"incl/Controller.hpp"
 	"incl/MenuState.hpp"
 	"incl/GameState.hpp"
 	"incl/LevelBlock.hpp"
 
-1428435324 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/Controller.hpp
+1428529683 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/Controller.hpp
 	<array>
 	<memory>
 	<string>
@@ -182,7 +182,7 @@
 1421403126 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/AppState.hpp
 	<SFML/System/Time.hpp>
 
-1421404294 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/Params.hpp
+1428616095 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/Params.hpp
 	<fstream>
 	<string>
 	<stdexcept>
@@ -230,7 +230,7 @@
 	<SFML/Graphics/Drawable.hpp>
 	<vector>
 
-1421404294 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/GameState.hpp
+1428528384 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/GameState.hpp
 	<string>
 	<SFML/Graphics/RenderWindow.hpp>
 	<SFML/Graphics/Text.hpp>
@@ -240,7 +240,7 @@
 	"LevelCompleteScreen.hpp"
 	"GameCompleteScreen.hpp"
 
-1421404294 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/World.hpp
+1428670801 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/World.hpp
 	<memory>
 	<SFML/Graphics/RenderWindow.hpp>
 	<SFML/Graphics/Texture.hpp>
@@ -250,8 +250,8 @@
 	<SFML/System/NonCopyable.hpp>
 	"Level.hpp"
 	"SceneNode.hpp"
-	"Sheep.hpp"
-	"Dog.hpp"
+	"Enemy.hpp"
+	"Character.hpp"
 	"State.hpp"
 	"EntityStats.hpp"
 	"HUD.hpp"
@@ -308,14 +308,14 @@
 	"MovingEntity.hpp"
 	"StateMachine.hpp"
 
-1421404294 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/MovingEntity.hpp
+1428616303 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/MovingEntity.hpp
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/Text.hpp>
 	"SceneNode.hpp"
 	"SteeringBehaviour.hpp"
 	"Utility.hpp"
-	"LevelBlock.hpp"
+	"Level.hpp"
 	"EntityStats.hpp"
 	"MovingTarget.hpp"
 	"Params.hpp"
@@ -341,17 +341,17 @@
 	<string>
 	<SFML/System/Vector2.hpp>
 
-1421403425 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/EntityStats.hpp
+1428610885 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/EntityStats.hpp
 	<fstream>
 	<string>
 
 1421404294 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/MovingTarget.hpp
 
-1418162343 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/StateMachine.hpp
+1428612903 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/StateMachine.hpp
 	<cassert>
 	"State.hpp"
 
-1418727983 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/State.hpp
+1428616766 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/State.hpp
 	<memory>
 
 1421403214 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/Dog.hpp
@@ -361,7 +361,7 @@
 	"MovingEntity.hpp"
 	"Path.hpp"
 
-1421404294 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/HUD.hpp
+1428528439 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/HUD.hpp
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/Text.hpp>
@@ -430,18 +430,18 @@
 
 1418677931 /home/rts/Libraries/SFML-2.2/include/SFML/System/Vector3.inl
 
-1428434460 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/gameState.cpp
+1428610070 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/gameState.cpp
 	<SFML/Window/Event.hpp>
 	"incl/GameState.hpp"
 	"incl/Controller.hpp"
 	"incl/Params.hpp"
 
-1428434459 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/hud.cpp
+1428610224 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/hud.cpp
 	<string>
 	"incl/HUD.hpp"
 	"incl/World.hpp"
 
-1428434330 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/level.cpp
+1428436302 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/level.cpp
 	<iostream>
 	<list>
 	<string>
@@ -476,7 +476,7 @@
 	"incl/Controller.hpp"
 	"incl/World.hpp"
 
-1428434459 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/movingEntity.cpp
+1428616195 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/movingEntity.cpp
 	"incl/MovingEntity.hpp"
 	"incl/World.hpp"
 	"incl/LevelBlock.hpp"
@@ -527,7 +527,7 @@
 	<SFML/System/Time.hpp>
 	"SceneNode.hpp"
 
-1428434459 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/steeringBehaviour.cpp
+1428528524 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/steeringBehaviour.cpp
 	<cmath>
 	<algorithm>
 	<iostream>
@@ -537,7 +537,7 @@
 	"incl/Utility.hpp"
 	"incl/Wall.hpp"
 	"incl/LevelBlock.hpp"
-	"incl/Sheep.hpp"
+	"incl/Enemy.hpp"
 	"incl/Params.hpp"
 
 1428434460 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/utility.cpp
@@ -551,7 +551,7 @@
 1428434459 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/wall.cpp
 	"incl/Wall.hpp"
 
-1428434330 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/world.cpp
+1428617113 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/world.cpp
 	<iostream>
 	<SFML/Graphics/PrimitiveType.hpp>
 	<SFML/Graphics/Text.hpp>
@@ -561,11 +561,62 @@
 	"incl/SpriteNode.hpp"
 	"incl/Utility.hpp"
 	"incl/LevelBlock.hpp"
-	"incl/Dog.hpp"
-	"incl/Sheep.hpp"
+	"incl/Character.hpp"
+	"incl/Enemy.hpp"
 	"incl/Scenery.hpp"
-	"incl/SheepStates.hpp"
+	"incl/EnemyStates.hpp"
+	"incl/CharacterStates.hpp"
 	"incl/HUD.hpp"
 	"incl/GameState.hpp"
 	"incl/SpriteNode.hpp"
+
+1428616237 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/character.cpp
+	"incl/Character.hpp"
+	"incl/World.hpp"
+
+1428616505 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/Character.hpp
+	<SFML/Graphics/CircleShape.hpp>
+	<SFML/Graphics/Texture.hpp>
+	<SFML/System/Time.hpp>
+	"MovingEntity.hpp"
+	"Path.hpp"
+	"StateMachine.hpp"
+
+1428616500 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/Enemy.hpp
+	<memory>
+	"MovingEntity.hpp"
+	"StateMachine.hpp"
+
+1428616222 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/enemy.cpp
+	<iostream>
+	<cmath>
+	<vector>
+	"incl/Enemy.hpp"
+	"incl/Utility.hpp"
+	"incl/World.hpp"
+
+1428616922 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/enemyStates.cpp
+	<cassert>
+	<iostream>
+	"incl/EnemyStates.hpp"
+	"incl/SteeringBehaviour.hpp"
+	"incl/Utility.hpp"
+	"incl/MovingTarget.hpp"
+	"incl/World.hpp"
+
+1428616816 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/EnemyStates.hpp
+	"State.hpp"
+	"Enemy.hpp"
+
+1428670444 source:/home/rts/C-C++/CodeBlockProjects/RPG/src/characterStates.cpp
+	<cassert>
+	<iostream>
+	"incl/CharacterStates.hpp"
+	"incl/SteeringBehaviour.hpp"
+	"incl/Utility.hpp"
+	"incl/MovingTarget.hpp"
+
+1428670314 /home/rts/C-C++/CodeBlockProjects/RPG/src/incl/CharacterStates.hpp
+	"State.hpp"
+	"Character.hpp"
 

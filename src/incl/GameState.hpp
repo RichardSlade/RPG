@@ -27,20 +27,20 @@ private:
     };
 
     const int                       mWorldDimMax;
-    const int                       mNumSheepMax;
+    const int                       mNumEnemyMax;
     const float                     mLevelTimeMin;
 
     const int                       mResetWorldDim;
-    const int                       mResetNumSheep;
+    const int                       mResetNumEnemy;
     const float                     mResetLevelTime;
 
     Controller&                     mController;
     sf::RenderWindow&               mWindow;
 
     float                           mWorldDim;
-    float                           mNumSheep;
+    float                           mNumEnemy;
     sf::Time                        mLevelTime;
-    float                           mTotalSheepHerded;
+    float                           mTotalEnemyHerded;
 
     std::string                     mUsername;
 

@@ -8,7 +8,7 @@
 #include "incl/Utility.hpp"
 #include "incl/Wall.hpp"
 #include "incl/LevelBlock.hpp"
-#include "incl/Sheep.hpp"
+#include "incl/Enemy.hpp"
 #include "incl/Params.hpp"
 
 const float SteeringBehaviour::mPI = 3.14159265358979;
@@ -41,7 +41,7 @@ SteeringBehaviour::SteeringBehaviour(MovingEntity* host
     for(bool& b : mBehaviourFlags)
         b = false;
 
-    if(mHost->getEntityType() != MovingEntity::EntityType::Dog)
+    if(mHost->getEntityType() != MovingEntity::EntityType::Character)
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
@@ -128,10 +128,10 @@ sf::Vector2f SteeringBehaviour::evade()
 {
     const MovingTarget* pursuer = mHost->getMovingTarget();
 
-    const Sheep* sheepHost = dynamic_cast<const Sheep*>(mHost);
+    const Enemy* sheepHost = dynamic_cast<const Enemy*>(mHost);
 
     if(!mHost)
-        throw std::runtime_error("Error:\n SteeringBehaviour::evade(): Casting Host* to Sheep*");
+        throw std::runtime_error("Error:\n SteeringBehaviour::evade(): Casting Host* to Enemy*");
 
     sf::Vector2f toPursuer(pursuer->targetPosition() - mHost->getWorldPosition());
 
@@ -500,7 +500,7 @@ void SteeringBehaviour::setNewBehaviours(SteeringBehaviour::Behaviour newType)
 
     mBehaviourFlags.at(newType) = true;
 
-    if(mHost->getEntityType() != MovingEntity::EntityType::Dog)
+    if(mHost->getEntityType() != MovingEntity::EntityType::Character)
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;

@@ -15,7 +15,7 @@ public:
     enum DataType
     {
         Name,
-        Sheep,
+        Enemy,
         Time,
         NumDataType
     };

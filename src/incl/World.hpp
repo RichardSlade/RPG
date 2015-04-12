@@ -12,8 +12,8 @@
 
 #include "Level.hpp"
 #include "SceneNode.hpp"
-#include "Sheep.hpp"
-#include "Dog.hpp"
+#include "Enemy.hpp"
+#include "Character.hpp"
 #include "State.hpp"
 #include "EntityStats.hpp"
 #include "HUD.hpp"
@@ -24,7 +24,7 @@ class Wall;
 class Waypoint;
 class MovingEntity;
 class GameState;
-class Dog;
+//class Dog;
 class SpriteNode;
 
 class World : private sf::NonCopyable
@@ -35,12 +35,12 @@ public:
     const float                                 mExitRadius;
 
     const int                                   mLevelBlockSize;
-    const int                                   mNumSheep;
+    const int                                   mNumEnemy;
 
     enum StatsType
     {
-        SheepStats,
-        DogStats,
+        EnemyStats,
+        CharacterStats,
         StatsTypeNum
     };
 
@@ -60,20 +60,25 @@ private:
     std::array<SceneNode*
                 , SceneNode::Layers::Num>       mSceneLayers;
 
-    int                                         mSheepHerded;
+//    int                                         mEnemyHerded;
     sf::Time                                    mTimeLeft;
     sf::Time                                    mTimeTaken;
 
-    Level                                       mLevel;
+    std::unique_ptr<Level>                      mLevel;
     HUD                                         mHUD;
 
     std::vector<EntityStats>                    mEntityStats;
-    std::vector<std::unique_ptr<State<Dog>>>    mDogStates;
-    std::vector<std::unique_ptr<State<Sheep>>>  mSheepStates;
+
+//    std::vector<std::unique_ptr<State<Dog>>>    mDogStates;
+//    std::vector<std::unique_ptr<State<Enemy>>>  mEnemyStates;
+    Character::StateContainer                   mCharacterStates;
+    Enemy::StateContainer                       mEnemyStates;
 
     SpriteNode*                                 mBackground;
     sf::Vector2f                                mExitPos;
-    Dog*                                        mDog;
+    std::vector<Character*>                     mCharacters;
+
+    Character*                                  mLeadCharacter;
 
     void                                        initialiseStatesAndStats();
     void                                        buildScene(const Controller&);
@@ -87,7 +92,7 @@ public:
                                                       , sf::RenderWindow&
                                                       , std::string
                                                       , int worldDim
-                                                      , int numSheep
+                                                      , int numEnemy
                                                       , sf::Time levelTime);
 
     void                                        update(sf::Time);
@@ -100,23 +105,23 @@ public:
     std::vector<LevelBlock*>                    getBlockTypeInRange(const MovingEntity*
                                                                     , LevelBlock::Type, float) const;
 
-    State<Dog>*                                 getDogState(Dog::States newStateType) const
-                                                { return mDogStates.at(newStateType).get(); }
+//    State<Dog>*                                 getDogState(Dog::States newStateType) const
+//                                                { return mDogStates.at(newStateType).get(); }
 
-    State<Sheep>*                               getSheepState(Sheep::States newStateType) const
-                                                { return mSheepStates.at(newStateType).get(); }
+    State<Enemy>*                               getEnemyState(Enemy::States newStateType) const
+                                                { return mEnemyStates.at(newStateType).get(); }
 
     const sf::IntRect                           getWorldBounds() const
                                                 { return mWorldBounds; }
 
     LevelBlock*                                 getLevelBlock(sf::Vector2i index) const
-                                                { return mLevel.getBlock(index); }
+                                                { return mLevel->getBlock(index); }
 
-    int                                         getSheepNum() const
-                                                { return mNumSheep; }
+    int                                         getEnemyNum() const
+                                                { return mNumEnemy; }
 
-    int                                         getSheepHerded() const
-                                                { return mSheepHerded; }
+//    int                                         getEnemyHerded() const
+//                                                { return mEnemyHerded; }
 
     sf::Time                                    getTimeLeft() const
                                                 { return mTimeLeft; }
@@ -126,7 +131,7 @@ public:
 
 
     std::vector<LevelBlock*>                    getLevelExit() const
-                                                { return mLevel.getLevelExit(); }
+                                                { return mLevel->getLevelExit(); }
 
     // Setters
     LevelBlock*                                 insertEntityIntoLevel(MovingEntity*) const;
@@ -134,8 +139,8 @@ public:
     std::vector<MovingEntity*>                  getEntitiesInRange(const MovingEntity*
                                                                    , float) const;
 
-    void                                        incSheepHerded()
-                                                { mSheepHerded ++; }
+//    void                                        incEnemyHerded()
+//                                                { mEnemyHerded ++; }
 };
 
 #endif // WORLD_HPP
