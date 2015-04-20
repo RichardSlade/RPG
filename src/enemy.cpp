@@ -2,41 +2,41 @@
 #include <cmath>
 #include <vector>
 
-#include "incl/Enemy.hpp"
-#include "incl/Utility.hpp"
-#include "incl/World.hpp"
+#include "App/Utility.hpp"
+#include "World/World.hpp"
+#include "Entity/Enemy.hpp"
 
-Enemy::Enemy(//World* world
-			Level* level
-		  , const sf::Texture& texture
-		  , const sf::Font& font
-		  , sf::Vector2f startPos
-		  , EntityStats stats
-		  , const Params& params
-		  , State<Enemy>* globalState
-		  , State<Enemy>* initState
-		  , StateContainer& states
-		  , float scale)
-: MovingEntity(//world
-					level
-               , texture
-               , font
-               , startPos
-               , stats
-               , params
-               , MovingEntity::EntityType::Enemy
-               , params.EnemyPanicDistance
-               , scale)
-
+Enemy::Enemy(Level* level
+            , const sf::Texture& texture
+            , const sf::Font& font
+            , sf::Vector2f startPos
+            , EntityStats stats
+            , const Params& params
+//            , State<Enemy>* globalState
+//            , State<Enemy>* initState
+//            , StateContainer& states
+//            , Enemy::StateType currentStateType
+            , float scale)
+: MovingEntity(MovingEntity::EntityType::Enemy
+              , level
+              , texture
+              , font
+              , startPos
+              , stats
+              , params
+              , scale)
+//, MeleeCombatant(dynamic_cast<MovingEntity*>(this)
+//                  , sf::seconds(stats.attackDelay))
 , mSightRange(params.EnemySightRange)
 , mAngleOfVision(params.EnemyAngleOfVision)
 //, mPanicDistance(params.EnemyPanicDistance)
-, mStates(states)
-, mStateMachine(this, globalState, initState)
+//, mStates(states)
+//, mStateMachine(this
+//               , globalState
+//               , initState
+//               , currentStateType)
 {
     mText.setPosition(-10.f, -40.f);
-
-    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 }
 
 void Enemy::updateCurrent(sf::Time dt)
@@ -48,14 +48,16 @@ void Enemy::updateCurrent(sf::Time dt)
     mCurrentBlock->deleteEntity(this);
     mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 
-    if(mCurrentBlock->getType() == LevelBlock::Type::ExitBlock)
-    {
-        mToRemove = true;
-        mMovingTarget = nullptr;
-        mCurrentBlock->deleteEntity(this);
+//    MeleeCombatant::update(dt);
 
-//        mLevel->incEnemyHerded();
-    }
+//    if(mCurrentBlock->getType() == LevelBlock::Type::ExitBlock)
+//    {
+//        mToRemove = true;
+//        mMovingTarget = nullptr;
+//        mCurrentBlock->deleteEntity(this);
+//
+////        mLevel->incEnemyHerded();
+//    }
 }
 
 void Enemy::drawCurrent(sf::RenderTarget& target
@@ -64,6 +66,25 @@ void Enemy::drawCurrent(sf::RenderTarget& target
     target.draw(mSprite, states);
     target.draw(mText);
 }
+
+//void Enemy::addPursuer(MovingEntity* pursuer)
+//{
+//  mPursuers.push_back(pursuer);
+//}
+//
+//void Enemy::deletePursuer(MovingEntity* pursuer)
+//{
+//    auto it = find (mPursuers.begin(), mPursuers.end(), pursuer);
+//
+//    assert(it != mPursuers.end());
+//
+//    mPursuers.erase(it);
+//}
+//
+//void Enemy::clearPursuers()
+//{
+//  mPursuers.clear();
+//}
 
 //void Enemy::changeState(Enemy::States newState)
 //{

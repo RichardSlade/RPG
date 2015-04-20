@@ -2,7 +2,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "incl/SceneNode.hpp"
+#include "Node/SceneNode.hpp"
 
 SceneNode::SceneNode()
 : mParent(nullptr)
@@ -14,12 +14,12 @@ SceneNode::SceneNode()
 
 void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	// Apply transform of current node
-	states.transform *= getTransform();
+    // Apply transform of current node
+    states.transform *= getTransform();
 
-	// Draw node and children with changed transform
-	drawCurrent(target, states);
-	drawChildren(target, states);
+    // Draw node and children with changed transform
+    drawCurrent(target, states);
+    drawChildren(target, states);
 }
 
 void SceneNode::updateChildren(sf::Time dt)
@@ -49,7 +49,7 @@ void SceneNode::addChild(upScNode node)
 SceneNode::upScNode SceneNode::deleteChild(const SceneNode& node)
 {
     auto found = std::find_if(mChildren.begin(), mChildren.end(),
-                                [&] (SceneNode::upScNode& p) -> bool { return p.get() == &node; } );
+                              [&] (SceneNode::upScNode& p) -> bool { return p.get() == &node; } );
 
     assert(found != mChildren.end());
 
@@ -63,16 +63,16 @@ SceneNode::upScNode SceneNode::deleteChild(const SceneNode& node)
 void SceneNode::removeDeletedNodes()
 {
     // Remove all children which request so
-	auto wreckfieldBegin = std::remove_if(mChildren.begin()
-                                       , mChildren.end()
-                                       , std::mem_fn(&SceneNode::getToRemove));
+    auto wreckfieldBegin = std::remove_if(mChildren.begin()
+                                          , mChildren.end()
+                                          , std::mem_fn(&SceneNode::getToRemove));
 
-	mChildren.erase(wreckfieldBegin, mChildren.end());
+    mChildren.erase(wreckfieldBegin, mChildren.end());
 
-	// Call function recursively for all remaining children
-	std::for_each(mChildren.begin()
-               , mChildren.end()
-               , std::mem_fn(&SceneNode::removeDeletedNodes));
+    // Call function recursively for all remaining children
+    std::for_each(mChildren.begin()
+                  , mChildren.end()
+                  , std::mem_fn(&SceneNode::removeDeletedNodes));
 }
 
 sf::Transform SceneNode::getWorldTransform() const

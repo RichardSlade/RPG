@@ -3,8 +3,8 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "incl/Utility.hpp"
-#include "incl/Params.hpp"
+#include "App/Utility.hpp"
+#include "App/Params.hpp"
 
 float magVec(sf::Vector2f vec)
 {
@@ -34,14 +34,14 @@ void truncateVec(sf::Vector2f& vec, float maxSpeed)
 
 int signVec(sf::Vector2f v1, sf::Vector2f v2)
 {
-  if (v1.y*v2.x > v1.x*v2.y)
-  {
-    return -1;
-  }
-  else
-  {
-    return 1;
-  }
+    if (v1.y*v2.x > v1.x*v2.y)
+    {
+        return -1;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
 float dotVec(const sf::Vector2f vec1, const sf::Vector2f vec2)

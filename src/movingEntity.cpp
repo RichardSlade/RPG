@@ -1,47 +1,56 @@
-#include "incl/MovingEntity.hpp"
-#include "incl/World.hpp"
-#include "incl/LevelBlock.hpp"
 
+#include "World/LevelBlock.hpp"
+#include "Entity/MovingEntity.hpp"
+//#include "incl/World.hpp"
 
-MovingEntity::MovingEntity(//World* world
-                           Level* level
-                           , const sf::Texture& texture
-                           , const sf::Font& font
-                           , sf::Vector2f startPos
-                           , EntityStats stats
-                           , const Params& params
-                           , EntityType type
-                           , float panicDist
-                           , float scale)
+MovingEntity::MovingEntity(EntityType type
+                           , Level* level
+                            , const sf::Texture& texture
+                            , const sf::Font& font
+                            , sf::Vector2f startPos
+                            , EntityStats stats
+                            , const Params& params
+                            , float scale)
 //: mLevel(world)
-: mLevel(level)
+//: mPanicDistance(panicDist)
+: Entity(type
+         , level
+         , texture
+         , font
+         , scale)
+//, mLevel(level)
 , mMass(stats.mass)
-, mHealth(stats.health)
+//, mMaxHealth(stats.health)
 , mWalkMaxSpeed(stats.walkMaxSpeed)
 , mRunMaxSpeed(stats.runMaxSpeed)
 , mMaxForce(stats.maxForce)
 , mMaxTurnRate(stats.maxTurnRate)
+//, mPanicDistance(stats.panicDist)
+//, mAgroDistance(stats.agroDist)
+//, mAttackDistance(stats.attackDist)
+//, mHealth(mMaxHealth)
 , mMaxSpeed(mWalkMaxSpeed)
-, mPanicDistance(panicDist)
-, mType(type)
-, mCurrentBlock(nullptr)
-, mSprite(texture)
+//, mType(type)
+//, mCurrentBlock(nullptr)
+//, mSprite(texture)
 , mVelocity(0.f, 0.f)
 , mHeading(0.f, 0.f)
 , mSteering(this, params)
-, mMovingTarget(nullptr)
-, mText("", font, 12)
+//, mCurrentTarget(nullptr)
+//, mText("", font, 12)
 {
-    mSprite.scale(scale, scale);
-    sf::FloatRect bounds = mSprite.getLocalBounds();
-    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-    mRadius = std::max(bounds.width, bounds.height);
-
-    setPosition(startPos);
-
-    float theta = randomClamped() * (2.f * SteeringBehaviour::mPI);
-    rotate(theta * (180 / SteeringBehaviour::mPI));
-    mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
+//    mSprite.scale(scale, scale);
+//    sf::FloatRect bounds = mSprite.getLocalBounds();
+//    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+//    mRadius = std::max(bounds.width, bounds.height);
+//
+//    setPosition(startPos);
+//
+//    float theta = randomClamped() * (2.f * SteeringBehaviour::mPI);
+//    rotate(theta * (180 / SteeringBehaviour::mPI));
+//    mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
+//
+//    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 }
 
 void MovingEntity::updateCurrent(sf::Time dt)
@@ -52,6 +61,9 @@ void MovingEntity::updateCurrent(sf::Time dt)
     mText.setColor(currentTextColor);
 
     sf::Vector2f steering = mSteering.calculate(dt);
+
+//   sf::Vector2f steering;
+
     sf::Vector2f acceleration = steering / mMass;
 
     mVelocity += acceleration * dt.asSeconds();
@@ -103,7 +115,8 @@ void MovingEntity::updateCurrent(sf::Time dt)
 
 void MovingEntity::ensureZeroOverlap()
 {
-    std::vector<MovingEntity*> neighbours = getNeighbours(25.f);
+    std::vector<MovingEntity*> neighbours = getNeighbours(25.f
+                                                          , mType);
     sf::Vector2f pos = getWorldPosition();
     float radius = getRadius();
 
@@ -123,11 +136,19 @@ void MovingEntity::ensureZeroOverlap()
     }
 }
 
-std::vector<MovingEntity*> MovingEntity::getNeighbours(float radius) const
+std::vector<MovingEntity*> MovingEntity::getNeighbours(float radius
+                                                       , int type) const
 {
     return mLevel->getEntitiesInRange(const_cast<MovingEntity*>(this)
-                                   , radius);
+                                      , radius
+                                      , type);
 }
+
+//std::vector<MovingEntity*> MovingEntity::getNeighbourByType(MovingEntity::EntityType type) const
+//{
+//    return mLevel->getEntityTypeInRange(const_cast<MovingEntity*>(this)
+//                                       , type);
+//}
 
 std::vector<LevelBlock*> MovingEntity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const
 {

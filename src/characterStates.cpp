@@ -1,192 +1,237 @@
 #include <cassert>
 #include <iostream>
 
-#include "incl/CharacterStates.hpp"
-#include "incl/SteeringBehaviour.hpp"
-#include "incl/Utility.hpp"
-#include "incl/MovingTarget.hpp"
+#include "App/Utility.hpp"
+#include "Entity/State/AdventurerStates.hpp"
+#include "Entity/SteeringBehaviour.hpp"
+//#include <MovingTarget.hpp"
 //#include "incl/World.hpp"
 
-void LookOutForEnemy::enter(Character* character)
+using namespace CharacterStates;
+
+void LookOut::enter(Character* host)
 {
-    assert(character);
+    assert(host);
 }
 
-void LookOutForEnemy::execute(Character* character)
+void LookOut::execute(Character* host)
 {
-    const MovingTarget* enemy = character->getMovingTarget();
+   // If host is currently relaxed
+   if(host->getCurrentState() == Character::StateType::Relax)
+   {
+      // get all close enemies
+      std::vector<MovingEntity*> enemies = host->getNeighbours(host->getAgroDistance()
+                                                               , MovingEntity::EntityType::Enemy);
 
-    if(enemy)
-    {
-        sf::Vector2f characterPos = character->getWorldPosition();
+      sf::Vector2f hostPos = host->getWorldPosition();
 
-//        std::vector<LevelBlock*> levelExit = character->getLevelExit();
+      MovingEntity* closestEnemy = nullptr;
+      float closestDist = 9999.f;
 
-//        bool closeToExit = false;
-        float expandedRadius = 100 + character->getRadius();
+      // Loop thorugh enemies to find closest
+      for(MovingEntity* e : enemies)
+      {
+         sf::Vector2f enemyPos = e->targetPosition();
+         sf::Vector2f vecToEnemy = hostPos - enemyPos;
 
-        sf::Vector2f targPos;
+         float mag = magVec(vecToEnemy);
 
-//        for(LevelBlock* lvlBlck : levelExit)
-//        {
-//            sf::Vector2f blckPos = lvlBlck->getMiddle();
-//
-//            sf::Vector2f toBlck = blckPos - characterPos;
-//            float magExit = magVec(toBlck);
-//
-//            if(magExit < expandedRadius)
-//            {
-//                closeToExit = true;
-//                targPos = blckPos;
-//                break;
-//            }
-//        }
+         if(mag < closestDist)
+         {
+            closestEnemy = e;
+            closestDist = mag;
+         }
+      }
 
-//        if(closeToExit)
-//        {
-//            character->changeState(Character::States::Exit);
-//            character->setTargetPos(targPos);
-//            return;
-//        }
+      // If enemy target exists
+      if(closestEnemy)
+      {
+         // Change to attack state and set target
+         host->changeState(Character::StateType::Attack);
+         host->setCurrentTarget(closestEnemy);
+      }
+   }
 
-        sf::Vector2f enemyPos = enemy->targetPosition();
-        sf::Vector2f vecToEnemy = characterPos - enemyPos;
-
-        float mag = magVec(vecToEnemy);
-
-//        if(mag <= character->mPanicDistance * 2.f)
-//            character->changeState(Character::States::Evade);
-    }
 }
 
-void LookOutForEnemy::exit(Character* character)
+void LookOut::exit(Character* host)
 {
 
 }
 
-void EvadeEnemy::enter(Character* character)
-{
-    assert(character);
-
-    std::vector<SteeringBehaviour::Behaviour> behaviours;
-
-    if(!character->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Evade))
-        behaviours.push_back(SteeringBehaviour::Behaviour::Evade);
-
-    behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
-
-    character->setSteeringTypes(behaviours);
-    character->setText("!!!!");
-
-    character->setMaxSpeed(character->getMaxRunSpeed());
-}
-
-void EvadeEnemy::execute(Character* character)
-{
-    if(character->getMovingTarget())
-    {
-        sf::Vector2f dogPos = character->getMovingTarget()->targetPosition();
-        sf::Vector2f vecToCharacter = character->getWorldPosition() - dogPos;
-
-        float mag = magVec(vecToCharacter);
-
-        if(mag > character->mPanicDistance)
-        {
-            character->changeState(Character::States::Relax);
-        }
-    }
-}
-
-void EvadeEnemy::exit(Character* character)
-{
-
-}
-
-void RelaxChar::enter(Character* character)
-{
-    assert(character);
-
-    bool isFlocking = false;
-
-    if(character->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Flock))
-        isFlocking = true;
-
-    if(!character->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
-    {
-        std::vector<SteeringBehaviour::Behaviour> behaviours;
-        behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
-
-        if(isFlocking)
-            behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
-
-        character->setSteeringTypes(behaviours);
-    }
-
-    character->setText("Baaah");
-    character->setMaxSpeed(character->getMaxWalkSpeed());
-}
-
-void RelaxChar::execute(Character* character)
-{
-
-}
-
-void RelaxChar::exit(Character* character)
-{
-
-}
-
-void FollowCharacter::enter(Character* character)
-{
-    assert(character);
-
-    if(!character->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
-    {
-        std::vector<SteeringBehaviour::Behaviour> behaviours;
-        behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
-
-        if(isFlocking)
-            behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
-
-        character->setSteeringTypes(behaviours);
-    }
-
-//    character->setText("Baaah");
-    character->setMaxSpeed(character->getMaxWalkSpeed());
-}
-
-void FollowCharacter::execute(Character* character)
-{
-
-}
-
-void FollowCharacter::exit(Character* character)
-{
-
-}
-
-//void Exit::enter(Character* character)
+//void Evade::enter(Character* host)
 //{
-//    assert(character);
+//    assert(host);
 //
-//    if(!character->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
+//    std::vector<SteeringBehaviour::Behaviour> behaviours;
+//
+//    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Evade))
+//        behaviours.push_back(SteeringBehaviour::Behaviour::Evade);
+//
+//    behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
+//
+//    host->setSteeringTypes(behaviours);
+//    host->setText("!!!!");
+//
+//    host->setMaxSpeed(host->getMaxRunSpeed());
+//}
+//
+//void Evade::execute(Character* host)
+//{
+//    if(host->getCurrentTarget())
+//    {
+//        sf::Vector2f dogPos = host->getCurrentTarget()->targetPosition();
+//        sf::Vector2f vecToCharacter = host->getWorldPosition() - dogPos;
+//
+//        float mag = magVec(vecToCharacter);
+//
+//        if(mag > host->getPanicDistance())
+//        {
+//            host->changeState(Character::StateType::Relax);
+//        }
+//    }
+//}
+//
+//void Evade::exit(Character* host)
+//{
+////
+//}
+
+void Relax::enter(Character* host)
+{
+    assert(host);
+
+    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
+    {
+        std::vector<SteeringBehaviour::Behaviour> behaviours;
+        behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
+        host->setSteeringTypes(behaviours);
+    }
+
+    host->setText("");
+    host->setMaxSpeed(host->getMaxWalkSpeed());
+}
+
+void Relax::execute(Character* host)
+{
+
+}
+
+void Relax::exit(Character* host)
+{
+
+}
+
+void Attack::enter(Character* host)
+{
+    assert(host);
+
+    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
+    {
+        std::vector<SteeringBehaviour::Behaviour> behaviours;
+        behaviours.push_back(SteeringBehaviour::Behaviour::Arrive);
+        host->setSteeringTypes(behaviours);
+    }
+
+    host->setText("");
+    host->setMaxSpeed(host->getMaxRunSpeed());
+}
+
+void Attack::execute(Character* host)
+{
+   MovingEntity* curTarg = host->getCurrentTarget();
+
+   if(curTarg) // If there is current target
+   {
+      sf::Vector2f vecToTarget = curTarg->getWorldPosition() - host->getWorldPosition();
+      float mag = magVec(vecToTarget);
+
+      // If target close enough to attack
+      if(mag < host->getAttackDistance())
+      {
+         // If not at stand still change steering behaviour
+         if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Rest))
+         {
+            std::vector<SteeringBehaviour::Behaviour> behaviours;
+            behaviours.push_back(SteeringBehaviour::Behaviour::Rest);
+            host->setSteeringTypes(behaviours);
+         }
+
+         // Attack current target (overloaded function)
+         host->meleeAttack(curTarg);
+      }
+      else // Approach target
+      {
+         if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
+         {
+            std::vector<SteeringBehaviour::Behaviour> behaviours;
+            behaviours.push_back(SteeringBehaviour::Behaviour::Arrive);
+            host->setSteeringTypes(behaviours);
+         }
+      }
+   }
+   else // If no target
+   {
+      host->changeState(Character::StateType::Relax);
+   }
+}
+
+void Attack::exit(Character* host)
+{
+
+}
+
+//void Follow::enter(Character* host)
+//{
+//    assert(host);
+//
+////    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
+////    {
+////        std::vector<SteeringBehaviour::Behaviour> behaviours;
+////        behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
+////
+////        if(isFlocking)
+////            behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
+////
+////        host->setSteeringTypes(behaviours);
+////    }
+////
+//////    host->setText("Baaah");
+////    host->setMaxSpeed(host->getMaxWalkSpeed());
+//}
+//
+//void Follow::execute(Character* host)
+//{
+//
+//}
+//
+//void Follow::exit(Character* host)
+//{
+//
+//}
+
+//void Exit::enter(Character* host)
+//{
+//    assert(host);
+//
+//    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
 //    {
 //        std::vector<SteeringBehaviour::Behaviour> behaviours;
 //        behaviours.push_back(SteeringBehaviour::Behaviour::Arrive);
 //
-//        character->setSteeringTypes(behaviours);
+//        host->setSteeringTypes(behaviours);
 //    }
 //
-//    character->setText("Maaah");
-//    character->setMaxSpeed(character->getMaxRunSpeed());
+//    host->setText("Maaah");
+//    host->setMaxSpeed(host->getMaxRunSpeed());
 //}
 //
-//void Exit::execute(Character* character)
+//void Exit::execute(Character* host)
 //{
 //
 //}
 //
-//void Exit::exit(Character* character)
+//void Exit::exit(Character* host)
 //{
 //
 //}

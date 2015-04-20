@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cassert>
 
-#include "incl/LevelBlock.hpp"
-#include "incl/Utility.hpp"
+#include "App/Utility.hpp"
+#include "World/LevelBlock.hpp"
 
 const sf::Color LevelBlock::mBrown = sf::Color(150, 70, 0, 255);
 const sf::Color LevelBlock::mYellow = sf::Color(200, 200, 0, 255);
@@ -13,14 +13,14 @@ LevelBlock::LevelBlock(const sf::Texture& background
                        , sf::Vector2i index
                        , float size
                        , float rad)
-: mType(LevelBlock::Type::GrassBlock)
-, mBackground(background)
-, mScenery(nullptr)
-, mOriginCircle(5.f)
-, mBlockCorner(pos)
-, mBlockIndex(index)
-, mSize(size)
-, mRadius(rad)
+    : mType(LevelBlock::Type::GrassBlock)
+    , mBackground(background)
+    , mScenery(nullptr)
+    , mOriginCircle(5.f)
+    , mBlockCorner(pos)
+    , mBlockIndex(index)
+    , mSize(size)
+    , mRadius(rad)
 {
     sf::FloatRect bounds = mOriginCircle.getLocalBounds();
     mOriginCircle.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
@@ -33,7 +33,7 @@ LevelBlock::LevelBlock(const sf::Texture& background
 
 LevelBlock::LevelBlock(const sf::Texture& texture
                        , sf::Vector2f pos)
-: mBackground(texture)
+    : mBackground(texture)
 {
     mBackground.setPosition(pos);
     setBackgroundColour();
@@ -81,13 +81,13 @@ void LevelBlock::setBackgroundColour()
     mBackground.setColor(backgroundColour);
 }
 
-LevelBlock* LevelBlock::insertEntity(MovingEntity* entity)
+LevelBlock* LevelBlock::insertEntity(Entity* entity)
 {
     mEntitiesInBlock.push_back(entity);
     return this;
 }
 
-void LevelBlock::deleteEntity(MovingEntity* entity)
+void LevelBlock::deleteEntity(Entity* entity)
 {
     auto it = find (mEntitiesInBlock.begin(), mEntitiesInBlock.end(), entity);
 

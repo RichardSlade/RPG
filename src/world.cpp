@@ -1,22 +1,31 @@
 #include <iostream>
+#include <algorithm>
 
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Window/Event.hpp>
 
-#include "incl/World.hpp"
-#include "incl/Controller.hpp"
-#include "incl/SpriteNode.hpp"
-#include "incl/Utility.hpp"
-#include "incl/LevelBlock.hpp"
-#include "incl/Character.hpp"
-#include "incl/Enemy.hpp"
-#include "incl/Scenery.hpp"
-#include "incl/EnemyStates.hpp"
-#include "incl/CharacterStates.hpp"
-#include "incl/HUD.hpp"
-#include "incl/GameState.hpp"
-#include "incl/SpriteNode.hpp"
+#include "App/GameState.hpp"
+#include "App/Controller.hpp"
+#include "App/HUD.hpp"
+#include "App/Utility.hpp"
+#include "World/World.hpp"
+#include "World/LevelBlock.hpp"
+//#include "Node/SpriteNode.hpp"
+//#include "Node/Scenery.hpp"
+//#include "Node/SpriteNode.hpp"
+#include "Entity/Adventurer.hpp"
+#include "Entity/Goblin.hpp"
+#include "Entity/State/AdventurerStates.hpp"
+#include "Entity/State/GoblinStates.hpp"
+
+//template<typename Target>
+//struct CharacterToTarget
+//{
+//public:
+//  Target*       operator()( Character* value )
+//                { return dynamic_cast<Target*>(value); }
+//};
 
 const sf::Time World::mComboTime = sf::seconds(1.f);
 
@@ -39,59 +48,70 @@ World::World(GameState& gameState
 , mWorldView(mWindow.getDefaultView())
 , mWorldBounds(sf::Vector2i(0, 0), sf::Vector2i(mWorldX, mWorldY))
 , mFocusPoint(mWorldBounds.width / 2.f, mWorldBounds.height / 2.f)
-//, mEnemyHerded(0)
 , mTimeLeft(levelTime)
 , mTimeTaken(sf::Time::Zero)
-
 , mHUD(this
-       , controller.getFont(Controller::Fonts::Sansation)
-       , getViewBounds()
-       , username)
+			 , controller.getFont(Controller::Fonts::Sansation)
+			 , getViewBounds()
+			 , username)
 , mExitPos(mWorldBounds.width / 2.f, 0.f)
-, mLeadCharacter(nullptr)
+, mCurrentCharacter(nullptr)
+, mCurrentCharacterIndex(0)
 {
-    mLevel = std::unique_ptr<Level>(new Level(mLevelBlockSize
-                                            , controller.getParams().ExitWidth
-                                            , mWorldBounds));
+	mLevel = std::unique_ptr<Level>(new Level(mLevelBlockSize
+																	, controller.getParams().ExitWidth
+																	, mWorldBounds));
 
-    initialiseStatesAndStats();
-    buildScene(controller);
+	initialiseStatesAndStats();
+	buildScene(controller);
 }
 
 void World::initialiseStatesAndStats()
 {
-    // Initialise enemy states
-    mEnemyStates.push_back(std::unique_ptr<LookOutForCharacter>(new LookOutForCharacter));
-    mEnemyStates.push_back(std::unique_ptr<EvadeCharacter>(new EvadeCharacter));
-    mEnemyStates.push_back(std::unique_ptr<RelaxEnemy>(new RelaxEnemy));
-//    mEnemyStates.push_back(std::unique_ptr<Exit>(new Exit));
+//    std::vector<MovingEntity*> chars = dynamic_cast<std::vector<MovingEntity*>&>(mCharacters);
+//    std::vector<MovingEntity*> chars = mCharacters;
 
-    mCharacterStates.push_back(std::unique_ptr<LookOutForEnemy>(new LookOutForEnemy));
-    mCharacterStates.push_back(std::unique_ptr<EvadeEnemy>(new EvadeEnemy));
-    mCharacterStates.push_back(std::unique_ptr<RelaxChar>(new RelaxChar));
+//  std::vector<MovingEntity*> chars;
+
+//  std::transform(mCharacters.begin()
+//               , mCharacters.end()
+//               , chars.begin()
+//               , CharacterToTarget<MovingEntity>());
+
+   // Initialise enemy states
+   mGoblinStates.push_back(std::unique_ptr<GoblinStates::LookOut>(new GoblinStates::LookOut));
+   mGoblinStates.push_back(std::unique_ptr<GoblinStates::Relax>(new GoblinStates::Relax));
+   mGoblinStates.push_back(std::unique_ptr<GoblinStates::Evade>(new GoblinStates::Evade));
+   mGoblinStates.push_back(std::unique_ptr<GoblinStates::Attack>(new GoblinStates::Attack));
+   //    mEnemyStates.push_back(std::unique_ptr<Exit>(new Exit));
+
+   mCharacterStates.push_back(std::unique_ptr<CharacterStates::LookOut>(new CharacterStates::LookOut));
+   mCharacterStates.push_back(std::unique_ptr<CharacterStates::Relax>(new CharacterStates::Relax));
+   mCharacterStates.push_back(std::unique_ptr<CharacterStates::Attack>(new CharacterStates::Attack));
+
 //    mCharacterStates.push_back(std::unique_ptr<Exit>(new Exit));
 
-    mEntityStats.push_back(EntityStats("data/entityStats/enemyStats.dat"));
+    mEntityStats.push_back(EntityStats("data/entityStats/goblinStats.dat"));
     mEntityStats.push_back(EntityStats("data/entityStats/characterStats.dat"));
 }
 
 void World::buildScene(const Controller& controller)
 {
     // Initialize the different scene graph layers
-	for(std::size_t i = 0; i < SceneNode::Layers::Num; i++)
-	{
-		SceneNode::upScNode layer(new SceneNode());
-		mSceneLayers.at(i) = layer.get();
+    for(std::size_t i = 0; i < SceneNode::Layers::Num; i++)
+    {
+        SceneNode::upScNode layer(new SceneNode());
+        mSceneLayers.at(i) = layer.get();
 
-		mSceneGraph.addChild(std::move(layer));
-	}
+        mSceneGraph.addChild(std::move(layer));
+    }
 
     sf::Vector2f bckgrndSpritePos(mWorldBounds.width / 2.f
                                   , mWorldBounds.height / 2.f);
 
     std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(controller.getTexture(Controller::Textures::GameBackground)
-                                                                 , bckgrndSpritePos
-                                                                 , true));
+            , bckgrndSpritePos
+            , true));
 
     mBackground = backgroundSprite.get();
     mSceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(backgroundSprite));
@@ -109,15 +129,16 @@ void World::generateAgents(const Controller& controller)
         float inc = i * 40.f;
 
         std::unique_ptr<Character> characterNode(new Character(mLevel.get()
-                                             , controller.getTexture(Controller::Textures::Character)
-                                             , controller.getFont(Controller::Fonts::Sansation)
-                                             , sf::Vector2f((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc)
-                                             , mEntityStats.at(StatsType::CharacterStats)
-                                             , controller.getParams()
-                                             , mCharacterStates.at(Character::States::LookOut).get()
-                                             , mCharacterStates.at(Character::States::Relax).get()
-                                             , mCharacterStates
-                                             , rangedClamped(0.75f, 1.25f)));
+                , controller.getTexture(Controller::Textures::Character)
+                , controller.getFont(Controller::Fonts::Sansation)
+                , sf::Vector2f((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc)
+                , mEntityStats.at(StatsType::CharacterStats)
+                , controller.getParams()
+                , mCharacterStates.at(Character::StateType::LookOut).get()
+                , mCharacterStates.at(Character::StateType::Relax).get()
+                , mCharacterStates
+                , Character::StateType::Relax
+                , rangedClamped(0.75f, 1.25f)));
 
         // Save pointer to character for enemy initialisation
         Character* characterPtr = characterNode.get();
@@ -126,7 +147,7 @@ void World::generateAgents(const Controller& controller)
         mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(characterNode));
     }
 
-    mLeadCharacter = mCharacters.at(0);
+    mCurrentCharacter = mCharacters.at(mCurrentCharacterIndex);
 
     // Initialise enemy and add to scene graph
 //    for(int i = 0 ; i < mNumEnemy; i++)
@@ -158,18 +179,19 @@ void World::generateAgents(const Controller& controller)
 
         pos = levelBlock->getMiddle();
 
-        std::unique_ptr<Enemy> enemyNode(new Enemy(mLevel.get()
-                                                    , controller.getTexture(Controller::Textures::Enemy)
-                                                    , controller.getFont(Controller::Fonts::Sansation)
-                                                    , pos
-                                                    , mEntityStats.at(StatsType::EnemyStats)
-                                                    , controller.getParams()
-                                                    , mEnemyStates.at(Enemy::States::LookOut).get()
-                                                    , mEnemyStates.at(Enemy::States::Relax).get()
-                                                    , mEnemyStates
-                                                    , rangedClamped(0.75f, 1.25f)));
+        std::unique_ptr<Goblin> enemyNode(new Goblin(mLevel.get()
+                                         , controller.getTexture(Controller::Textures::Enemy)
+                                         , controller.getFont(Controller::Fonts::Sansation)
+                                         , pos
+                                         , mEntityStats.at(StatsType::EnemyStats)
+                                         , controller.getParams()
+                                         , mGoblinStates.at(GoblinStates::StateType::LookOut).get()
+                                         , mGoblinStates.at(GoblinStates::StateType::Relax).get()
+                                         , mGoblinStates
+                                         , Enemy::StateType::Relax
+                                         , rangedClamped(0.75f, 1.25f)));
 
-        enemyNode->setMovingTarget(mCharacters.at(0));
+//        enemyNode->setMovingTarget(mCharacters.at(0));
         mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(enemyNode));
     }
 }
@@ -177,25 +199,25 @@ void World::generateAgents(const Controller& controller)
 void World::handleRealTimeInput()
 {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)
-       || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
         mFocusPoint.x -= mScrollSpeed;
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)
-       || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
         mFocusPoint.x += mScrollSpeed;
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)
-       || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
         mFocusPoint.y -= mScrollSpeed;
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)
-       || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+            || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         mFocusPoint.y += mScrollSpeed;
     }
@@ -243,6 +265,8 @@ void World::handleInput()
 {
     sf::Event event;
 
+    bool characterChange = false;
+
     while(mWindow.pollEvent(event))
     {
         if(event.type == sf::Event::Closed)
@@ -251,7 +275,11 @@ void World::handleInput()
         {
             if(event.key.code == sf::Keyboard::Escape)
                 mWindow.close();
-//                mGameState.pause();
+            else if(event.key.code == sf::Keyboard::Tab)
+            {
+               changeCharacter();
+               characterChange = true;
+            }
         }
         else if(event.type == sf::Event::MouseButtonPressed)
         {
@@ -273,19 +301,38 @@ void World::handleInput()
 
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
                 {
-                    if(mCharacters.at(0))
-                        mCharacters.at(0)->addToPath(mousePosF);
+                  mCurrentCharacter->addToPath(mousePosF);
                 }
                 else
                 {
-                    if(mCharacters.at(0))
-                        mCharacters.at(0)->startNewPath(mousePosF);
+                  mCurrentCharacter->startNewPath(mousePosF);
                 }
             }
         }
     }
 
     handleRealTimeInput();
+
+    if(characterChange)
+      mFocusPoint = mCurrentCharacter->getWorldPosition();
+}
+
+void World::changeCharacter()
+{
+   Character* curChar = nullptr;
+
+   do
+   {
+      mCurrentCharacterIndex ++;
+
+      if(mCurrentCharacterIndex > mCharacters.size() - 1)
+         mCurrentCharacterIndex = 0;
+
+      curChar = mCharacters.at(mCurrentCharacterIndex);
+
+   } while(!curChar);
+
+   mCurrentCharacter = curChar;
 }
 
 void World::display()
@@ -303,16 +350,16 @@ void World::display()
 
 const sf::FloatRect World::getViewBounds() const
 {
-	return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
+    return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
 }
 
 std::vector<LevelBlock*> World::getBlockTypeInRange(const MovingEntity* entity
-                                                    , LevelBlock::Type blockType
-                                                    , float radius = 0.f) const
+        , LevelBlock::Type blockType
+        , float radius = 0.f) const
 {
     return mLevel->getBlockTypeInRange(entity
-                                           , radius
-                                           , blockType);
+                                       , radius
+                                       , blockType);
 }
 
 LevelBlock* World::insertEntityIntoLevel(MovingEntity* entity) const
@@ -320,10 +367,10 @@ LevelBlock* World::insertEntityIntoLevel(MovingEntity* entity) const
     return mLevel->insertEntityIntoLevel(entity);
 }
 
-std::vector<MovingEntity*> World::getEntitiesInRange(const MovingEntity* entity
-                                                     , float neighbourhoodRadius) const
-{
-    return mLevel->getEntitiesInRange(entity
-                                     , neighbourhoodRadius);
-}
+//std::vector<MovingEntity*> World::getEntitiesInRange(const MovingEntity* entity
+//        , float neighbourhoodRadius) const
+//{
+//    return mLevel->getEntitiesInRange(entity
+//                                      , neighbourhoodRadius);
+//}
 
