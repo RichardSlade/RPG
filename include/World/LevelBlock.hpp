@@ -10,6 +10,7 @@
 #include "World/Scenery.hpp"
 
 class Entity;
+//class DynamicEntity;
 
 class LevelBlock : public SceneNode
 {
@@ -34,7 +35,9 @@ private:
    Type                       mType;
    sf::Sprite                 mBackground;
    Scenery::SceneryPtr        mScenery;
-   std::list<Entity*>         mEntitiesInBlock;
+
+   std::list<Entity*>         mEntities;
+//   std::list<DynamicEntity*>  mDynamicEntities;
 
    sf::CircleShape            mOriginCircle;
 
@@ -63,7 +66,8 @@ public:
    // Getters
    Scenery*                   getScenery() {return mScenery.get();}
 
-   std::list<Entity*>         getEntities(){return mEntitiesInBlock;}
+   std::list<Entity*>         getEntities(){return mEntities;}
+//   std::list<Entity*>  getDynamicEntities(){return mDynamicEntities;}
 
    float                      getRadius() const {return mRadius;}
 
@@ -80,6 +84,9 @@ public:
    // Setters
    LevelBlock*                insertEntity(Entity*);
    void                       deleteEntity(Entity*);
+
+//   LevelBlock*                insertEntity(DynamicEntity*);
+//   void                       deleteEntity(DynamicEntity*);
 
    void                       addScenery(Scenery::SceneryPtr scenery) {mScenery = std::move(scenery);}
 

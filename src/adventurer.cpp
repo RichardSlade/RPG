@@ -1,5 +1,5 @@
 /*
-*   Character.cpp
+*   Adventurer.cpp
 *
 *   @Author Richard Slade
 *   @Date 12/2014
@@ -8,98 +8,58 @@
 #include "World/World.hpp"
 #include "Entity/Adventurer.hpp"
 
-Character::Character(Level* level
+Adventurer::Adventurer(Adventurer::Type adventurerType
                      , const sf::Texture& texture
                      , const sf::Font& font
                      , sf::Vector2f startPos
+                     , float scale
                      , EntityStats stats
                      , const Params& params
-                     , State<Character>* globalState
-                     , State<Character>* initState
+                     , Level* level
+                     , State<Adventurer>* globalState
+                     , State<Adventurer>* initState
                      , StateContainer& states
-                     , Character::StateType currentStateType
-                     , float scale)
-: MovingEntity(level
-               , texture
-               , font
-               , startPos
-               , stats
-               , params
-               , MovingEntity::EntityType::Character
-               , scale)
-,MeleeCombatant(dynamic_cast<MovingEntity*>(this)
-               , sf::seconds(stats.attackDelay))
+                     , Adventurer::StateType currentStateType)
+: Entity(texture
+         , font
+         , startPos
+         , scale
+         , stats
+         , params
+         , Entity::EntityType::Adventurer
+         , level)
+, Intelligent(stats)
+, Killable(stats.health)
+, MeleeFighter(sf::seconds(stats.attackDelay)
+                , stats.meleeDamage
+                , stats.attackDist)
+, mAdventurerType(adventurerType)
 , mStates(states)
 , mStateMachine(this
                , globalState
                , initState
                , currentStateType)
 {
-    setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
-    mText.setString("");
+   setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
+//   mText.setPosition(-10.f, -40.f);
 }
 
 /*
 *   Main update for sheep dog
 */
-void Character::updateCurrent(sf::Time dt)
+void Adventurer::updateCurrent(sf::Time dt)
 {
-//    mStateMachine.update();
-
-//    MovingEntity::updateCurrent(dt);
-    sf::Color currentTextColor = mText.getColor();
-
-    currentTextColor.a -= 1;
-
-    mText.setColor(currentTextColor);
-
-    sf::Vector2f steering = mSteering.calculate(dt);
-
-    mVelocity += steering;
-
-    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
-    {
-        int sign = signVec(mHeading, mVelocity);
-
-        float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
-        angle *= sign;
-
-        clampRotation(angle
-                      , -mMaxTurnRate
-                      , mMaxTurnRate);
-
-        if(angle > MINFLOAT || angle < -MINFLOAT)
-            rotate(angle * (180.f / SteeringBehaviour::mPI));
-    }
-
-    float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
-    mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
-
-    move(mVelocity);
-
-//    adjustPosition();
-
-    sf::FloatRect bounds = mText.getLocalBounds();
-    mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-
-    sf::Vector2f textPos = getWorldPosition();
-    textPos.y -= 20.f;
-    mText.setPosition(textPos);
-
-    mCurrentBlock->deleteEntity(this);
-    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
-
-    MeleeCombatant::update(dt);
+   mStateMachine.update();
+   Entity::updateCurrent(dt);
 }
 
 /*
 *   Draw function used by SFML to render to sf::RenderTarget
 */
-void Character::drawCurrent(sf::RenderTarget& target
+void Adventurer::drawCurrent(sf::RenderTarget& target
                             , sf::RenderStates states) const
 {
-    target.draw(mSprite, states);
-    target.draw(mText);
+   Entity::drawCurrent(target, states);
 
     std::vector<sf::CircleShape> wypnts = mSteering.getPathToDraw();
 

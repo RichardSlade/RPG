@@ -1,7 +1,7 @@
 #ifndef ADVENTURERSTATES_HPP
 #define ADVENTURERSTATES_HPP
 
-#include <Entity/State.hpp>
+#include <Entity/State/State.hpp>
 #include <Entity/Adventurer.hpp>
 
 namespace AdventurerStates

@@ -6,14 +6,14 @@
 struct Intelligent
 {
 public:
-   const float             mPanicDistance;
-   const float             mAgroDistance;
-   const float             mAttackDistance;
+   const float             panicDistance;
+   const float             agroDistance;
+   const float             attackDistance;
 
                            Intelligent(EntityStats stats)
-                           : mPanicDistance(stats.panicDist)
-                           , mAgroDistance(stats.agroDist)
-                           , mAttackDistance(stats.attackDist)
+                           : panicDistance(stats.panicDist)
+                           , agroDistance(stats.agroDist)
+                           , attackDistance(stats.attackDist)
                            {};
 
 };

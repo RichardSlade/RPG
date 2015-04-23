@@ -12,15 +12,21 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Time.hpp>
 
-#include "Entity/MovingEntity.hpp"
+//#include "Entity/Enemy.hpp"
+#include "Entity/Entity.hpp"
+//#include "Entity/Agent.hpp"
+#include "Entity/Attribute/Intelligent.hpp"
+#include "Entity/Attribute/Killable.hpp"
 #include "Entity/Attribute/MeleeFighter.hpp"
-#include "Entity/Path.hpp"
+//#include "Entity/Path.hpp"
 #include "Entity/State/StateMachine.hpp"
 
-class Adventurer : public MovingEntity, public MeleeFighter
+//class Enemy;
+
+class Adventurer : public Entity, public Intelligent, public Killable, public MeleeFighter
 {
 public:
-   typedef std::vector<std::unique_ptr<State<Character>>> StateContainer;
+   typedef std::vector<std::unique_ptr<State<Adventurer>>> StateContainer;
 
    enum StateType
    {
@@ -33,9 +39,19 @@ public:
      NumStates
    };
 
+   enum Type
+   {
+      Barbarian,
+      NumAdventurerTypes
+   };
+
 protected:
+   Adventurer::Type       mAdventurerType;
+
    StateContainer&                 mStates;
-   StateMachine<Character>         mStateMachine;
+   StateMachine<Adventurer>         mStateMachine;
+
+//   Enemy                           mCurrentTarget;
 
 //   MeleeController                 mMelee;
 
@@ -44,34 +60,54 @@ protected:
                                              , sf::RenderStates) const;
 
 public:
-                                    Adventurer(Level*
-                                             , const sf::Texture&
-                                             , const sf::Font&
-                                             , sf::Vector2f
-                                             , EntityStats
-                                             , const Params&
-                                             , State<Character>*
-                                             , State<Character>*
-                                             , StateContainer&
-                                             , Character::StateType
-                                             , float = 1.f);
+//                                    Adventurer(Level*
+//                                             , const sf::Texture&
+//                                             , const sf::Font&
+//                                             , sf::Vector2f
+//                                             , EntityStats
+//                                             , const Params&
+//                                             , State<Adventurer>*
+//                                             , State<Adventurer>*
+//                                             , StateContainer&
+//                                             , Adventurer::StateType
+//                                             , float = 1.f);
+
+                                    Adventurer(Adventurer::Type adventurerType
+                                             , const sf::Texture& texture
+                                             , const sf::Font& font
+                                             , sf::Vector2f startPos
+                                             , float scale
+                                             , EntityStats stats
+                                             , const Params& params
+                                             , Level* level
+                                             , State<Adventurer>* globalState
+                                             , State<Adventurer>* initState
+                                             , StateContainer& states
+                                             , Adventurer::StateType currentStateType);
 
    virtual                          ~Adventurer() {};
+
+      void                    changeState(Adventurer::StateType newState) { mStateMachine.changeState(mStates.at(newState).get(), newState);}
+
 
 //   void                             meleeAttack(MovingEntity*) {mMelee.attack(target)};
 
    // Getters
+   int                              getAdventurerType() {return mAdventurerType;}
+
    int                              getCurrentState() {return mStateMachine.getCurrentStateType(); }
+
+//   Enemy*                           getCurrentTarget() {return mCurrentTarget;}
 
    // Setters
    void                             addToPath(sf::Vector2f pos) {mSteering.addToPath(pos);}
 
    void                             startNewPath(sf::Vector2f pos) {mSteering.startNewPath(pos);}
 
-   void                             changeState(Character::StateType newState)
-                                    {
-                                       mStateMachine.changeState(mStates.at(newState).get(), newState);
-                                    }
+//   void                             changeState(Adventurer::StateType newState)
+//                                    {
+//                                       mStateMachine.changeState(mStates.at(newState).get(), newState);
+//                                    }
 };
 
 #endif // ADVENTURER_HPP

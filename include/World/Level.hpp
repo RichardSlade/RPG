@@ -43,9 +43,9 @@ public:
                                                           , float
                                                           , LevelBlock::Type) const;
 
-	std::vector<MovingEntity*>          getEntitiesInRange(const Entity*
-                                                         , float
-                                                         , int) const;
+	std::vector<Entity*>                getEntitiesInRange(const Entity*
+                                                               , float
+                                                               , int) const;
 
    LevelBlock*                         getBlock(sf::Vector2i index) const {return mLevelArray.at(index.y).at(index.x);}
 
@@ -56,7 +56,8 @@ public:
     // Setters
    void                                generateLevel(std::array<SceneNode*, SceneNode::Layers::Num>, const Controller&);
 
-   LevelBlock*                         insertEntityIntoLevel(MovingEntity*) const;
+   LevelBlock*                         insertEntityIntoLevel(Entity*) const;
+//   LevelBlock*                         insertEntityIntoLevel(Entity*) const;
 
    void                                resetColours();
 };

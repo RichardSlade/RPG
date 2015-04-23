@@ -148,8 +148,8 @@ std::vector<LevelBlock*> Level::getInRangeBlocks(const Entity* entity
 }
 
 std::vector<LevelBlock*> Level::getBlockTypeInRange(const Entity* entity
-        , float radius
-        , LevelBlock::Type blockType) const
+                                                   , float radius
+                                                   , LevelBlock::Type blockType) const
 {
     std::vector<LevelBlock*> inRangeBlocks = getInRangeBlocks(entity
             , radius);
@@ -397,6 +397,12 @@ LevelBlock* Level::insertEntityIntoLevel(Entity* entity) const
     sf::Vector2i index = worldCordsToIndex(entity->getWorldPosition());
     return mLevelArray.at(index.y).at(index.x)->insertEntity(entity);
 }
+
+//LevelBlock* Level::insertEntityIntoLevel(Entity* entity) const
+//{
+//    sf::Vector2i index = worldCordsToIndex(entity->getWorldPosition());
+//    return mLevelArray.at(index.y).at(index.x)->insertEntity(entity);
+//}
 
 void Level::resetColours()
 {

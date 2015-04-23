@@ -30,7 +30,7 @@ protected:
 
     bool                                    mToRemove;
 
-    virtual void                            updateCurrent(sf::Time) {};
+    virtual void                            updateCurrent(sf::Time){};
     virtual void                            drawCurrent(sf::RenderTarget&, sf::RenderStates) const {};
     virtual void                            draw(sf::RenderTarget&, sf::RenderStates) const;
 

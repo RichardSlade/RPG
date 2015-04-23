@@ -12,6 +12,7 @@
 
 #include "World/Level.hpp"
 #include "Node/SceneNode.hpp"
+//#include "Entity/Goblin.hpp"
 #include "Entity/Enemy.hpp"
 #include "Entity/Adventurer.hpp"
 #include "Entity/State/State.hpp"
@@ -39,8 +40,8 @@ public:
 
     enum StatsType
     {
-        GoblinStats,
-        CharacterStats,
+        EnemyStats,
+        AdventurerStats,
         StatsTypeNum
     };
 
@@ -71,14 +72,14 @@ private:
 
    //    std::vector<std::unique_ptr<State<Dog>>>    mDogStates;
    //    std::vector<std::unique_ptr<State<Enemy>>>  mEnemyStates;
-   Character::StateContainer                    mCharacterStates;
-   Goblin::StateContainer                       mGoblinStates;
+   Adventurer::StateContainer                    mAdventurerStates;
+   Enemy::StateContainer                       mEnemyStates;
 
    SpriteNode*                                  mBackground;
    sf::Vector2f                                 mExitPos;
-   std::vector<Character*>                      mCharacters;
-   Character*                                   mCurrentCharacter;
-   unsigned int                                mCurrentCharacterIndex;
+   std::vector<Adventurer*>                      mAdventurers;
+   Adventurer*                                   mCurrentAdventurer;
+   unsigned int                                mCurrentAdventurerIndex;
 
 
    void                                        initialiseStatesAndStats();
@@ -86,6 +87,7 @@ private:
    void                                        generateAgents(const Controller&);
    void                                        handleRealTimeInput();
    void                                        adjustView();
+      void                                        changeAdventurer();
 
 public:
                                              World(GameState&
@@ -98,7 +100,7 @@ public:
 
     void                                        update(sf::Time);
     void                                        handleInput();
-    void                                        changeCharacter();
+
     void                                        display();
 
     // Getters

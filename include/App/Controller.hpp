@@ -34,7 +34,7 @@ public:
 
     enum Textures
     {
-        Character,
+        Adventurer,
         Enemy,
         Grass,
         Wall,

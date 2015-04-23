@@ -1,24 +1,30 @@
-#ifndef MELEE_HPP
-#define MELEE_HPP
+#ifndef MELEEFIGHTER_HPP
+#define MELEEFIGHTER_HPP
 
 #include <SFML/System/Time.hpp>
 
-class MovingEntity;
+//#include "Entity/Attribute/Killable.hpp"
 
-class Melee
+//class MovingEntity;
+class Killable;
+
+class MeleeFighter
 {
-protected:
-//   MovingEntity*     mHost;
 
+//   MovingEntity*     mHost;
+public:
    const sf::Time    mAttackDelay;
    const float       mBaseDmg;
+   const float       mAttackDistance;
 
+protected:
    sf::Time          mAttackCountdown;
    bool              mCanAttack;
 
 public:
-                     Melee(sf::Time delay
-                           , float baseDmg);
+                     MeleeFighter(sf::Time delay
+                                 , float baseDmg
+                                 , float attkDist);
 
    void              update(sf::Time dt);
    void              meleeAttack(Killable* target);
@@ -28,4 +34,4 @@ public:
 
 };
 
-#endif // MELEECOMBATANT_HPP
+#endif // MELEEFIGHTER_HPP

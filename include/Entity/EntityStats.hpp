@@ -11,6 +11,7 @@
 *   @Date 12/2014
 */
 
+#include <stdexcept>
 #include <fstream>
 #include <string>
 
@@ -23,7 +24,7 @@ public:
    float       maxForce;
    float       maxTurnRate;
    float       health;
-   float       damage;
+   float       meleeDamage;
    float       panicDist;
    float       agroDist;
    float       attackDist;
@@ -50,7 +51,7 @@ public:
         in >> stats.health;
 
         in.ignore(255, ' ');
-        in >> stats.damage;
+        in >> stats.meleeDamage;
 
         in.ignore(255, ' ');
         in >> stats.walkMaxSpeed;

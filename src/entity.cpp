@@ -1,30 +1,50 @@
 #include "World/Level.hpp"
 #include "Entity/Entity.hpp"
 
-Entity::Entity(EntityType type
-             , Level* level
-             , const sf::Texture& texture
-             , const sf::Font& font
-             , float scale);
-: mType(type)
-, mCurrentBlock(nullptr)
-, mSprite(texture)
-, mCurrentTarget(nullptr)
-, mText("", font, 12)
+Entity::Entity(const sf::Texture& texture
+       , const sf::Font& font
+       , sf::Vector2f startPos
+       , float scale
+       , const EntityStats& stats
+       , const Params& params
+       , EntityType type
+       , Level* level)
+: Dynamic(texture
+      , startPos
+      , scale
+      , stats
+      , params)
+, mEntityType(type)
 , mLevel(level)
+, mCurrentBlock(nullptr)
+, mText("", font)
+, mSteering(this
+         , params)
 {
-    mSprite.scale(scale, scale);
-    sf::FloatRect bounds = mSprite.getLocalBounds();
-    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-    mRadius = std::max(bounds.width, bounds.height);
+   mText.setPosition(-10.f, -40.f);
 
-    setPosition(startPos);
+   insertIntoLevel();
+}
 
-    float theta = randomClamped() * (2.f * SteeringBehaviour::mPI);
-    rotate(theta * (180 / SteeringBehaviour::mPI));
-    mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
+void Entity::updateCurrent(sf::Time dt)
+{
+   Dynamic::move(mSteering.calculate(dt));
 
-    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+   insertIntoLevel();
+}
+
+void Entity::drawCurrent(sf::RenderTarget& target
+                        , sf::RenderStates states) const
+{
+   SpriteNode::drawCurrent(target
+                           , states);
+
+   target.draw(mText);
+}
+
+void Entity::insertIntoLevel()
+{
+   mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 }
 
 std::vector<Entity*> Entity::getNeighbours(float radius
@@ -35,17 +55,12 @@ std::vector<Entity*> Entity::getNeighbours(float radius
                                       , type);
 }
 
-std::vector<LevelBlock*> MovingEntity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const
+std::vector<LevelBlock*> Entity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const
 {
-    return mLevel->getBlockTypeInRange(const_cast<MovingEntity*>(this), radius, blockType);
+    return mLevel->getBlockTypeInRange(const_cast<Entity*>(this), radius, blockType);
 }
 
-LevelBlock* Entity::getLevelBlock(sf::Vector2i index)
-{
-    return mLevel->getBlock(index);
-}
-
-//std::vector<LevelBlock*> Entity::getLevelExit()
+//LevelBlock* Entity::getLevelBlock(sf::Vector2i index)
 //{
-//    return mLevel->getLevelExit();
+//    return mLevel->getBlock(index);
 //}

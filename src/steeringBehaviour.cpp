@@ -1,47 +1,48 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include <cassert>
 
 #include "App/Utility.hpp"
 #include "App/Params.hpp"
 #include "World/Wall.hpp"
 #include "World/LevelBlock.hpp"
 #include "Entity/SteeringBehaviour.hpp"
-#include "Entity/MovingEntity.hpp"
+#include "Entity/Entity.hpp"
 #include "Entity/Enemy.hpp"
 
 
 const float SteeringBehaviour::mPI = 3.14159265358979;
 
-SteeringBehaviour::SteeringBehaviour(MovingEntity* host
+SteeringBehaviour::SteeringBehaviour(Entity* host
                                      , const Params& params)
-    : mWanderRadius(params.WanderRadius)
-    , mWanderDistance(params.WanderDistance)
-    , mWanderJitter(params.WanderJitter)
-    , mMinViewBoxLength(params.MinViewBoxLength)
-    , mInteractionRadius(params.InteractionRadius)
-    , mFeelerLength(params.FeelerLength)
-    , mMinArriveDist(params.MinArriveDist)
-    , mObstacleAvoidanceMultiplier(2.f)
-    , mWallAvoidanceMultiplier(params.WallAvoidanceMultiplier)
-    , mArriveMultiplier(params.ArriveMultiplier)
-    , mEvadeMultiplier(params.EvadeMultiplier)
-    , mWanderMultiplier(params.WanderMultiplier)
-    , mSeperationMultiplier(params.SeperationMultiplier)
-    , mAlignmentMultiplier(params.AlignmentMultiplier)
-    , mCohesionMultiplier(params.CohesionMultiplier)
-    , mFlockingMultiplier(params.FlockingMultiplier)
-    , mSeperationRadius(params.SeperationRadius)
-    , mAlignRadius(params.AlignRadius)
-    , mCohesionRadius(params.CohesionRadius)
-    , mHost(host)
-    , mTheta(mHost->getRotation() * (mPI / 180.f))
-    , mWanderTarget(std::sin(mTheta) * mWanderRadius, -std::cos(mTheta) * mWanderRadius)
+: mWanderRadius(params.WanderRadius)
+, mWanderDistance(params.WanderDistance)
+, mWanderJitter(params.WanderJitter)
+, mMinViewBoxLength(params.MinViewBoxLength)
+, mInteractionRadius(params.InteractionRadius)
+, mFeelerLength(params.FeelerLength)
+, mMinArriveDist(params.MinArriveDist)
+, mObstacleAvoidanceMultiplier(2.f)
+, mWallAvoidanceMultiplier(params.WallAvoidanceMultiplier)
+, mArriveMultiplier(params.ArriveMultiplier)
+, mEvadeMultiplier(params.EvadeMultiplier)
+, mWanderMultiplier(params.WanderMultiplier)
+, mSeperationMultiplier(params.SeperationMultiplier)
+, mAlignmentMultiplier(params.AlignmentMultiplier)
+, mCohesionMultiplier(params.CohesionMultiplier)
+, mFlockingMultiplier(params.FlockingMultiplier)
+, mSeperationRadius(params.SeperationRadius)
+, mAlignRadius(params.AlignRadius)
+, mCohesionRadius(params.CohesionRadius)
+, mHost(host)
+, mTheta(mHost->getRotation() * (mPI / 180.f))
+, mWanderTarget(std::sin(mTheta) * mWanderRadius, -std::cos(mTheta) * mWanderRadius)
 {
     for(bool& b : mBehaviourFlags)
         b = false;
 
-    if(mHost->getEntityType() != MovingEntity::EntityType::Character)
+    if(mHost->getEntityType() != Entity::EntityType::Adventurer)
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
@@ -126,23 +127,31 @@ sf::Vector2f SteeringBehaviour::seek(sf::Vector2f target)
 
 sf::Vector2f SteeringBehaviour::evade()
 {
-    const MovingEntity* pursuer = mHost->getCurrentTarget();
+   //    const Entity* pursuer = mHost->getCurrentTarget();
+   const Entity* pursuer = nullptr;
 
 //    const Enemy* host = dynamic_cast<const Enemy*>(mHost);
 
 //    if(!mHost)
 //        throw std::runtime_error("Error:\n SteeringBehaviour::evade(): Casting Host* to Enemy*");
 
-    sf::Vector2f toPursuer(pursuer->targetPosition() - mHost->getWorldPosition());
+   if(pursuer)
+   {
+      sf::Vector2f toPursuer(pursuer->getWorldPosition() - mHost->getWorldPosition());
 
-    float magPursuer = magVec(toPursuer);
+      float magPursuer = magVec(toPursuer);
 
-    if((magPursuer * magPursuer) > mHost->getPanicDistance() * mHost->getPanicDistance())
-        return sf::Vector2f();
+//      if((magPursuer * magPursuer) > mHost->panicDistance * mHost->panicDistance)
+//        return sf::Vector2f();
 
-    float lookAheadTime = magPursuer / (mHost->getMaxSpeed() + pursuer->targetSpeed());
+      float lookAheadTime = magPursuer / (mHost->getMaxSpeed() + pursuer->getSpeed());
 
-    return flee(pursuer->targetPosition() + pursuer->targetVelocity() * lookAheadTime);
+      return flee(pursuer->getWorldPosition() + pursuer->getVelocity() * lookAheadTime);
+   }
+   else
+   {
+      return sf::Vector2f();
+   }
 }
 
 sf::Vector2f SteeringBehaviour::flee(sf::Vector2f target)
@@ -213,7 +222,7 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance()
                       * mMinViewBoxLength;
 
     std::vector<LevelBlock*> nearObstacles = mHost->getBlockTypeInRange(LevelBlock::Type::ObstacleBlock
-            , mHost->getRadius());
+                                                                        , mHost->getRadius());
 
     LevelBlock* closestObstacle = nullptr;
 
@@ -277,7 +286,8 @@ sf::Vector2f SteeringBehaviour::wallAvoidance()
 
     sf::Vector2f steeringForce, point, closestPoint, closestNorm;
 
-    std::vector<LevelBlock*> wallBlocks = mHost->getBlockTypeInRange(LevelBlock::Type::WallBlock, mFeelerLength);
+    std::vector<LevelBlock*> wallBlocks = mHost->getBlockTypeInRange(LevelBlock::Type::WallBlock
+                                                                     , mFeelerLength);
 
     for(size_t flr = 0; flr < Feelers::NumFlr; flr++)
     {
@@ -326,10 +336,10 @@ sf::Vector2f SteeringBehaviour::seperation()
 {
     sf::Vector2f steeringForce;
 
-    std::vector<MovingEntity*> neighbours = mHost->getNeighbours(mSeperationRadius
-                                                                 , MovingEntity::EntityType::All);
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius
+                                                                 , mHost->getEntityType());
 
-    for(MovingEntity* e : neighbours)
+    for(Entity* e : neighbours)
     {
         sf::Vector2f toNeighbour = mHost->getWorldPosition() - e->getWorldPosition();
 
@@ -344,10 +354,10 @@ sf::Vector2f SteeringBehaviour::alignment()
     sf::Vector2f averageHeading;
     int neighbourCount = 0;
 
-    std::vector<MovingEntity*> neighbours = mHost->getNeighbours(mAlignRadius
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mAlignRadius
                                                                  , mHost->getEntityType());
 
-    for(MovingEntity* e : neighbours)
+    for(Entity* e : neighbours)
     {
         if(e != mHost)
         {
@@ -370,10 +380,10 @@ sf::Vector2f SteeringBehaviour::cohesion()
     sf::Vector2f steeringForce, centerOfMass;
     int neighbourCount = 0;
 
-    std::vector<MovingEntity*> neighbours = mHost->getNeighbours(mCohesionRadius
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mCohesionRadius
                                                                  , mHost->getEntityType());
 
-    for(MovingEntity* e : neighbours)
+    for(Entity* e : neighbours)
     {
         if(e != mHost
                 && e)
@@ -432,7 +442,8 @@ sf::Vector2f SteeringBehaviour::calculate(sf::Time dt)
 
     if(mBehaviourFlags.at(Arrive))
     {
-        sf::Vector2f force = arrive(mHost->getTargetPos(), Deceleration::Fast) * mArriveMultiplier;
+//        sf::Vector2f force = arrive(mHost->getTargetPos(), Deceleration::Fast) * mArriveMultiplier;
+        sf::Vector2f force = arrive(mHost->getWorldPosition(), Deceleration::Fast) * mArriveMultiplier;
 
         if(!accumulateForce(steeringForce, force))
             return steeringForce;
@@ -504,7 +515,7 @@ void SteeringBehaviour::setNewBehaviours(SteeringBehaviour::Behaviour newType)
 
     mBehaviourFlags.at(newType) = true;
 
-    if(mHost->getEntityType() != MovingEntity::EntityType::Character)
+    if(mHost->getEntityType() != Entity::EntityType::Adventurer)
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;

@@ -11,10 +11,12 @@
 #include <SFML/System/Time.hpp>
 
 //#include "Enum.hpp"
+#include "App/Params.hpp"
 #include "Entity/Path.hpp"
 
 class Params;
-class MovingEntity;
+//class Dynamic;
+class Entity;
 class Target;
 
 class SteeringBehaviour
@@ -73,7 +75,8 @@ private:
     const float                            mAlignRadius;
     const float                            mCohesionRadius;
 
-    MovingEntity*                           mHost;
+//    DynamicEntity*                          mHost;
+    Entity*                               mHost;
     float                                   mTheta;
     Path                                    mPath;
 
@@ -109,8 +112,8 @@ private:
     sf::Vector2f                            flocking();
 
 public:
-    SteeringBehaviour(MovingEntity*
-                      , const Params&);
+                                             SteeringBehaviour(Entity* host
+                                                               , const Params& params);
 
     sf::Vector2f                            calculate(sf::Time);
 
