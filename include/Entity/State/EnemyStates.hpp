@@ -2,9 +2,13 @@
 #define ENEMYSTATES_HPP
 
 #include "Entity/State/State.hpp"
+<<<<<<< HEAD
 //#include "Entity/Enemy.hpp"
 
 class Enemy;
+=======
+#include "Entity/Enemy.hpp"
+>>>>>>> working
 
 namespace EnemyStates
 {
@@ -12,7 +16,11 @@ namespace EnemyStates
 struct LookOut : public State<Enemy>
 {
 public:
+<<<<<<< HEAD
     virtual             ~LookOut() {};
+=======
+    virtual             ~LookOut(){};
+>>>>>>> working
 
     virtual void        enter(Enemy* host);
 
@@ -36,6 +44,7 @@ public:
 struct Relax : public State<Enemy>
 {
 public:
+<<<<<<< HEAD
     virtual             ~Relax() {};
 
     virtual void        enter(Enemy* host);
@@ -49,6 +58,9 @@ struct Attack : public State<Enemy>
 {
 public:
     virtual             ~Attack(){};
+=======
+    virtual             ~Relax(){};
+>>>>>>> working
 
     virtual void        enter(Enemy* host);
 
@@ -68,7 +80,10 @@ public:
 //
 //    virtual void        exit(Enemy* host);
 //};
+<<<<<<< HEAD
 
+=======
+>>>>>>> working
 }
 
 #endif // ENEMYSTATES_HPP

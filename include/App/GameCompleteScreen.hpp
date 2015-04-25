@@ -24,40 +24,40 @@ class Controller;
 class GameCompleteScreen : public sf::Drawable
 {
 private:
-    enum MenuText
+	enum MenuText
     {
         NextLevel,
         Quit,
         NumMenuText
     };
 
-    GameState&				   	mHostGameState;
-    sf::RenderWindow&		   	mWindow;
-    sf::RectangleShape         	mBackground;
-    sf::Text                   	mTitleText;
-    sf::Text 					mSheepStatText;
-    std::vector<sf::Text>      	mMenuText;
+	GameState&				   	mHostGameState;
+	sf::RenderWindow&		   	mWindow;
+	sf::RectangleShape         	mBackground;
+	sf::Text                   	mTitleText;
+	sf::Text 					mSheepStatText;
+	std::vector<sf::Text>      	mMenuText;
 
-    int 						mCurrentMenuSelection;
+	int 						mCurrentMenuSelection;
 
-    void						changeMenuSelection(int);
-    void 						selectMenuOption(int);
+	void						changeMenuSelection(int);
+	void 						selectMenuOption(int);
 
 public:
-    GameCompleteScreen(Controller&
-                       , GameState&
-                       , sf::RenderWindow&);
+								GameCompleteScreen(Controller&
+												  , GameState&
+												  , sf::RenderWindow&);
 
-    virtual 					~GameCompleteScreen() {};
+	virtual 					~GameCompleteScreen(){};
 
-    virtual void				draw(sf::RenderTarget&
-                                     , sf::RenderStates) const;
+	virtual void				draw(sf::RenderTarget&
+									, sf::RenderStates) const;
 
-    void 						update(sf::Time);
-    void 						handleInput();
+	void 						update(sf::Time);
+	void 						handleInput();
 
-    // Setters
-    void						setup(sf::View, int);
+	// Setters
+	void						setup(sf::View, int);
 };
 
 #endif // GAMECOMPLETESCREEN_HPP

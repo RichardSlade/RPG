@@ -3,7 +3,7 @@
 
 #include <cassert>
 
-#include <Entity/State/State.hpp>
+#include "State.hpp"
 
 template<class entity_type>
 class StateMachine
@@ -14,70 +14,64 @@ private:
     State<entity_type>*         mCurrentState;
     State<entity_type>*         mPreviousState;
 
-    int                         mCurrentStateType;
-
 public:
-    StateMachine(entity_type* host
-                 , State<entity_type>* globalState
-                 , State<entity_type>* initState
-                 , int currentStateType)
-	  : mHost(host)
-	  , mGlobalState(globalState)
-	  , mCurrentState(initState)
-	  , mPreviousState(initState)
-	  , mCurrentStateType(currentStateType)
-    {
-        mGlobalState->enter(mHost);
-        mCurrentState->enter(mHost);
-    };
+                                StateMachine(entity_type* host
+                                             , State<entity_type>* globalState
+                                             , State<entity_type>* initState)
+                                : mHost(host)
+                                , mGlobalState(globalState)
+                                , mCurrentState(initState)
+                                , mPreviousState(initState)
+                                {
+                                    mGlobalState->enter(mHost);
+                                    mCurrentState->enter(mHost);
+                                };
 
-    StateMachine() {};
+                                StateMachine(){};
 
-	void                       update()
-										{
-										  if(mGlobalState)
-												mGlobalState->execute(mHost);
+    void                        update()
+                                {
+                                    if(mGlobalState)
+                                        mGlobalState->execute(mHost);
 
-										  if(mCurrentState)
-												mCurrentState->execute(mHost);
-										}
+                                    if(mCurrentState)
+                                        mCurrentState->execute(mHost);
+                                }
 
     // Setters
-   void                       changeState(State<entity_type>* newState, int stateType)
-                              {
-                                 assert(newState
-                                        && "StateMachine::changeState attempting to change to null state");
+    void                        changeState(State<entity_type>* newState)
+                                {
+                                    assert(newState
+                                            && "StateMachine::changeState attempting to change to null state");
 
-                                 mCurrentStateType = stateType;
+                                    if(mCurrentState)
+                                    {
+                                        mPreviousState = mCurrentState;
+                                        mCurrentState->exit(mHost);
+                                    }
 
-                                 if(mCurrentState)
-                                 {
-                                 mPreviousState = mCurrentState;
-                                 mCurrentState->exit(mHost);
-                                 }
+                                    mCurrentState = newState;
+                                    mCurrentState->enter(mHost);
+                                }
 
-                                 mCurrentState = newState;
-                                 mCurrentState->enter(mHost);
-                              }
+    void                        changeGlobalState(State<entity_type>* newState)
+                                {
+                                    assert(newState
+                                            && "StateMachine::changeGlobalState attempting to change to null state");
 
-	void								changeGlobalState(State<entity_type>* newState)
-										{
-											assert(newState
-													&& "StateMachine::changeGlobalState attempting to change to null state");
-
-											if(mGlobalState)
-												mGlobalState->exit(mHost);
+                                    if(mGlobalState)
+                                        mGlobalState->exit(mHost);
 
 
-											mGlobalState = newState;
-											mGlobalState->enter(mHost);
-										}
+                                    mGlobalState = newState;
+                                    mGlobalState->enter(mHost);
+                                }
 
-	void								setGlobalState(State<entity_type>* newState) {mGlobalState = newState;}
+    void                        setGlobalState(State<entity_type>* newState)
+                                { mGlobalState = newState; }
 
-	void                       returnToPreviousState() {changeState(mPreviousState);}
-
-   int                        getCurrentStateType() {return mCurrentStateType;}
+    void                        returnToPreviousState()
+                                { changeState(mPreviousState); }
 
 };
 

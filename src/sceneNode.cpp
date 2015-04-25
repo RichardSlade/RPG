@@ -2,7 +2,11 @@
 #include <cassert>
 #include <iostream>
 
+<<<<<<< HEAD
 #include "Node/SceneNode.hpp"
+=======
+#include "SceneNode/SceneNode.hpp"
+>>>>>>> working
 
 SceneNode::SceneNode()
 : mParent(nullptr)

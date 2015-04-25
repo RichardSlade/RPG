@@ -6,10 +6,17 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+<<<<<<< HEAD:include/App/GameState.hpp
 #include "App/PausedScreen.hpp"
 #include "App/LevelCompleteScreen.hpp"
 #include "App/GameCompleteScreen.hpp"
 #include "App/AppState.hpp"
+=======
+#include "App/AppState.hpp"
+#include "App/LevelCompleteScreen.hpp"
+#include "App/GameCompleteScreen.hpp"
+#include "App/PausedScreen.hpp"
+>>>>>>> working:include/App/GameState.hpp
 #include "World/World.hpp"
 
 class Controller;

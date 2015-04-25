@@ -14,39 +14,39 @@ class Controller;
 class LevelCompleteScreen : public sf::Drawable
 {
 private:
-    enum MenuText
+	enum MenuText
     {
         NextLevel,
         Quit,
         NumMenuText
     };
 
-    GameState&				   	mHostGameState;
-    sf::RenderWindow&		   	mWindow;
-    sf::RectangleShape         	mBackground;
-    sf::Text                   	mTitleText;
-    std::vector<sf::Text>      	mMenuText;
+	GameState&				   	mHostGameState;
+	sf::RenderWindow&		   	mWindow;
+	sf::RectangleShape         	mBackground;
+	sf::Text                   	mTitleText;
+	std::vector<sf::Text>      	mMenuText;
 
-    int 						mCurrentMenuSelection;
+	int 						mCurrentMenuSelection;
 
-    void						changeMenuSelection(int);
-    void 						selectMenuOption(int);
+	void						changeMenuSelection(int);
+	void 						selectMenuOption(int);
 
 public:
-    LevelCompleteScreen(Controller&
-                        , GameState&
-                        , sf::RenderWindow&);
+								LevelCompleteScreen(Controller&
+											, GameState&
+											, sf::RenderWindow&);
 
-    virtual 					~LevelCompleteScreen() {};
+	virtual 					~LevelCompleteScreen(){};
 
-    virtual void				draw(sf::RenderTarget&
-                                     , sf::RenderStates) const;
+	virtual void				draw(sf::RenderTarget&
+									, sf::RenderStates) const;
 
-    void 						update(sf::Time);
-    void 						handleInput();
+	void 						update(sf::Time);
+	void 						handleInput();
 
-    // Setters
-    void						setup(sf::View);
+	// Setters
+	void						setup(sf::View);
 };
 
 #endif // LEVELCOMPLETESCREEN_HPP

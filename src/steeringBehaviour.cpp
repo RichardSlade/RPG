@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cassert>
+<<<<<<< HEAD
 
 #include "App/Utility.hpp"
 #include "App/Params.hpp"
@@ -11,6 +12,16 @@
 #include "Entity/Entity.hpp"
 #include "Entity/Enemy.hpp"
 
+=======
+
+#include "App/Utility.hpp"
+#include "App/Params.hpp"
+#include "World/Wall.hpp"
+#include "World/LevelBlock.hpp"
+#include "Entity/Entity.hpp"
+#include "Entity/SteeringBehaviour.hpp"
+#include "Entity/Entity.hpp"
+>>>>>>> working
 
 const float SteeringBehaviour::mPI = 3.14159265358979;
 
@@ -42,7 +53,11 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
     for(bool& b : mBehaviourFlags)
         b = false;
 
+<<<<<<< HEAD
     if(mHost->getEntityType() != Entity::EntityType::Adventurer)
+=======
+    if(mHost->getEntityType() != Entity::Type::Adventurer)
+>>>>>>> working
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
@@ -127,6 +142,7 @@ sf::Vector2f SteeringBehaviour::seek(sf::Vector2f target)
 
 sf::Vector2f SteeringBehaviour::evade()
 {
+<<<<<<< HEAD
    //    const Entity* pursuer = mHost->getCurrentTarget();
    const Entity* pursuer = nullptr;
 
@@ -138,12 +154,23 @@ sf::Vector2f SteeringBehaviour::evade()
    if(pursuer)
    {
       sf::Vector2f toPursuer(pursuer->getWorldPosition() - mHost->getWorldPosition());
+=======
+    const Entity* pursuer = mHost->getCurrentTarget();
+
+    const Entity* sheepHost = dynamic_cast<const Entity*>(mHost);
+
+    if(!mHost)
+        throw std::runtime_error("Error:\n SteeringBehaviour::evade(): Casting Host* to Entity*");
+
+    sf::Vector2f toPursuer(pursuer->getWorldPosition() - mHost->getWorldPosition());
+>>>>>>> working
 
       float magPursuer = magVec(toPursuer);
 
 //      if((magPursuer * magPursuer) > mHost->panicDistance * mHost->panicDistance)
 //        return sf::Vector2f();
 
+<<<<<<< HEAD
       float lookAheadTime = magPursuer / (mHost->getMaxSpeed() + pursuer->getSpeed());
 
       return flee(pursuer->getWorldPosition() + pursuer->getVelocity() * lookAheadTime);
@@ -152,6 +179,11 @@ sf::Vector2f SteeringBehaviour::evade()
    {
       return sf::Vector2f();
    }
+=======
+    float lookAheadTime = magPursuer / (mHost->getMaxSpeed() + pursuer->getSpeed());
+
+    return flee(pursuer->getWorldPosition() + pursuer->getVelocity() * lookAheadTime);
+>>>>>>> working
 }
 
 sf::Vector2f SteeringBehaviour::flee(sf::Vector2f target)
@@ -336,8 +368,12 @@ sf::Vector2f SteeringBehaviour::seperation()
 {
     sf::Vector2f steeringForce;
 
+<<<<<<< HEAD
     std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius
                                                                  , mHost->getEntityType());
+=======
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius);
+>>>>>>> working
 
     for(Entity* e : neighbours)
     {
@@ -354,8 +390,12 @@ sf::Vector2f SteeringBehaviour::alignment()
     sf::Vector2f averageHeading;
     int neighbourCount = 0;
 
+<<<<<<< HEAD
     std::vector<Entity*> neighbours = mHost->getNeighbours(mAlignRadius
                                                                  , mHost->getEntityType());
+=======
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mAlignRadius);
+>>>>>>> working
 
     for(Entity* e : neighbours)
     {
@@ -380,8 +420,12 @@ sf::Vector2f SteeringBehaviour::cohesion()
     sf::Vector2f steeringForce, centerOfMass;
     int neighbourCount = 0;
 
+<<<<<<< HEAD
     std::vector<Entity*> neighbours = mHost->getNeighbours(mCohesionRadius
                                                                  , mHost->getEntityType());
+=======
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mCohesionRadius);
+>>>>>>> working
 
     for(Entity* e : neighbours)
     {
@@ -515,7 +559,11 @@ void SteeringBehaviour::setNewBehaviours(SteeringBehaviour::Behaviour newType)
 
     mBehaviourFlags.at(newType) = true;
 
+<<<<<<< HEAD
     if(mHost->getEntityType() != Entity::EntityType::Adventurer)
+=======
+    if(mHost->getEntityType() != Entity::Type::Adventurer)
+>>>>>>> working
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;

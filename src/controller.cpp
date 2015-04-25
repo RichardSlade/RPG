@@ -47,7 +47,7 @@ void Controller::loadMedia()
         mTextures.push_back(sf::Texture());
 
     std::vector<std::string> fileNames;
-    fileNames.push_back("media/textures/character.png");
+    fileNames.push_back("media/textures/adventurer.png");
     fileNames.push_back("media/textures/enemy.png");
     fileNames.push_back("media/textures/grass.png");
     fileNames.push_back("media/textures/wall.png");

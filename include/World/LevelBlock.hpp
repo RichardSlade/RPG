@@ -6,11 +6,10 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 
-#include "Node/SceneNode.hpp"
+//#include "SceneNode/SceneNode.hpp"
 #include "World/Scenery.hpp"
 
 class Entity;
-//class DynamicEntity;
 
 class LevelBlock : public SceneNode
 {
@@ -28,73 +27,79 @@ public:
     };
 
 private:
-   static const sf::Color     mBrown;
-   static const sf::Color     mYellow;
-   static const sf::Color     mGreen;
+    static const sf::Color      mBrown;
+    static const sf::Color      mYellow;
+    static const sf::Color      mGreen;
 
-   Type                       mType;
-   sf::Sprite                 mBackground;
-   Scenery::SceneryPtr        mScenery;
+    Type                        mType;
+    sf::Sprite                  mBackground;
+    Scenery::SceneryPtr         mScenery;
+    std::list<Entity*>    mEntitiesInBlock;
 
-   std::list<Entity*>         mEntities;
-//   std::list<DynamicEntity*>  mDynamicEntities;
+    sf::CircleShape             mOriginCircle;
 
-   sf::CircleShape            mOriginCircle;
+    sf::Vector2f                mBlockCorner;
+    sf::Vector2i                mBlockIndex;
+    float                       mSize;
+    float                       mRadius;
 
-   sf::Vector2f               mBlockCorner;
-   sf::Vector2i               mBlockIndex;
-   float                      mSize;
-   float                      mRadius;
+    virtual void                drawCurrent(sf::RenderTarget&
+                                            , sf::RenderStates) const;
 
-   virtual void               drawCurrent(sf::RenderTarget&
-                                      , sf::RenderStates) const;
-
-   void                       setBackgroundColour();
+    void                        setBackgroundColour();
 
 public:
-                              LevelBlock(const sf::Texture&
-                                       , sf::Vector2f
-                                       , sf::Vector2i
-                                       , float
-                                       , float);
+                                LevelBlock(const sf::Texture&
+                                           , sf::Vector2f
+                                           , sf::Vector2i
+                                           , float
+                                           , float);
 
-                              LevelBlock(const sf::Texture&
-                                    , sf::Vector2f);
+                                LevelBlock(const sf::Texture&
+                                           , sf::Vector2f);
 
-   virtual                   ~LevelBlock() {};
+    virtual                     ~LevelBlock(){};
 
-   // Getters
-   Scenery*                   getScenery() {return mScenery.get();}
 
-   std::list<Entity*>         getEntities(){return mEntities;}
-//   std::list<Entity*>  getDynamicEntities(){return mDynamicEntities;}
+    Scenery*                    getScenery()
+                                { return mScenery.get(); }
 
-   float                      getRadius() const {return mRadius;}
+    std::list<Entity*>    getEntities()
+                                { return mEntitiesInBlock; }
 
-   float                      getSize() const {return mSize;}
+    float                       getRadius() const
+                                { return mRadius; }
 
-   sf::Vector2i               getIndex() {return mBlockIndex;}
+    float                       getSize() const
+                                { return mSize; }
 
-   sf::Vector2f               getMiddle() {return getWorldPosition() + mOriginCircle.getPosition();}
+    sf::Vector2i                getIndex()
+                                { return mBlockIndex; }
 
-   LevelBlock::Type           getType() const {return mType; }
+    sf::Vector2f                getMiddle()
+                                { return getWorldPosition() + mOriginCircle.getPosition(); }
 
-   const sf::Sprite&          getBackground() const {return mBackground;}
+    LevelBlock::Type            getType() const
+                                { return mType; }
 
-   // Setters
-   LevelBlock*                insertEntity(Entity*);
-   void                       deleteEntity(Entity*);
+    const sf::Sprite&           getBackground() const
+                                { return mBackground; }
 
-//   LevelBlock*                insertEntity(DynamicEntity*);
-//   void                       deleteEntity(DynamicEntity*);
+    // Setters
+    LevelBlock*                 insertEntity(Entity*);
+    void                        deleteEntity(Entity*);
 
-   void                       addScenery(Scenery::SceneryPtr scenery) {mScenery = std::move(scenery);}
+    void                        addScenery(Scenery::SceneryPtr scenery)
+                                { mScenery = std::move(scenery); }
 
-   void                       setType(LevelBlock::Type newType) {mType = newType;}
+    void                        setType(LevelBlock::Type newType)
+                                { mType = newType; }
 
-   void                       setColour() {mBackground.setColor(sf::Color::Red);}
+    void                        setColour()
+                                { mBackground.setColor(sf::Color::Red); }
 
-   void                       resetColour() {mBackground.setColor(sf::Color::White);}
+    void                        resetColour()
+                                { mBackground.setColor(sf::Color::White); }
 };
 
 #endif // LEVELBLOCK_HPP

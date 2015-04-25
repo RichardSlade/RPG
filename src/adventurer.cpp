@@ -5,43 +5,33 @@
 *   @Date 12/2014
 */
 
-#include "World/World.hpp"
 #include "Entity/Adventurer.hpp"
+#include "World/World.hpp"
 
-Adventurer::Adventurer(Adventurer::Type adventurerType
-                     , const sf::Texture& texture
-                     , const sf::Font& font
-                     , sf::Vector2f startPos
-                     , float scale
-                     , EntityStats stats
-                     , const Params& params
-                     , Level* level
-                     , State<Adventurer>* globalState
-                     , State<Adventurer>* initState
-                     , StateContainer& states
-                     , Adventurer::StateType currentStateType)
-: Entity(texture
-         , font
-         , startPos
-         , scale
-         , stats
-         , params
-         , Entity::EntityType::Adventurer
-         , level)
-, Intelligent(stats)
-, Killable(stats.health)
-, MeleeFighter(sf::seconds(stats.attackDelay)
-                , stats.meleeDamage
-                , stats.attackDist)
-, mAdventurerType(adventurerType)
+Adventurer::Adventurer(Level* level
+         , const sf::Texture& texture
+         , const sf::Font& font
+         , sf::Vector2f startPos
+         , EntityStats stats
+         , const Params& params
+         , State<Adventurer>* globalState
+         , State<Adventurer>* initState
+         , StateContainer& states
+         , float scale)
+: Entity(level
+               , texture
+               , font
+               , startPos
+               , stats
+               , params
+               , Entity::Type::Adventurer
+               , params.CharacterPanicDistance
+               , scale)
 , mStates(states)
-, mStateMachine(this
-               , globalState
-               , initState
-               , currentStateType)
+, mStateMachine(this, globalState, initState)
 {
-   setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
-//   mText.setPosition(-10.f, -40.f);
+    setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
+    mText.setString("Woof!");
 }
 
 /*
@@ -49,14 +39,54 @@ Adventurer::Adventurer(Adventurer::Type adventurerType
 */
 void Adventurer::updateCurrent(sf::Time dt)
 {
-//   mStateMachine.update();
-//   Entity::updateCurrent(dt);
+    sf::Color currentTextColor = mText.getColor();
+
+    currentTextColor.a -= 1;
+
+    mText.setColor(currentTextColor);
+
+    sf::Vector2f steering = mSteering.calculate(dt);
+
+    mVelocity += steering;
+
+    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
+    {
+        int sign = signVec(mHeading, mVelocity);
+
+        float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
+        angle *= sign;
+
+        clampRotation(angle
+                      , -mMaxTurnRate
+                      , mMaxTurnRate);
+
+        if(angle > MINFLOAT || angle < -MINFLOAT)
+            rotate(angle * (180.f / SteeringBehaviour::mPI));
+    }
+
+    float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
+    mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+
+    move(mVelocity);
+
+//    adjustPosition();
+
+    sf::FloatRect bounds = mText.getLocalBounds();
+    mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+
+    sf::Vector2f textPos = getWorldPosition();
+    textPos.y -= 20.f;
+    mText.setPosition(textPos);
 }
 
+/*
+*   Draw function used by SFML to render to sf::RenderTarget
+*/
 void Adventurer::drawCurrent(sf::RenderTarget& target
-                            , sf::RenderStates states) const
+                                    , sf::RenderStates states) const
 {
-   Entity::drawCurrent(target, states);
+    target.draw(mSprite, states);
+    target.draw(mText);
 
     std::vector<sf::CircleShape> wypnts = mSteering.getPathToDraw();
 

@@ -6,7 +6,11 @@
 #include "App/Controller.hpp"
 #include "World/Level.hpp"
 #include "World/World.hpp"
+<<<<<<< HEAD
 #include "Node/SceneNode.hpp"
+=======
+#include "SceneNode/SceneNode.hpp"
+>>>>>>> working
 #include "Entity/Entity.hpp"
 
 Level::Level(int blockSize
@@ -113,7 +117,11 @@ sf::Vector2i Level::worldCordsToIndex(sf::Vector2f pos) const
 }
 
 std::vector<LevelBlock*> Level::getInRangeBlocks(const Entity* entity
+<<<<<<< HEAD
         , float radius) const
+=======
+                                                 , float radius) const
+>>>>>>> working
 {
     std::vector<LevelBlock*> inRangeBlocks;
 
@@ -148,8 +156,13 @@ std::vector<LevelBlock*> Level::getInRangeBlocks(const Entity* entity
 }
 
 std::vector<LevelBlock*> Level::getBlockTypeInRange(const Entity* entity
+<<<<<<< HEAD
                                                    , float radius
                                                    , LevelBlock::Type blockType) const
+=======
+                                                    , float radius
+                                                    , LevelBlock::Type blockType) const
+>>>>>>> working
 {
     std::vector<LevelBlock*> inRangeBlocks = getInRangeBlocks(entity
             , radius);
@@ -166,12 +179,23 @@ std::vector<LevelBlock*> Level::getBlockTypeInRange(const Entity* entity
 }
 
 std::vector<Entity*> Level::getEntitiesInRange(const Entity* entity
+<<<<<<< HEAD
                                                      , float neighbourhood
                                                      , int type) const
+=======
+                                                , float neighbourhood
+                                                , int type) const
+>>>>>>> working
 {
 	assert(entity);
 
+<<<<<<< HEAD
   bool typeLookup = false;
+=======
+    std::vector<Entity*> neighbourEntities;
+    std::vector<LevelBlock*> inRangeBlocks = getInRangeBlocks(entity
+                                                              , neighbourhood);
+>>>>>>> working
 
   if(type != Entity::EntityType::All)
     typeLookup = true;
@@ -188,6 +212,7 @@ std::vector<Entity*> Level::getEntitiesInRange(const Entity* entity
 
     for(Entity* e : entitiesInBlock)
     {
+<<<<<<< HEAD
         assert(e);
 
         sf::Vector2f toNeighbour = e->getWorldPosition() - entityPos;
@@ -206,11 +231,30 @@ std::vector<Entity*> Level::getEntitiesInRange(const Entity* entity
         {
           if(magVec(toNeighbour) <= neighbourhood)
               neighbours.push_back(e);
+=======
+        std::list<Entity*> entitiesInBlock = lvlBlck->getEntities();
+
+        for(Entity* e : entitiesInBlock)
+        {
+            assert(e);
+
+            if(e->getEntityType() == type)
+            {
+               sf::Vector2f toNeighbour = e->getWorldPosition() - entityPos;
+
+               if(magVec(toNeighbour) <= neighbourhood)
+                  neighbourEntities.push_back(e);
+            }
+>>>>>>> working
         }
     }
   }
 
+<<<<<<< HEAD
 	return neighbours;
+=======
+    return neighbourEntities;
+>>>>>>> working
 }
 
 //std::vector<Entity*> Level::getEntityTypeInRange(const Entity* entity

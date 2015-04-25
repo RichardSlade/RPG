@@ -3,10 +3,17 @@
 
 #include "App/Utility.hpp"
 #include "World/World.hpp"
+<<<<<<< HEAD
 //#include "Entity/Adventurer.hpp"
 #include "Entity/State/EnemyStates.hpp"
 #include "Entity/SteeringBehaviour.hpp"
 #include "Entity/Entity.hpp"
+=======
+#include "Entity/State/EnemyStates.hpp"
+#include "Entity/SteeringBehaviour.hpp"
+#include "Entity/Entity.hpp"
+//#include "Entity/MovingTarget.hpp"
+>>>>>>> working
 
 using namespace EnemyStates;
 
@@ -17,6 +24,7 @@ void LookOut::enter(Enemy* host)
 
 void LookOut::execute(Enemy* host)
 {
+<<<<<<< HEAD
 	if(host->getCurrentStateType() == Enemy::StateType::Relax)
 	{
       std::vector<Entity*> chars;
@@ -61,12 +69,97 @@ void LookOut::execute(Enemy* host)
       }
 	}
 }
+=======
+    const Entity* adventurer = host->getCurrentTarget();
+
+    if(adventurer
+       && !host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
+    {
+        sf::Vector2f enemyPos = host->getWorldPosition();
+
+        std::vector<LevelBlock*> levelExit = host->getLevelExit();
+
+        bool closeToExit = false;
+        float expandedRadius = 100 + host->getRadius();
+>>>>>>> working
 
 void LookOut::exit(Enemy* host)
 {
 
 }
 
+void Evade::enter(Enemy* host)
+{
+    assert(host);
+
+    std::vector<SteeringBehaviour::Behaviour> behaviours;
+
+<<<<<<< HEAD
+    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Evade))
+        behaviours.push_back(SteeringBehaviour::Behaviour::Evade);
+
+//    behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
+
+    host->setSteeringTypes(behaviours);
+    host->setText("!!!!");
+
+    host->setMaxSpeed(host->getMaxRunSpeed());
+}
+
+void Evade::execute(Enemy* host)
+=======
+//        if(closeToExit)
+//        {
+//            host->changeState(Enemy::States::Exit);
+//            host->setTargetPos(targPos);
+//            return;
+//        }
+
+        sf::Vector2f adventurerPos = adventurer->getWorldPosition();
+        sf::Vector2f vecTo = enemyPos - adventurerPos;
+
+        float mag = magVec(vecTo);
+
+        if(mag <= host->mPanicDistance * 2.f)
+            host->changeState(Enemy::States::Evade);
+    }
+}
+
+void LookOut::exit(Enemy* host)
+>>>>>>> working
+{
+//   Entity* pursuer = host->getCurrentTarget();
+   Adventurer* pursuer = nullptr;
+
+   if(pursuer)
+   {
+      sf::Vector2f vecToHost = host->getWorldPosition() - pursuer->getWorldPosition();
+      float mag = magVec(vecToHost);
+
+      if(mag > host->panicDistance)
+      {
+         host->changeState(Enemy::StateType::Relax);
+      }
+   }
+}
+
+<<<<<<< HEAD
+void Evade::exit(Enemy* host)
+{
+
+}
+
+void Relax::enter(Enemy* host)
+{
+    assert(host);
+
+    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
+    {
+        std::vector<SteeringBehaviour::Behaviour> behaviours;
+        behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
+
+        host->setSteeringTypes(behaviours);
+=======
 void Evade::enter(Enemy* host)
 {
     assert(host);
@@ -86,52 +179,45 @@ void Evade::enter(Enemy* host)
 
 void Evade::execute(Enemy* host)
 {
-//   Entity* pursuer = host->getCurrentTarget();
-   Adventurer* pursuer = nullptr;
-
-   if(pursuer)
-   {
-      sf::Vector2f vecToHost = host->getWorldPosition() - pursuer->getWorldPosition();
-      float mag = magVec(vecToHost);
-
-      if(mag > host->panicDistance)
-      {
-         host->changeState(Enemy::StateType::Relax);
-      }
-   }
-}
-
-void Evade::exit(Enemy* host)
-{
-
-}
-
-void Relax::enter(Enemy* host)
-{
-    assert(host);
-
-    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
+    if(host->getCurrentTarget())
     {
-        std::vector<SteeringBehaviour::Behaviour> behaviours;
-        behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
+        sf::Vector2f adventurerPos = host->getCurrentTarget()->getWorldPosition();
+        sf::Vector2f vecTo = host->getWorldPosition() - adventurerPos;
 
-        host->setSteeringTypes(behaviours);
+        float mag = magVec(vecTo);
+
+        if(mag > host->mPanicDistance)
+        {
+            host->changeState(Enemy::States::Relax);
+        }
+>>>>>>> working
     }
 
     host->setText("Grr");
     host->setMaxSpeed(host->getMaxWalkSpeed());
 }
 
+<<<<<<< HEAD
 void Relax::execute(Enemy* host)
+=======
+void Evade::exit(Enemy* host)
+>>>>>>> working
 {
 
 }
 
+<<<<<<< HEAD
 void Relax::exit(Enemy* host)
 {
+=======
+void Relax::enter(Enemy* host)
+{
+    assert(host);
+>>>>>>> working
 
 }
 
+<<<<<<< HEAD
 void Attack::enter(Enemy* host)
 {
     assert(host);
@@ -148,6 +234,27 @@ void Attack::enter(Enemy* host)
 }
 
 void Attack::execute(Enemy* host)
+=======
+    if(host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Flock))
+        isFlocking = true;
+
+    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
+    {
+        std::vector<SteeringBehaviour::Behaviour> behaviours;
+        behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
+
+//        if(isFlocking)
+//            behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
+
+        host->setSteeringTypes(behaviours);
+    }
+
+    host->setText("Grrr");
+    host->setMaxSpeed(host->getMaxWalkSpeed());
+}
+
+void Relax::execute(Enemy* host)
+>>>>>>> working
 {
 //   Adventurer* curTarg = host->getCurrentTarget();
    Adventurer* curTarg = nullptr;
@@ -187,7 +294,11 @@ void Attack::execute(Enemy* host)
    }
 }
 
+<<<<<<< HEAD
 void Attack::exit(Enemy* host)
+=======
+void Relax::exit(Enemy* host)
+>>>>>>> working
 {
 
 }

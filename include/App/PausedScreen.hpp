@@ -14,45 +14,43 @@ class Controller;
 class PausedScreen : public sf::Drawable
 {
 private:
-    enum MenuText
+	enum MenuText
     {
         Resume,
         Quit,
         NumMenuText
     };
 
-    GameState&				   	mHostGameState;
-    sf::RenderWindow&		   	mWindow;
-    sf::RectangleShape         	mBackground;
-    sf::Text                   	mTitleText;
-    std::vector<sf::Text>      	mMenuText;
+	GameState&				   	mHostGameState;
+	sf::RenderWindow&		   	mWindow;
+	sf::RectangleShape         	mBackground;
+	sf::Text                   	mTitleText;
+	std::vector<sf::Text>      	mMenuText;
 
-    bool						mPaused;
-    int 						mCurrentMenuSelection;
+	bool						mPaused;
+	int 						mCurrentMenuSelection;
 
-    void						changeMenuSelection(int);
-    void 						selectMenuOption(int);
+	void						changeMenuSelection(int);
+	void 						selectMenuOption(int);
 
 public:
-    PausedScreen(Controller&
-                 , GameState&
-                 , sf::RenderWindow&);
+								PausedScreen(Controller&
+											, GameState&
+											, sf::RenderWindow&);
 
-    virtual 					~PausedScreen() {};
+	virtual 					~PausedScreen(){};
 
-    virtual void				draw(sf::RenderTarget&
-                                     , sf::RenderStates) const;
+	virtual void				draw(sf::RenderTarget&
+									, sf::RenderStates) const;
 
-    void 						update(sf::Time);
-    void 						handleInput();
+	void 						update(sf::Time);
+	void 						handleInput();
 
-    // Getters
-    bool						isPaused()
-    {
-        return mPaused;
-    }
-    // Setters
-    void						setup(sf::View);
+	// Getters
+	bool						isPaused()
+								{ return mPaused; }
+	// Setters
+	void						setup(sf::View);
 };
 
 #endif // PAUSEDSCREEN_HPP

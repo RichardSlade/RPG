@@ -1,69 +1,82 @@
 #ifndef ENEMY_HPP
 #define ENEMY_HPP
 
+#include <memory>
+
 #include "Entity/Entity.hpp"
 #include "Entity/State/StateMachine.hpp"
-#include "Entity/State/EnemyStates.hpp"
-#include "Entity/Attribute/Intelligent.hpp"
-#include "Entity/Attribute/Killable.hpp"
-#include "Entity/Attribute/MeleeFighter.hpp"
 
-class Enemy : public Entity, public Intelligent, public Killable,  public MeleeFighter
+class Enemy : public Entity
 {
 public:
-   typedef std::vector<std::unique_ptr<State<Enemy>>> StateContainer;
+    typedef std::vector<std::unique_ptr<State<Enemy>>> StateContainer;
 
-   enum StateType
-   {
-      LookOut,
-      Relax,
-      Evade,
-      Attack,
-      //        Exit,
-      NumStates
-   };
+    enum States
+    {
+        LookOut,
+        Evade,
+        Relax,
+//        Exit,
+        NumSheepStates
+    };
 
-   enum Type
-   {
-      Goblin,
-      NumEnemyTypes
-   };
 
-protected:
-   Enemy::Type             mEnemyType;
+    const float                 mSightRange;
 
-   StateContainer&         mStates;
-   StateMachine<Enemy>    mStateMachine;
+    const float                 mAngleOfVision;
+//    const float                 mPanicDistance;
 
-   virtual void            updateCurrent(sf::Time dt);
-   virtual void            drawCurrent(sf::RenderTarget& target
-                                       , sf::RenderStates states) const;
+private:
+//    sf::Vector2i                mTargetBlockIndex;
+
+//    std::vector<State<Enemy>>&  mStates;
+    StateContainer&             mStates;
+    StateMachine<Enemy>         mStateMachine;
+
+//    Entity*                      mCurrentTarget;
+
+    virtual void                updateCurrent(sf::Time);
+    virtual void                drawCurrent(sf::RenderTarget&
+                                            , sf::RenderStates) const;
 
 public:
+                                Enemy(Level*
+                                      , const sf::Texture&
+                                      , const sf::Font&
+                                      , sf::Vector2f
+                                      , EntityStats
+                                      , const Params&
+                                      , State<Enemy>*
+                                      , State<Enemy>*
+                                      , StateContainer&
+                                      , float = 1.f);
 
-                           Enemy(Enemy::Type enemyType
-                                 , const sf::Texture& texture
-                                 , const sf::Font& font
-                                 , sf::Vector2f startPos
-                                 , float scale
-                                 , const EntityStats& stats
-                                 , const Params& params
-                                 , Level* level
-                                 , State<Enemy>* globalState
-                                 , State<Enemy>* initState
-                                 , StateContainer& states
-                                 , Enemy::StateType currentStateType);
+    virtual                    ~Enemy(){};
 
-   virtual                 ~Enemy(){};
+    void                        changeState(Enemy::States newState)
+                                { mStateMachine.changeState(mStates.at(newState).get()); }
 
+    // Getters
+//    LevelBlock*                 getTargetBlock()
+//                                { return getLevelBlock(mTargetBlockIndex); }
 
-   void                    changeState(Enemy::StateType newState) { mStateMachine.changeState(mStates.at(newState).get(), newState);}
+//   Entity*                getCurrentTarget() { return mCurrentTarget; }
 
-   // Getters
-   int                     getEnemyType() {return mEnemyType;}
+    // Setters
+    void                        setVelocity(sf::Vector2f vel)
+                                { mVelocity = vel; }
 
-   int                     getCurrentStateType() {return mStateMachine.getCurrentStateType();}
+    void                        setText(std::string msg)
+                                {
+                                    mText.setString(msg);
+                                    mText.setColor(sf::Color(255, 255, 255, 255));
+                                }
+//
+//    void                        setTargetBlockIndex(sf::Vector2i index)
+//                                { mTargetBlockIndex = index; }
+
+    void                        returnToPreviousState()
+                                { mStateMachine.returnToPreviousState(); }
 };
 
 #endif // ENEMY_HPP
-

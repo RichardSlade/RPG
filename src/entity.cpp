@@ -1,72 +1,134 @@
-#include <iostream>
-
-#include "World/Level.hpp"
 #include "Entity/Entity.hpp"
+#include "World/World.hpp"
+#include "World/LevelBlock.hpp"
 
-Entity::Entity(const sf::Texture& texture
-       , const sf::Font& font
-       , sf::Vector2f startPos
-       , float scale
-       , const EntityStats& stats
-       , const Params& params
-       , EntityType type
-       , Level* level)
-: Dynamic(texture
-      , startPos
-      , scale
-      , stats
-      , params)
+
+Entity::Entity(Level* level
+                           , const sf::Texture& texture
+                           , const sf::Font& font
+                           , sf::Vector2f startPos
+                           , EntityStats stats
+                           , const Params& params
+                           , Type type
+                           , float panicDist
+                           , float scale)
+//: mLevel(world)
+: mLevel(level)
+, mMass(stats.mass)
+, mHealth(stats.health)
+, mWalkMaxSpeed(stats.walkMaxSpeed)
+, mRunMaxSpeed(stats.runMaxSpeed)
+, mMaxForce(stats.maxForce)
+, mMaxTurnRate(stats.maxTurnRate)
+, mMaxSpeed(mWalkMaxSpeed)
+, mPanicDistance(panicDist)
 , mEntityType(type)
-, mLevel(level)
 , mCurrentBlock(nullptr)
-, mText("adadawdadw", font)
-, mSteering(this
-         , params)
+, mSprite(texture)
+, mVelocity(0.f, 0.f)
+, mHeading(0.f, 0.f)
+, mSteering(this, params)
+, mCurrentTarget(nullptr)
+, mText("", font, 12)
 {
-   mText.setPosition(-10.f, -40.f);
+    mSprite.scale(scale, scale);
+    sf::FloatRect bounds = mSprite.getLocalBounds();
+    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    mRadius = std::max(bounds.width, bounds.height);
 
-   std::string str = mText.getString();
-   std::cout << str << std::endl;
+    setPosition(startPos);
 
-   insertIntoLevel();
+    float theta = randomClamped() * (2.f * SteeringBehaviour::mPI);
+    rotate(theta * (180 / SteeringBehaviour::mPI));
+    mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
+
+    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 }
 
 void Entity::updateCurrent(sf::Time dt)
 {
-   setPosition(500.f, 500.f);
+    sf::Color currentTextColor = mText.getColor();
+    currentTextColor.a -= 1;
 
-   std::cout << "Here" << std::endl;
+    mText.setColor(currentTextColor);
 
-//   Dynamic::changePosition(mSteering.calculate(dt));
+    sf::Vector2f steering = mSteering.calculate(dt);
+    sf::Vector2f acceleration = steering / mMass;
 
-//   insertIntoLevel();
+    mVelocity += acceleration * dt.asSeconds();
+
+    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
+    {
+        int sign = signVec(mHeading, mVelocity);
+
+        float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
+        angle *= sign;
+
+        clampRotation(angle
+                      , -mMaxTurnRate
+                      , mMaxTurnRate);
+
+        if(angle > MINFLOAT || angle < -MINFLOAT)
+            rotate(angle * (180.f / SteeringBehaviour::mPI));
+    }
+
+    float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
+    mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+
+    truncateVec(mVelocity, mMaxSpeed);
+    move(mVelocity);
+
+//    adjustPosition();
+
+    sf::FloatRect bounds = mText.getLocalBounds();
+    mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+
+    sf::Vector2f textPos = getWorldPosition();
+    textPos.y -= 20.f;
+    mText.setPosition(textPos);
 }
 
-void Entity::drawCurrent(sf::RenderTarget& target
-                        , sf::RenderStates states) const
+//void Entity::adjustPosition()
+//{
+//    sf::IntRect worldBounds = mLevel->getWorldBounds();
+//
+//    sf::Vector2f pos = getWorldPosition();
+//
+//    pos.x = std::min(pos.x, static_cast<float>(worldBounds.width));
+//    pos.x = std::max(pos.x, 0.f);
+//    pos.y = std::min(pos.y, static_cast<float>(worldBounds.height));
+//    pos.y = std::max(pos.y, 0.f);
+//
+//    setPosition(pos);
+//}
+
+void Entity::ensureZeroOverlap()
 {
-//   SpriteNode::drawCurrent(target
-//                           , states);
+    std::vector<Entity*> neighbours = getNeighbours(25.f);
+    sf::Vector2f pos = getWorldPosition();
+    float radius = getRadius();
 
-//   std::cout << "Here" << std::endl;
+    for(Entity* e : neighbours)
+    {
+        if(e != this)
+        {
+            sf::Vector2f awayFromEntity = pos - e->getWorldPosition();
+            float expandedRadius = radius + e->getRadius();
+            float mag = magVec(awayFromEntity);
 
-      std::string str = mText.getString();
-   std::cout << str << std::endl;
-
-//   target.draw(mText);
+            if(mag < expandedRadius)
+            {
+                move(normVec(awayFromEntity));
+            }
+        }
+    }
 }
 
-void Entity::insertIntoLevel()
-{
-   mCurrentBlock = mLevel->insertEntityIntoLevel(this);
-}
-
-std::vector<Entity*> Entity::getNeighbours(float radius
-                                           , int type) const
+std::vector<Entity*> Entity::getNeighbours(float radius) const
 {
     return mLevel->getEntitiesInRange(const_cast<Entity*>(this)
-                                      , radius
-                                      , type);
+                                   , radius
+                                   , mEntityType);
 }
 
 std::vector<LevelBlock*> Entity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const
@@ -74,7 +136,12 @@ std::vector<LevelBlock*> Entity::getBlockTypeInRange(LevelBlock::Type blockType,
     return mLevel->getBlockTypeInRange(const_cast<Entity*>(this), radius, blockType);
 }
 
-//LevelBlock* Entity::getLevelBlock(sf::Vector2i index)
-//{
-//    return mLevel->getBlock(index);
-//}
+LevelBlock* Entity::getLevelBlock(sf::Vector2i index)
+{
+    return mLevel->getBlock(index);
+}
+
+std::vector<LevelBlock*> Entity::getLevelExit()
+{
+    return mLevel->getLevelExit();
+}

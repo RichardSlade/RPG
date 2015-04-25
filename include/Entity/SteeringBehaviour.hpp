@@ -11,11 +11,17 @@
 #include <SFML/System/Time.hpp>
 
 //#include "Enum.hpp"
+<<<<<<< HEAD:include/Entity/SteeringBehaviour.hpp
 #include "App/Params.hpp"
 #include "Entity/Path.hpp"
 
 class Params;
 //class Dynamic;
+=======
+#include "Entity/Path.hpp"
+
+class Params;
+>>>>>>> working:include/Entity/SteeringBehaviour.hpp
 class Entity;
 class Target;
 
@@ -54,6 +60,7 @@ public:
     static const float                     mPI;
 
 private:
+<<<<<<< HEAD:include/Entity/SteeringBehaviour.hpp
     const float                            mWanderRadius;
     const float                            mWanderDistance;
     const float                            mWanderJitter;
@@ -79,6 +86,32 @@ private:
     Entity*                                mHost;
     float                                  mTheta;
     Path                                   mPath;
+=======
+     const float                            mWanderRadius;
+     const float                            mWanderDistance;
+     const float                            mWanderJitter;
+     const float                            mMinViewBoxLength;
+     const float                            mInteractionRadius;
+     const float                            mFeelerLength;
+     const float                            mMinArriveDist;
+
+     const float                            mObstacleAvoidanceMultiplier;
+     const float                            mWallAvoidanceMultiplier;
+     const float                            mArriveMultiplier;
+     const float                            mEvadeMultiplier;
+     const float                            mWanderMultiplier;
+     const float                            mSeperationMultiplier;
+     const float                            mAlignmentMultiplier;
+     const float                            mCohesionMultiplier;
+     const float                            mFlockingMultiplier;
+     const float                            mSeperationRadius;
+     const float                            mAlignRadius;
+     const float                            mCohesionRadius;
+
+    Entity*                           mHost;
+    float                                   mTheta;
+    Path                                    mPath;
+>>>>>>> working:include/Entity/SteeringBehaviour.hpp
 
     std::array<bool,
         Behaviour::NumBehaviour>    mBehaviourFlags;
@@ -112,8 +145,13 @@ private:
     sf::Vector2f                            flocking();
 
 public:
+<<<<<<< HEAD:include/Entity/SteeringBehaviour.hpp
                                              SteeringBehaviour(Entity* host
                                                                , const Params& params);
+=======
+                                            SteeringBehaviour(Entity*
+                                                              , const Params&);
+>>>>>>> working:include/Entity/SteeringBehaviour.hpp
 
     sf::Vector2f                            calculate(sf::Time);
 

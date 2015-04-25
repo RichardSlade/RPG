@@ -3,6 +3,10 @@
 
 #include "App/Utility.hpp"
 #include "World/LevelBlock.hpp"
+<<<<<<< HEAD
+=======
+#include "Entity/Entity.hpp"
+>>>>>>> working
 
 const sf::Color LevelBlock::mBrown = sf::Color(150, 70, 0, 255);
 const sf::Color LevelBlock::mYellow = sf::Color(200, 200, 0, 255);

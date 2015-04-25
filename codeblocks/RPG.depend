@@ -620,16 +620,27 @@
 	"State.hpp"
 	"Character.hpp"
 
+<<<<<<< HEAD
 1429457849 source:/media/richard/ubuntu-storage/projects/RPG/src/character.cpp
 	"incl/Character.hpp"
 	"incl/World.hpp"
 
 1429457790 /media/richard/ubuntu-storage/projects/RPG/src/incl/Character.hpp
+=======
+1429962695 source:/media/richard/ubuntu-storage/projects/RPG/src/character.cpp
+	"incl/Character.hpp"
+	"incl/World.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/Character.hpp
+>>>>>>> working
 	<SFML/Graphics/CircleShape.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/System/Time.hpp>
 	"MovingEntity.hpp"
+<<<<<<< HEAD
 	"MeleeCombatant.hpp"
+=======
+>>>>>>> working
 	"Path.hpp"
 	"StateMachine.hpp"
 
@@ -725,7 +736,11 @@
 1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Export.hpp
 	<SFML/Config.hpp>
 
+<<<<<<< HEAD
 1429459167 /media/richard/ubuntu-storage/projects/RPG/src/incl/MovingEntity.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/MovingEntity.hpp
+>>>>>>> working
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/Text.hpp>
@@ -789,7 +804,11 @@
 
 1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/String.inl
 
+<<<<<<< HEAD
 1429367598 /media/richard/ubuntu-storage/projects/RPG/src/incl/SceneNode.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/SceneNode.hpp
+>>>>>>> working
 	<vector>
 	<memory>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -853,7 +872,11 @@
 	<SFML/System/Export.hpp>
 	<SFML/System/Time.hpp>
 
+<<<<<<< HEAD
 1429374363 /media/richard/ubuntu-storage/projects/RPG/src/incl/SteeringBehaviour.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/SteeringBehaviour.hpp
+>>>>>>> working
 	<vector>
 	<memory>
 	<SFML/Graphics/CircleShape.hpp>
@@ -868,28 +891,49 @@
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Shape.hpp>
 
+<<<<<<< HEAD
 1428869131 /media/richard/ubuntu-storage/projects/RPG/src/incl/Enum.hpp
 
 1429367597 /media/richard/ubuntu-storage/projects/RPG/src/incl/Path.hpp
 	<SFML/Graphics/CircleShape.hpp>
 
 1428869131 /media/richard/ubuntu-storage/projects/RPG/src/incl/Utility.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/Enum.hpp
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/Path.hpp
+	<SFML/Graphics/CircleShape.hpp>
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/Utility.hpp
+>>>>>>> working
 	<limits>
 	<string>
 	<SFML/System/Vector2.hpp>
 
+<<<<<<< HEAD
 1429383854 /media/richard/ubuntu-storage/projects/RPG/src/incl/Level.hpp
 	"LevelBlock.hpp"
 	"Wall.hpp"
 
 1429367597 /media/richard/ubuntu-storage/projects/RPG/src/incl/LevelBlock.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/Level.hpp
+	"LevelBlock.hpp"
+	"Wall.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/LevelBlock.hpp
+>>>>>>> working
 	<list>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/CircleShape.hpp>
 	"SceneNode.hpp"
 	"Scenery.hpp"
 
+<<<<<<< HEAD
 1429367597 /media/richard/ubuntu-storage/projects/RPG/src/incl/Scenery.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/Scenery.hpp
+>>>>>>> working
 	<memory>
 	<SFML/Graphics/Color.hpp>
 	<SFML/Graphics/Sprite.hpp>
@@ -897,6 +941,7 @@
 	<SFML/Graphics/Texture.hpp>
 	"SceneNode.hpp"
 
+<<<<<<< HEAD
 1429367597 /media/richard/ubuntu-storage/projects/RPG/src/incl/Wall.hpp
 	<memory>
 	"Scenery.hpp"
@@ -908,12 +953,26 @@
 1429367598 /media/richard/ubuntu-storage/projects/RPG/src/incl/MovingTarget.hpp
 
 1429383567 /media/richard/ubuntu-storage/projects/RPG/src/incl/Params.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/Wall.hpp
+	<memory>
+	"Scenery.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/EntityStats.hpp
+	<fstream>
+	<string>
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/MovingTarget.hpp
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/Params.hpp
+>>>>>>> working
 	<fstream>
 	<string>
 	<stdexcept>
 	<iostream>
 	<SFML/Graphics/Color.hpp>
 
+<<<<<<< HEAD
 1429457921 /media/richard/ubuntu-storage/projects/RPG/src/incl/StateMachine.hpp
 	<cassert>
 	"State.hpp"
@@ -922,6 +981,16 @@
 	<memory>
 
 1429459537 /media/richard/ubuntu-storage/projects/RPG/src/incl/World.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/StateMachine.hpp
+	<cassert>
+	"State.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/State.hpp
+	<memory>
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/World.hpp
+>>>>>>> working
 	<memory>
 	<SFML/Graphics/RenderWindow.hpp>
 	<SFML/Graphics/Texture.hpp>
@@ -937,6 +1006,7 @@
 	"EntityStats.hpp"
 	"HUD.hpp"
 
+<<<<<<< HEAD
 1429457805 /media/richard/ubuntu-storage/projects/RPG/src/incl/Enemy.hpp
 	<memory>
 	"MovingEntity.hpp"
@@ -944,12 +1014,21 @@
 	"MeleeCombatant.hpp"
 
 1429367597 /media/richard/ubuntu-storage/projects/RPG/src/incl/HUD.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/Enemy.hpp
+	<memory>
+	"MovingEntity.hpp"
+	"StateMachine.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/src/incl/HUD.hpp
+>>>>>>> working
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/Text.hpp>
 	<SFML/Graphics/Font.hpp>
 	<SFML/System/Time.hpp>
 
+<<<<<<< HEAD
 1429455625 source:/media/richard/ubuntu-storage/projects/RPG/src/characterStates.cpp
 	<cassert>
 	<iostream>
@@ -963,12 +1042,16 @@
 	"Character.hpp"
 
 1429959042 source:/media/richard/ubuntu-storage/projects/RPG/src/controller.cpp
+=======
+1429970291 source:/media/richard/ubuntu-storage/projects/RPG/src/controller.cpp
+>>>>>>> working
 	<iostream>
 	"App/Controller.hpp"
 	"App/MenuState.hpp"
 	"App/GameState.hpp"
 	"World/LevelBlock.hpp"
 
+<<<<<<< HEAD
 1429367597 /media/richard/ubuntu-storage/projects/RPG/src/incl/Controller.hpp
 	<array>
 	<memory>
@@ -1048,6 +1131,17 @@
 	"Enemy.hpp"
 
 1429568440 source:/media/richard/ubuntu-storage/projects/RPG/src/gameCompleteScreen.cpp
+=======
+1429970905 source:/media/richard/ubuntu-storage/projects/RPG/src/enemy.cpp
+	<iostream>
+	<cmath>
+	<vector>
+	"App/Utility.hpp"
+	"World/World.hpp"
+	"Entity/Enemy.hpp"
+
+1429971034 source:/media/richard/ubuntu-storage/projects/RPG/src/gameCompleteScreen.cpp
+>>>>>>> working
 	<SFML/Window/Event.hpp>
 	"App/GameCompleteScreen.hpp"
 	"App/Controller.hpp"
@@ -1081,17 +1175,26 @@
 
 1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Vector3.inl
 
+<<<<<<< HEAD
 1429959061 source:/media/richard/ubuntu-storage/projects/RPG/src/gameState.cpp
+=======
+1429971051 source:/media/richard/ubuntu-storage/projects/RPG/src/gameState.cpp
+>>>>>>> working
 	<SFML/Window/Event.hpp>
 	"App/GameState.hpp"
 	"App/Controller.hpp"
 	"App/Params.hpp"
 
+<<<<<<< HEAD
 1429568525 source:/media/richard/ubuntu-storage/projects/RPG/src/hud.cpp
+=======
+1429971061 source:/media/richard/ubuntu-storage/projects/RPG/src/hud.cpp
+>>>>>>> working
 	<string>
 	"App/HUD.hpp"
 	"World/World.hpp"
 
+<<<<<<< HEAD
 1429958713 source:/media/richard/ubuntu-storage/projects/RPG/src/level.cpp
 	<iostream>
 	<list>
@@ -1110,23 +1213,35 @@
 	"World/LevelBlock.hpp"
 
 1429568594 source:/media/richard/ubuntu-storage/projects/RPG/src/levelCompleteScreen.cpp
+=======
+1429971079 source:/media/richard/ubuntu-storage/projects/RPG/src/levelCompleteScreen.cpp
+>>>>>>> working
 	<SFML/Window/Event.hpp>
 	"App/LevelCompleteScreen.hpp"
 	"App/Controller.hpp"
 	"App/GameState.hpp"
 
+<<<<<<< HEAD
 1429568594 source:/media/richard/ubuntu-storage/projects/RPG/src/main.cpp
+=======
+1429971085 source:/media/richard/ubuntu-storage/projects/RPG/src/main.cpp
+>>>>>>> working
 	<ctime>
 	<exception>
 	<iostream>
 	"App/Controller.hpp"
 
+<<<<<<< HEAD
 1429568646 source:/media/richard/ubuntu-storage/projects/RPG/src/menuState.cpp
+=======
+1429971097 source:/media/richard/ubuntu-storage/projects/RPG/src/menuState.cpp
+>>>>>>> working
 	<SFML/Window/Event.hpp>
 	"App/MenuState.hpp"
 	"App/Controller.hpp"
 	"World/World.hpp"
 
+<<<<<<< HEAD
 1429458506 source:/media/richard/ubuntu-storage/projects/RPG/src/movingEntity.cpp
 	"incl/MovingEntity.hpp"
 	"incl/World.hpp"
@@ -1136,11 +1251,18 @@
 	"Entity/Path.hpp"
 
 1429568707 source:/media/richard/ubuntu-storage/projects/RPG/src/pausedScreen.cpp
+=======
+1429971105 source:/media/richard/ubuntu-storage/projects/RPG/src/path.cpp
+	"Entity/Path.hpp"
+
+1429971115 source:/media/richard/ubuntu-storage/projects/RPG/src/pausedScreen.cpp
+>>>>>>> working
 	<SFML/Window/Event.hpp>
 	"App/PausedScreen.hpp"
 	"App/Controller.hpp"
 	"App/GameState.hpp"
 
+<<<<<<< HEAD
 1429568707 source:/media/richard/ubuntu-storage/projects/RPG/src/sceneNode.cpp
 	<algorithm>
 	<cassert>
@@ -1158,6 +1280,18 @@
 	"SceneNode.hpp"
 
 1429808993 source:/media/richard/ubuntu-storage/projects/RPG/src/steeringBehaviour.cpp
+=======
+1429971123 source:/media/richard/ubuntu-storage/projects/RPG/src/sceneNode.cpp
+	<algorithm>
+	<cassert>
+	<iostream>
+	"SceneNode/SceneNode.hpp"
+
+1429971132 source:/media/richard/ubuntu-storage/projects/RPG/src/spriteNode.cpp
+	"SceneNode/SpriteNode.hpp"
+
+1429970933 source:/media/richard/ubuntu-storage/projects/RPG/src/steeringBehaviour.cpp
+>>>>>>> working
 	<cmath>
 	<algorithm>
 	<iostream>
@@ -1166,11 +1300,19 @@
 	"App/Params.hpp"
 	"World/Wall.hpp"
 	"World/LevelBlock.hpp"
+<<<<<<< HEAD
 	"Entity/SteeringBehaviour.hpp"
 	"Entity/Entity.hpp"
 	"Entity/Enemy.hpp"
 
 1429568748 source:/media/richard/ubuntu-storage/projects/RPG/src/utility.cpp
+=======
+	"Entity/Entity.hpp"
+	"Entity/SteeringBehaviour.hpp"
+	"Entity/Entity.hpp"
+
+1429971153 source:/media/richard/ubuntu-storage/projects/RPG/src/utility.cpp
+>>>>>>> working
 	<cmath>
 	<ctime>
 	<cstdlib>
@@ -1178,6 +1320,7 @@
 	"App/Utility.hpp"
 	"App/Params.hpp"
 
+<<<<<<< HEAD
 1429568748 source:/media/richard/ubuntu-storage/projects/RPG/src/wall.cpp
 	"World/Wall.hpp"
 
@@ -1253,11 +1396,64 @@
 	<SFML/System/Time.hpp>
 
 1429569004 /media/richard/ubuntu-storage/projects/RPG/include/World/Scenery.hpp
+=======
+1429971162 source:/media/richard/ubuntu-storage/projects/RPG/src/wall.cpp
+	"World/Wall.hpp"
+
+1429970891 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurer.cpp
+	"Entity/Adventurer.hpp"
+	"World/World.hpp"
+
+1429969900 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Adventurer.hpp
+	<SFML/Graphics/CircleShape.hpp>
+	<SFML/Graphics/Texture.hpp>
+	<SFML/System/Time.hpp>
+	"Entity/Entity.hpp"
+	"Entity/Path.hpp"
+	"Entity/State/StateMachine.hpp"
+
+1429970887 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Entity.hpp
+	<SFML/System/Vector2.hpp>
+	<SFML/Graphics/Sprite.hpp>
+	<SFML/Graphics/Text.hpp>
+	"App/Params.hpp"
+	"App/Utility.hpp"
+	"World/Level.hpp"
+	"SceneNode/SceneNode.hpp"
+	"Entity/SteeringBehaviour.hpp"
+	"Entity/EntityStats.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/Params.hpp
+	<fstream>
+	<string>
+	<stdexcept>
+	<iostream>
+	<SFML/Graphics/Color.hpp>
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/Utility.hpp
+	<limits>
+	<string>
+	<SFML/System/Vector2.hpp>
+
+1429967213 /media/richard/ubuntu-storage/projects/RPG/include/World/Level.hpp
+	"World/LevelBlock.hpp"
+	"World/Wall.hpp"
+	"SceneNode/SceneNode.hpp"
+
+1429966764 /media/richard/ubuntu-storage/projects/RPG/include/World/LevelBlock.hpp
+	<list>
+	<SFML/Graphics/RectangleShape.hpp>
+	<SFML/Graphics/CircleShape.hpp>
+	"World/Scenery.hpp"
+
+1429968398 /media/richard/ubuntu-storage/projects/RPG/include/World/Scenery.hpp
+>>>>>>> working
 	<memory>
 	<SFML/Graphics/Color.hpp>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/Texture.hpp>
+<<<<<<< HEAD
 	"Node/SceneNode.hpp"
 
 1429569004 /media/richard/ubuntu-storage/projects/RPG/include/World/Wall.hpp
@@ -1303,6 +1499,24 @@
 	<SFML/System/Vector2.hpp>
 
 1429962047 /media/richard/ubuntu-storage/projects/RPG/include/Entity/SteeringBehaviour.hpp
+=======
+	"SceneNode/SceneNode.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SceneNode.hpp
+	<vector>
+	<memory>
+	<SFML/Graphics/RenderWindow.hpp>
+	<SFML/Graphics/Transformable.hpp>
+	<SFML/Graphics/Drawable.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Time.hpp>
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/World/Wall.hpp
+	<memory>
+	"Scenery.hpp"
+
+1429969131 /media/richard/ubuntu-storage/projects/RPG/include/Entity/SteeringBehaviour.hpp
+>>>>>>> working
 	<vector>
 	<memory>
 	<SFML/Graphics/CircleShape.hpp>
@@ -1310,6 +1524,7 @@
 	<SFML/Graphics/VertexArray.hpp>
 	<SFML/System/Vector2.hpp>
 	<SFML/System/Time.hpp>
+<<<<<<< HEAD
 	"App/Params.hpp"
 	"Entity/Path.hpp"
 
@@ -1343,12 +1558,53 @@
 	"Entity/State/StateMachine.hpp"
 
 1429367597 /media/richard/ubuntu-storage/projects/RPG/include/App/HUD.hpp
+=======
+	"Entity/Path.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Path.hpp
+	<SFML/Graphics/CircleShape.hpp>
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/Entity/EntityStats.hpp
+	<fstream>
+	<string>
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/StateMachine.hpp
+	<cassert>
+	"State.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/State.hpp
+	<memory>
+
+1429971304 /media/richard/ubuntu-storage/projects/RPG/include/World/World.hpp
+	<memory>
+	<SFML/Graphics/RenderWindow.hpp>
+	<SFML/Graphics/Texture.hpp>
+	<SFML/Graphics/CircleShape.hpp>
+	<SFML/Graphics/Sprite.hpp>
+	<SFML/Graphics/Font.hpp>
+	<SFML/System/NonCopyable.hpp>
+	"World/Level.hpp"
+	"SceneNode/SceneNode.hpp"
+	"Entity/Enemy.hpp"
+	"Entity/Adventurer.hpp"
+	"Entity/State/State.hpp"
+	"Entity/EntityStats.hpp"
+	"App/HUD.hpp"
+
+1429970809 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Enemy.hpp
+	<memory>
+	"Entity/Entity.hpp"
+	"Entity/State/StateMachine.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/HUD.hpp
+>>>>>>> working
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/Text.hpp>
 	<SFML/Graphics/Font.hpp>
 	<SFML/System/Time.hpp>
 
+<<<<<<< HEAD
 1429807914 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Enemy.hpp
 	"Entity/Entity.hpp"
 	"Entity/State/StateMachine.hpp"
@@ -1376,6 +1632,50 @@
 	<Entity/Adventurer.hpp>
 
 1429806708 /media/richard/ubuntu-storage/projects/RPG/include/App/Controller.hpp
+=======
+1429969010 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurerStates.cpp
+	<cassert>
+	<iostream>
+	"App/Utility.hpp"
+	"Entity/State/AdventurerStates.hpp"
+	"Entity/SteeringBehaviour.hpp"
+	"Entity/Entity.hpp"
+
+1429968928 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/AdventurerStates.hpp
+	"Entity/State/State.hpp"
+	"Entity/Adventurer.hpp"
+
+1429969049 source:/media/richard/ubuntu-storage/projects/RPG/src/enemyStates.cpp
+	<cassert>
+	<iostream>
+	"App/Utility.hpp"
+	"World/World.hpp"
+	"Entity/State/EnemyStates.hpp"
+	"Entity/SteeringBehaviour.hpp"
+	"Entity/Entity.hpp"
+
+1429968942 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/EnemyStates.hpp
+	"Entity/State/State.hpp"
+	"Entity/Enemy.hpp"
+
+1429970921 source:/media/richard/ubuntu-storage/projects/RPG/src/entity.cpp
+	"Entity/Entity.hpp"
+	"World/World.hpp"
+	"World/LevelBlock.hpp"
+
+1429969236 source:/media/richard/ubuntu-storage/projects/RPG/src/level.cpp
+	<iostream>
+	<list>
+	<string>
+	"App/Utility.hpp"
+	"App/Controller.hpp"
+	"World/Level.hpp"
+	"World/World.hpp"
+	"SceneNode/SceneNode.hpp"
+	"Entity/Entity.hpp"
+
+1429970171 /media/richard/ubuntu-storage/projects/RPG/include/App/Controller.hpp
+>>>>>>> working
 	<array>
 	<memory>
 	<string>
@@ -1389,6 +1689,7 @@
 	"App/AppState.hpp"
 	"App/Params.hpp"
 
+<<<<<<< HEAD
 1429367597 /media/richard/ubuntu-storage/projects/RPG/include/App/AppState.hpp
 	<SFML/System/Time.hpp>
 
@@ -1400,12 +1701,31 @@
 	<SFML/Graphics/Color.hpp>
 
 1429568941 /media/richard/ubuntu-storage/projects/RPG/include/App/MenuState.hpp
+=======
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/Graphics/RenderTexture.hpp
+	<SFML/Graphics/Export.hpp>
+	<SFML/Graphics/Texture.hpp>
+	<SFML/Graphics/RenderTarget.hpp>
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/AppState.hpp
+	<SFML/System/Time.hpp>
+
+1429969247 source:/media/richard/ubuntu-storage/projects/RPG/src/levelBlock.cpp
+	<iostream>
+	<cassert>
+	"App/Utility.hpp"
+	"World/LevelBlock.hpp"
+	"Entity/Entity.hpp"
+
+1429966411 /media/richard/ubuntu-storage/projects/RPG/include/App/MenuState.hpp
+>>>>>>> working
 	<SFML/Graphics/RenderWindow.hpp>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/Text.hpp>
 	<SFML/Graphics/Font.hpp>
 	"App/AppState.hpp"
 
+<<<<<<< HEAD
 1429568941 /media/richard/ubuntu-storage/projects/RPG/include/App/GameState.hpp
 	<string>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -1417,6 +1737,19 @@
 	"World/World.hpp"
 
 1429367598 /media/richard/ubuntu-storage/projects/RPG/include/App/PausedScreen.hpp
+=======
+1429966403 /media/richard/ubuntu-storage/projects/RPG/include/App/GameState.hpp
+	<string>
+	<SFML/Graphics/RenderWindow.hpp>
+	<SFML/Graphics/Text.hpp>
+	"App/AppState.hpp"
+	"App/LevelCompleteScreen.hpp"
+	"App/GameCompleteScreen.hpp"
+	"App/PausedScreen.hpp"
+	"World/World.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/LevelCompleteScreen.hpp
+>>>>>>> working
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -1424,7 +1757,11 @@
 	<SFML/Graphics/Text.hpp>
 	<SFML/System/Time.hpp>
 
+<<<<<<< HEAD
 1429367598 /media/richard/ubuntu-storage/projects/RPG/include/App/LevelCompleteScreen.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/GameCompleteScreen.hpp
+>>>>>>> working
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -1432,7 +1769,11 @@
 	<SFML/Graphics/Text.hpp>
 	<SFML/System/Time.hpp>
 
+<<<<<<< HEAD
 1429367597 /media/richard/ubuntu-storage/projects/RPG/include/App/GameCompleteScreen.hpp
+=======
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/PausedScreen.hpp
+>>>>>>> working
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -1440,6 +1781,7 @@
 	<SFML/Graphics/Text.hpp>
 	<SFML/System/Time.hpp>
 
+<<<<<<< HEAD
 1429961918 source:/media/richard/ubuntu-storage/projects/RPG/src/entity.cpp
 	<iostream>
 	"World/Level.hpp"
@@ -1500,4 +1842,31 @@
 	"World/Level.hpp"
 	"World/LevelBlock.hpp"
 	"Entity/Entity.hpp"
+=======
+1429970714 source:/media/richard/ubuntu-storage/projects/RPG/src/world.cpp
+	<iostream>
+	<SFML/Graphics/PrimitiveType.hpp>
+	<SFML/Graphics/Text.hpp>
+	<SFML/Window/Event.hpp>
+	"App/Utility.hpp"
+	"App/Controller.hpp"
+	"App/GameState.hpp"
+	"App/HUD.hpp"
+	"World/World.hpp"
+	"World/Scenery.hpp"
+	"World/LevelBlock.hpp"
+	"SceneNode/SpriteNode.hpp"
+	"Entity/Adventurer.hpp"
+	"Entity/Enemy.hpp"
+	"Entity/State/EnemyStates.hpp"
+	"Entity/State/AdventurerStates.hpp"
+	"SceneNode/SpriteNode.hpp"
+
+1429962695 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SpriteNode.hpp
+	<vector>
+	<SFML/Graphics/Sprite.hpp>
+	<SFML/Graphics/Texture.hpp>
+	<SFML/System/Time.hpp>
+	"SceneNode.hpp"
+>>>>>>> working
 

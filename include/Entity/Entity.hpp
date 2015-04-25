@@ -1,131 +1,181 @@
-#ifndef ENTITY_HPP
-#define ENTITY_HPP
+#ifndef MOVINGENTITY_HPP
+#define MOVINGENTITY_HPP
 
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+#include "App/Params.hpp"
 #include "App/Utility.hpp"
-#include "World/LevelBlock.hpp"
-#include "Node/SpriteNode.hpp"
-#include "Entity/Dynamic.hpp"
+#include "World/Level.hpp"
+#include "SceneNode/SceneNode.hpp"
+#include "Entity/SteeringBehaviour.hpp"
+//#include "LevelBlock.hpp"
 #include "Entity/EntityStats.hpp"
-//#include "Level.hpp"
-//#include "EntityStats.hpp"
 //#include "MovingTarget.hpp"
-//#include "Params.hpp"
 
-class Level;
-//class LevelBlock;
+//class World;
 
-class Entity : public Dynamic
+class Entity : public SceneNode
 {
 public:
-   enum EntityType
-   {
-      Adventurer,
-      Enemy,
-      All
-   };
+    enum Type
+    {
+        Adventurer,
+        Enemy,
+        NumEntityTypes
+    };
 
-//   const float                 mSightRange;
-//   const float                 mAngleOfVision;
+    const float                 mPanicDistance;
 
 protected:
+//    World*                      mWorld;
+    Level*                      mLevel;
 
-   EntityType                 mEntityType;
+    const float                 mMass;
+    const float                 mHealth;
+    const float                 mWalkMaxSpeed;
+    const float                 mRunMaxSpeed;
+    const float                 mMaxForce;
+    const float                 mMaxTurnRate;
 
-   Level*                     mLevel;
-   LevelBlock*                mCurrentBlock;
 
-   sf::Text                   mText;
-   SteeringBehaviour          mSteering;
+    float                       mMaxSpeed;
+    Type                  mEntityType;
 
-   virtual void               updateCurrent(sf::Time dt);
-   virtual void               drawCurrent(sf::RenderTarget& target
-                                          , sf::RenderStates states) const;
+    LevelBlock*                 mCurrentBlock;
 
-   void                       insertIntoLevel();
+    sf::Sprite                  mSprite;
+    sf::Vector2f                mVelocity;
+    sf::Vector2f                mHeading;
+
+    float                       mRadius;
+    float                       mSpeed;
+
+    SteeringBehaviour           mSteering;
+    sf::Vector2f                mTargetPos;
+    Entity*                      mCurrentTarget;
+    sf::Text                    mText;
+
+
+    virtual void                updateCurrent(sf::Time);
+
+    void                        adjustPosition();
+    void                        ensureZeroOverlap();
 
 public:
-//                                 Entity(EntityType type
-//                                        , Level* level
-//                                        , const sf::Texture& texture
-//                                        , sf::Vector2f startPos
-//                                        , float scale);
+                                Entity(Level*
+                                       , const sf::Texture&
+                                       , const sf::Font&
+                                       , sf::Vector2f
+                                       , EntityStats
+                                       , const Params&
+                                       , Type type
+                                       , float
+                                       , float = 1.f);
 
-                                 Entity(const sf::Texture& texture
-                                        , const sf::Font& font
-                                        , sf::Vector2f startPos
-                                        , float scale
-                                        , const EntityStats& stats
-                                        , const Params& params
-                                        , EntityType type
-                                        , Level* level);
-//                                 : Dynamic(texture
-//                                          , startPos
-//                                          , scale
-//                                          , stats
-//                                          , params)
-//                                 , mEntityType(type)
-//                                 , mLevel(level)
-//                                 , mCurrentBlock(nullptr)
-//                                 , mText("", font)
-//                                 , mSteering(this
-//                                             , params)
-//                                 {
-//                                     sf::FloatRect bounds = mSprite.getLocalBounds();
-//                                     mRadius = std::max(bounds.width, bounds.height);
-//                                 }
+    virtual                     ~Entity(){};
 
-   virtual                       ~Entity(){};
-
-   virtual std::vector<Entity*>  getNeighbours(float radius
-                                              , int type) const;
-
-   // Getters
-   EntityType                    getEntityType() {return mEntityType;}
-
-//   std::vector<Entity*>       getNeighbours(float radius
-//                                           , int type) const;
+//    // Virtual Functions
+//    virtual sf::Vector2f        targetPosition() const
+//                                { return getWorldPosition(); }
 //
-   std::vector<LevelBlock*>   getBlockTypeInRange(LevelBlock::Type, float) const;
+//    virtual sf::Vector2f        targetVelocity() const
+//                                { return getVelocity(); }
+//
+//    virtual sf::Vector2f        targetHeading() const
+//                                { return getHeading(); }
+//
+//    virtual float               targetSpeed() const
+//                                { return getSpeed(); }
+//
+//    virtual float               targetRadius() const
+//                                { return getRadius(); }
 
-//   std::vector<LevelBlock*>   getLevelExit();
+    // Getters
+    std::vector<Entity*>         getNeighbours(float = 50.f) const;
 
-   float                         getRadius() const {return mRadius;}
+    std::vector<LevelBlock*>    getBlockTypeInRange(LevelBlock::Type, float) const;
 
-//   float                      getSpriteWidth() const{return mSprite.getLocalBounds().width;}
+    std::vector<LevelBlock*>    getLevelExit();
 
-//   Entity*                    getCurrentTarget() const {return mCurrentTarget;}
+    sf::Vector2f                getVelocity() const
+                                { return mVelocity; }
 
-//   LevelBlock*                   getLevelBlock(sf::Vector2i);
+    sf::Vector2f                getHeading() const
+                                { return mHeading; }
 
-   LevelBlock*                   getCurrentBlock() {return mCurrentBlock;}
+    float                       getSpeed() const
+                                { return magVec(mVelocity); }
 
-   // Setters
-   void                          changeColour(sf::Color colour){mSprite.setColor(colour);}
+    float                       getMass() const
+                                { return mMass; }
 
-   bool                          checkSteeringBehaviour(SteeringBehaviour::Behaviour type) const {return mSteering.checkBehaviour(type);}
+    float                       getMaxSpeed() const
+                                { return mMaxSpeed; }
 
-   void                          setSteeringTypes(std::vector<SteeringBehaviour::Behaviour> newBehaviours) {mSteering.setNewBehaviours(newBehaviours); }
+    float                       getMaxWalkSpeed()
+                                { return mWalkMaxSpeed; }
 
-   void                          setSteeringTypes(SteeringBehaviour::Behaviour newBehaviour) {mSteering.setNewBehaviours(newBehaviour);}
+    float                       getMaxRunSpeed()
+                                { return mRunMaxSpeed; }
 
+    float                       getMaxForce() const
+                                { return mMaxForce; }
 
-      void                       setText(std::string msg)
-                              {
-                                 mText.setString(msg);
-                                 mText.setColor(sf::Color(255, 255, 255, 255));
-                              }
+    float                       getMaxTurnRate() const
+                                { return mMaxTurnRate; }
 
-//   void                       setCurrentTarget(Entity* target) {mCurrentTarget = target;}
+    bool                        checkSteeringBehaviour(SteeringBehaviour::Behaviour type) const
+                                { return mSteering.checkBehaviour(type); }
 
-//   void                       setText(std::string msg)
-//                              {
-//                                 mText.setString(msg);
-//                                 mText.setColor(sf::Color(255, 255, 255, 255));
-//                              }
+    float                       getRadius() const
+                                { return mRadius; }
+
+    float                       getSpriteWidth() const
+                                { return mSprite.getLocalBounds().width; }
+
+    sf::Vector2f                getTargetPos() const
+                                { return mTargetPos; }
+
+    const Entity*                getCurrentTarget() const
+                                 { return mCurrentTarget; }
+
+    LevelBlock*                 getLevelBlock(sf::Vector2i);
+
+    LevelBlock*                 getLevelBlock()
+                                { return mCurrentBlock; }
+
+    Entity::Type          getEntityType()
+                                { return mEntityType; }
+
+    // Setters
+    void                        setVelocity(sf::Vector2f newVel)
+                                { mVelocity = newVel; }
+
+    void                        setCurrentTarget(Entity* target)
+                                { mCurrentTarget = target; }
+
+    void                        setMaxSpeed(float speed)
+                                { mMaxSpeed = speed; }
+
+    void                        setSteeringTypes(std::vector<SteeringBehaviour::Behaviour> newBehaviours)
+                                { mSteering.setNewBehaviours(newBehaviours); }
+
+    void                        setSteeringTypes(SteeringBehaviour::Behaviour newBehaviour)
+                                { mSteering.setNewBehaviours(newBehaviour); }
+
+    void                        changeColour(sf::Color colour)
+                                { mSprite.setColor(colour); }
+
+    void                        setText(std::string msg)
+                                {
+                                    mText.setString(msg);
+                                    mText.setColor(sf::Color(255, 255, 255, 255));
+                                }
+
+    void                        setTargetPos(sf::Vector2f pos)
+                                { mTargetPos = pos; }
 };
 
-#endif // ENTITY_HPP
+#endif // MOVINGENTITY_HPP
