@@ -2,7 +2,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "incl/SceneNode.hpp"
+#include "SceneNode/SceneNode.hpp"
 
 SceneNode::SceneNode()
 : mParent(nullptr)

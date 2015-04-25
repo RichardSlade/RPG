@@ -7,9 +7,9 @@
 
 #include <SFML/Window/Event.hpp>
 
-#include "incl/GameCompleteScreen.hpp"
-#include "incl/Controller.hpp"
-#include "incl/GameState.hpp"
+#include "App/GameCompleteScreen.hpp"
+#include "App/Controller.hpp"
+#include "App/GameState.hpp"
 
 GameCompleteScreen::GameCompleteScreen(Controller& cntrl
 							, GameState& gameState

@@ -3,8 +3,8 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "incl/Utility.hpp"
-#include "incl/Params.hpp"
+#include "App/Utility.hpp"
+#include "App/Params.hpp"
 
 float magVec(sf::Vector2f vec)
 {

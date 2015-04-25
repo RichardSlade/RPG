@@ -2,7 +2,7 @@
 #include <exception>
 #include <iostream>
 
-#include "incl/Controller.hpp"
+#include "App/Controller.hpp"
 
 int main()
 {

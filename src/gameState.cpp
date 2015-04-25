@@ -1,8 +1,8 @@
 #include <SFML/Window/Event.hpp>
 
-#include "incl/GameState.hpp"
-#include "incl/Controller.hpp"
-#include "incl/Params.hpp"
+#include "App/GameState.hpp"
+#include "App/Controller.hpp"
+#include "App/Params.hpp"
 
 GameState::GameState(Controller& cntrl
                      , sf::RenderWindow& window

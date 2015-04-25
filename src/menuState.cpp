@@ -1,8 +1,8 @@
 #include <SFML/Window/Event.hpp>
 
-#include "incl/MenuState.hpp"
-#include "incl/Controller.hpp"
-#include "incl/World.hpp"
+#include "App/MenuState.hpp"
+#include "App/Controller.hpp"
+#include "World/World.hpp"
 
 const int MenuState::mMaxTextNum = 4;
 const sf::Color MenuState::mSelectedTextColour = sf::Color::White;

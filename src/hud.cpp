@@ -1,7 +1,7 @@
 #include <string>
 
-#include "incl/HUD.hpp"
-#include "incl/World.hpp"
+#include "App/HUD.hpp"
+#include "World/World.hpp"
 
 HUD::HUD(World* world
          , const sf::Font& font

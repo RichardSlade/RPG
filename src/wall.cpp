@@ -1,4 +1,4 @@
-#include "incl/Wall.hpp"
+#include "World/Wall.hpp"
 //#include "BlockType.hpp"
 
 Wall::Wall(LevelBlock* host

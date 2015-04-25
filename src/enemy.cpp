@@ -2,9 +2,9 @@
 #include <cmath>
 #include <vector>
 
-#include "incl/Enemy.hpp"
-#include "incl/Utility.hpp"
-#include "incl/World.hpp"
+#include "App/Utility.hpp"
+#include "World/World.hpp"
+#include "Entity/Enemy.hpp"
 
 Enemy::Enemy(//World* world
 			Level* level
@@ -17,16 +17,16 @@ Enemy::Enemy(//World* world
 		  , State<Enemy>* initState
 		  , StateContainer& states
 		  , float scale)
-: MovingEntity(//world
-					level
-               , texture
-               , font
-               , startPos
-               , stats
-               , params
-               , MovingEntity::EntityType::Enemy
-               , params.EnemyPanicDistance
-               , scale)
+: Entity(//world
+         level
+         , texture
+         , font
+         , startPos
+         , stats
+         , params
+         , Entity::Type::Enemy
+         , params.EnemyPanicDistance
+         , scale)
 
 , mSightRange(params.EnemySightRange)
 , mAngleOfVision(params.EnemyAngleOfVision)
@@ -36,26 +36,26 @@ Enemy::Enemy(//World* world
 {
     mText.setPosition(-10.f, -40.f);
 
-    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+//    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 }
 
 void Enemy::updateCurrent(sf::Time dt)
 {
     mStateMachine.update();
 
-    MovingEntity::updateCurrent(dt);
+    Entity::updateCurrent(dt);
 
     mCurrentBlock->deleteEntity(this);
     mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 
-    if(mCurrentBlock->getType() == LevelBlock::Type::ExitBlock)
-    {
-        mToRemove = true;
-        mMovingTarget = nullptr;
-        mCurrentBlock->deleteEntity(this);
-
-//        mLevel->incEnemyHerded();
-    }
+//    if(mCurrentBlock->getType() == LevelBlock::Type::ExitBlock)
+//    {
+//        mToRemove = true;
+////        mMovingTarget = nullptr;
+//        mCurrentBlock->deleteEntity(this);
+//
+////        mLevel->incEnemyHerded();
+//    }
 }
 
 void Enemy::drawCurrent(sf::RenderTarget& target

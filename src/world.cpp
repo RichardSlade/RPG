@@ -4,19 +4,19 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Window/Event.hpp>
 
-#include "incl/World.hpp"
-#include "incl/Controller.hpp"
-#include "incl/SpriteNode.hpp"
-#include "incl/Utility.hpp"
-#include "incl/LevelBlock.hpp"
-#include "incl/Character.hpp"
-#include "incl/Enemy.hpp"
-#include "incl/Scenery.hpp"
-#include "incl/EnemyStates.hpp"
-#include "incl/CharacterStates.hpp"
-#include "incl/HUD.hpp"
-#include "incl/GameState.hpp"
-#include "incl/SpriteNode.hpp"
+#include "App/Utility.hpp"
+#include "App/Controller.hpp"
+#include "App/GameState.hpp"
+#include "App/HUD.hpp"
+#include "World/World.hpp"
+#include "World/Scenery.hpp"
+#include "World/LevelBlock.hpp"
+#include "SceneNode/SpriteNode.hpp"
+#include "Entity/Adventurer.hpp"
+#include "Entity/Enemy.hpp"
+#include "Entity/State/EnemyStates.hpp"
+#include "Entity/State/AdventurerStates.hpp"
+#include "SceneNode/SpriteNode.hpp"
 
 const sf::Time World::mComboTime = sf::seconds(1.f);
 
@@ -48,7 +48,8 @@ World::World(GameState& gameState
        , getViewBounds()
        , username)
 , mExitPos(mWorldBounds.width / 2.f, 0.f)
-, mLeadCharacter(nullptr)
+, mCurrentAdventurer(nullptr)
+, mCurrentAdventurerIndex(0)
 {
     mLevel = std::unique_ptr<Level>(new Level(mLevelBlockSize
                                             , controller.getParams().ExitWidth
@@ -61,18 +62,18 @@ World::World(GameState& gameState
 void World::initialiseStatesAndStats()
 {
     // Initialise enemy states
-    mEnemyStates.push_back(std::unique_ptr<LookOutForCharacter>(new LookOutForCharacter));
-    mEnemyStates.push_back(std::unique_ptr<EvadeCharacter>(new EvadeCharacter));
-    mEnemyStates.push_back(std::unique_ptr<RelaxEnemy>(new RelaxEnemy));
+    mEnemyStates.push_back(std::unique_ptr<EnemyStates::LookOut>(new EnemyStates::LookOut));
+    mEnemyStates.push_back(std::unique_ptr<EnemyStates::Evade>(new EnemyStates::Evade));
+    mEnemyStates.push_back(std::unique_ptr<EnemyStates::Relax>(new EnemyStates::Relax));
 //    mEnemyStates.push_back(std::unique_ptr<Exit>(new Exit));
 
-    mCharacterStates.push_back(std::unique_ptr<LookOutForEnemy>(new LookOutForEnemy));
-    mCharacterStates.push_back(std::unique_ptr<EvadeEnemy>(new EvadeEnemy));
-    mCharacterStates.push_back(std::unique_ptr<RelaxChar>(new RelaxChar));
-//    mCharacterStates.push_back(std::unique_ptr<Exit>(new Exit));
+    mAdventurerStates.push_back(std::unique_ptr<AdventurerStates::LookOut>(new AdventurerStates::LookOut));
+    mAdventurerStates.push_back(std::unique_ptr<AdventurerStates::Evade>(new AdventurerStates::Evade));
+    mAdventurerStates.push_back(std::unique_ptr<AdventurerStates::Relax>(new AdventurerStates::Relax));
+//    mAdventurerStates.push_back(std::unique_ptr<Exit>(new Exit));
 
     mEntityStats.push_back(EntityStats("data/entityStats/enemyStats.dat"));
-    mEntityStats.push_back(EntityStats("data/entityStats/characterStats.dat"));
+    mEntityStats.push_back(EntityStats("data/entityStats/adventurerStats.dat"));
 }
 
 void World::buildScene(const Controller& controller)
@@ -108,25 +109,25 @@ void World::generateAgents(const Controller& controller)
     {
         float inc = i * 40.f;
 
-        std::unique_ptr<Character> characterNode(new Character(mLevel.get()
-                                             , controller.getTexture(Controller::Textures::Character)
+        std::unique_ptr<Adventurer> adventurerNode(new Adventurer(mLevel.get()
+                                             , controller.getTexture(Controller::Textures::Adventurer)
                                              , controller.getFont(Controller::Fonts::Sansation)
                                              , sf::Vector2f((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc)
-                                             , mEntityStats.at(StatsType::CharacterStats)
+                                             , mEntityStats.at(World::Stats::AdventurerStats)
                                              , controller.getParams()
-                                             , mCharacterStates.at(Character::States::LookOut).get()
-                                             , mCharacterStates.at(Character::States::Relax).get()
-                                             , mCharacterStates
+                                             , mAdventurerStates.at(Adventurer::States::LookOut).get()
+                                             , mAdventurerStates.at(Adventurer::States::Relax).get()
+                                             , mAdventurerStates
                                              , rangedClamped(0.75f, 1.25f)));
 
         // Save pointer to character for enemy initialisation
-        Character* characterPtr = characterNode.get();
-        mCharacters.push_back(characterPtr);
+        Adventurer* adventurerPtr = adventurerNode.get();
+        mAdventurers.push_back(adventurerPtr);
 
-        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(characterNode));
+        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(adventurerNode));
     }
 
-    mLeadCharacter = mCharacters.at(0);
+    mCurrentAdventurer = mAdventurers.at(0);
 
     // Initialise enemy and add to scene graph
 //    for(int i = 0 ; i < mNumEnemy; i++)
@@ -162,14 +163,14 @@ void World::generateAgents(const Controller& controller)
                                                     , controller.getTexture(Controller::Textures::Enemy)
                                                     , controller.getFont(Controller::Fonts::Sansation)
                                                     , pos
-                                                    , mEntityStats.at(StatsType::EnemyStats)
+                                                    , mEntityStats.at(World::Stats::EnemyStats)
                                                     , controller.getParams()
                                                     , mEnemyStates.at(Enemy::States::LookOut).get()
                                                     , mEnemyStates.at(Enemy::States::Relax).get()
                                                     , mEnemyStates
                                                     , rangedClamped(0.75f, 1.25f)));
 
-        enemyNode->setMovingTarget(mCharacters.at(0));
+//        enemyNode->setMovingTarget(mAdventurers.at(0));
         mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(enemyNode));
     }
 }
@@ -223,6 +224,16 @@ void World::adjustView()
         mFocusPoint.y -= mScrollSpeed;
 }
 
+void World::cycleAdventurer()
+{
+   mCurrentAdventurerIndex ++;
+
+   if(mCurrentAdventurerIndex > mAdventurers.size() - 1)
+      mCurrentAdventurerIndex = 0;
+
+   mCurrentAdventurer = mAdventurers.at(mCurrentAdventurerIndex);
+}
+
 void World::update(sf::Time dt)
 {
     mSceneGraph.removeDeletedNodes();
@@ -251,7 +262,11 @@ void World::handleInput()
         {
             if(event.key.code == sf::Keyboard::Escape)
                 mWindow.close();
-//                mGameState.pause();
+            else if(event.key.code == sf::Keyboard::Tab)
+            {
+               cycleAdventurer();
+                  mFocusPoint = mCurrentAdventurer->getWorldPosition();
+            }
         }
         else if(event.type == sf::Event::MouseButtonPressed)
         {
@@ -273,13 +288,13 @@ void World::handleInput()
 
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
                 {
-                    if(mCharacters.at(0))
-                        mCharacters.at(0)->addToPath(mousePosF);
+                    if(mCurrentAdventurer)
+                        mCurrentAdventurer->addToPath(mousePosF);
                 }
                 else
                 {
-                    if(mCharacters.at(0))
-                        mCharacters.at(0)->startNewPath(mousePosF);
+                    if(mCurrentAdventurer)
+                        mCurrentAdventurer->startNewPath(mousePosF);
                 }
             }
         }
@@ -306,24 +321,24 @@ const sf::FloatRect World::getViewBounds() const
 	return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
 }
 
-std::vector<LevelBlock*> World::getBlockTypeInRange(const MovingEntity* entity
-                                                    , LevelBlock::Type blockType
-                                                    , float radius = 0.f) const
-{
-    return mLevel->getBlockTypeInRange(entity
-                                           , radius
-                                           , blockType);
-}
-
-LevelBlock* World::insertEntityIntoLevel(MovingEntity* entity) const
-{
-    return mLevel->insertEntityIntoLevel(entity);
-}
-
-std::vector<MovingEntity*> World::getEntitiesInRange(const MovingEntity* entity
-                                                     , float neighbourhoodRadius) const
-{
-    return mLevel->getEntitiesInRange(entity
-                                     , neighbourhoodRadius);
-}
+//std::vector<LevelBlock*> World::getBlockTypeInRange(const MovingEntity* entity
+//                                                    , LevelBlock::Type blockType
+//                                                    , float radius = 0.f) const
+//{
+//    return mLevel->getBlockTypeInRange(entity
+//                                           , radius
+//                                           , blockType);
+//}
+//
+//LevelBlock* World::insertEntityIntoLevel(MovingEntity* entity) const
+//{
+//    return mLevel->insertEntityIntoLevel(entity);
+//}
+//
+//std::vector<MovingEntity*> World::getEntitiesInRange(const MovingEntity* entity
+//                                                     , float neighbourhoodRadius) const
+//{
+//    return mLevel->getEntitiesInRange(entity
+//                                     , neighbourhoodRadius);
+//}
 

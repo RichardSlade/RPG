@@ -1,8 +1,8 @@
 #include <SFML/Window/Event.hpp>
 
-#include "incl/LevelCompleteScreen.hpp"
-#include "incl/Controller.hpp"
-#include "incl/GameState.hpp"
+#include "App/LevelCompleteScreen.hpp"
+#include "App/Controller.hpp"
+#include "App/GameState.hpp"
 
 LevelCompleteScreen::LevelCompleteScreen(Controller& cntrl
 							, GameState& gameState

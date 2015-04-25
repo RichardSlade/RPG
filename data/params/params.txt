@@ -8,7 +8,7 @@ NumSheepMax 200
 LevelTimeMin 0.5
 LevelTimeMax 2
 WaypointRadius 10
-ScrollSpeed 1
+ScrollSpeed 10
 EnemySightRange 250
 EnemyAngleOfVision 180
 EnemyPanicDistance 300

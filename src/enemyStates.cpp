@@ -1,30 +1,33 @@
 #include <cassert>
 #include <iostream>
 
-#include "incl/EnemyStates.hpp"
-#include "incl/SteeringBehaviour.hpp"
-#include "incl/Utility.hpp"
-#include "incl/MovingTarget.hpp"
-#include "incl/World.hpp"
+#include "App/Utility.hpp"
+#include "World/World.hpp"
+#include "Entity/State/EnemyStates.hpp"
+#include "Entity/SteeringBehaviour.hpp"
+#include "Entity/Entity.hpp"
+//#include "Entity/MovingTarget.hpp"
 
-void LookOutForCharacter::enter(Enemy* enemy)
+using namespace EnemyStates;
+
+void LookOut::enter(Enemy* host)
 {
-    assert(enemy);
+    assert(host);
 }
 
-void LookOutForCharacter::execute(Enemy* enemy)
+void LookOut::execute(Enemy* host)
 {
-    const MovingTarget* dog = enemy->getMovingTarget();
+    const Entity* adventurer = host->getCurrentTarget();
 
-    if(dog
-       && !enemy->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
+    if(adventurer
+       && !host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
     {
-        sf::Vector2f enemyPos = enemy->getWorldPosition();
+        sf::Vector2f enemyPos = host->getWorldPosition();
 
-        std::vector<LevelBlock*> levelExit = enemy->getLevelExit();
+        std::vector<LevelBlock*> levelExit = host->getLevelExit();
 
         bool closeToExit = false;
-        float expandedRadius = 100 + enemy->getRadius();
+        float expandedRadius = 100 + host->getRadius();
 
         sf::Vector2f targPos;
 
@@ -45,120 +48,120 @@ void LookOutForCharacter::execute(Enemy* enemy)
 
 //        if(closeToExit)
 //        {
-//            enemy->changeState(Enemy::States::Exit);
-//            enemy->setTargetPos(targPos);
+//            host->changeState(Enemy::States::Exit);
+//            host->setTargetPos(targPos);
 //            return;
 //        }
 
-        sf::Vector2f dogPos = dog->targetPosition();
-        sf::Vector2f vecToCharacter = enemyPos - dogPos;
+        sf::Vector2f adventurerPos = adventurer->getWorldPosition();
+        sf::Vector2f vecTo = enemyPos - adventurerPos;
 
-        float magCharacter = magVec(vecToCharacter);
+        float mag = magVec(vecTo);
 
-        if(magCharacter <= enemy->mPanicDistance * 2.f)
-            enemy->changeState(Enemy::States::Evade);
+        if(mag <= host->mPanicDistance * 2.f)
+            host->changeState(Enemy::States::Evade);
     }
 }
 
-void LookOutForCharacter::exit(Enemy* enemy)
+void LookOut::exit(Enemy* host)
 {
 
 }
 
-void EvadeCharacter::enter(Enemy* enemy)
+void Evade::enter(Enemy* host)
 {
-    assert(enemy);
+    assert(host);
 
     std::vector<SteeringBehaviour::Behaviour> behaviours;
 
-    if(!enemy->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Evade))
+    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Evade))
         behaviours.push_back(SteeringBehaviour::Behaviour::Evade);
 
-    behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
+//    behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
 
-    enemy->setSteeringTypes(behaviours);
-    enemy->setText("!!!!");
+    host->setSteeringTypes(behaviours);
+    host->setText("!!!!");
 
-    enemy->setMaxSpeed(enemy->getMaxRunSpeed());
+    host->setMaxSpeed(host->getMaxRunSpeed());
 }
 
-void EvadeCharacter::execute(Enemy* enemy)
+void Evade::execute(Enemy* host)
 {
-    if(enemy->getMovingTarget())
+    if(host->getCurrentTarget())
     {
-        sf::Vector2f dogPos = enemy->getMovingTarget()->targetPosition();
-        sf::Vector2f vecToCharacter = enemy->getWorldPosition() - dogPos;
+        sf::Vector2f adventurerPos = host->getCurrentTarget()->getWorldPosition();
+        sf::Vector2f vecTo = host->getWorldPosition() - adventurerPos;
 
-        float mag = magVec(vecToCharacter);
+        float mag = magVec(vecTo);
 
-        if(mag > enemy->mPanicDistance)
+        if(mag > host->mPanicDistance)
         {
-            enemy->changeState(Enemy::States::Relax);
+            host->changeState(Enemy::States::Relax);
         }
     }
 }
 
-void EvadeCharacter::exit(Enemy* enemy)
+void Evade::exit(Enemy* host)
 {
 
 }
 
-void RelaxEnemy::enter(Enemy* enemy)
+void Relax::enter(Enemy* host)
 {
-    assert(enemy);
+    assert(host);
 
     bool isFlocking = false;
 
-    if(enemy->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Flock))
+    if(host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Flock))
         isFlocking = true;
 
-    if(!enemy->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
+    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
     {
         std::vector<SteeringBehaviour::Behaviour> behaviours;
         behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
 
-        if(isFlocking)
-            behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
+//        if(isFlocking)
+//            behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
 
-        enemy->setSteeringTypes(behaviours);
+        host->setSteeringTypes(behaviours);
     }
 
-    enemy->setText("Baaah");
-    enemy->setMaxSpeed(enemy->getMaxWalkSpeed());
+    host->setText("Grrr");
+    host->setMaxSpeed(host->getMaxWalkSpeed());
 }
 
-void RelaxEnemy::execute(Enemy* enemy)
+void Relax::execute(Enemy* host)
 {
 
 }
 
-void RelaxEnemy::exit(Enemy* enemy)
+void Relax::exit(Enemy* host)
 {
 
 }
 
-//void Exit::enter(Enemy* enemy)
+//void Exit::enter(Enemy* host)
 //{
-//    assert(enemy);
+//    assert(host);
 //
-//    if(!enemy->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
+//    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
 //    {
 //        std::vector<SteeringBehaviour::Behaviour> behaviours;
 //        behaviours.push_back(SteeringBehaviour::Behaviour::Arrive);
 //
-//        enemy->setSteeringTypes(behaviours);
+//        host->setSteeringTypes(behaviours);
 //    }
 //
-//    enemy->setText("Maaah");
-//    enemy->setMaxSpeed(enemy->getMaxRunSpeed());
+//    host->setText("Maaah");
+//    host->setMaxSpeed(host->getMaxRunSpeed());
 //}
 //
-//void Exit::execute(Enemy* enemy)
+//void Exit::execute(Enemy* host)
 //{
 //
 //}
 //
-//void Exit::exit(Enemy* enemy)
+//void Exit::exit(Enemy* host)
 //{
 //
 //}

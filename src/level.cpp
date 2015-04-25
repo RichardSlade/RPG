@@ -2,12 +2,12 @@
 #include <list>
 #include <string>
 
-#include "incl/Level.hpp"
-#include "incl/MovingEntity.hpp"
-#include "incl/Utility.hpp"
-#include "incl/SceneNode.hpp"
-#include "incl/World.hpp"
-#include "incl/Controller.hpp"
+#include "App/Utility.hpp"
+#include "App/Controller.hpp"
+#include "World/Level.hpp"
+#include "World/World.hpp"
+#include "SceneNode/SceneNode.hpp"
+#include "Entity/Entity.hpp"
 
 Level::Level(int blockSize
              , int exitWidth
@@ -110,7 +110,7 @@ sf::Vector2i Level::worldCordsToIndex(sf::Vector2f pos) const
     return index;
 }
 
-std::vector<LevelBlock*> Level::getInRangeBlocks(const MovingEntity* entity
+std::vector<LevelBlock*> Level::getInRangeBlocks(const Entity* entity
                                                  , float radius) const
 {
     std::vector<LevelBlock*> inRangeBlocks;
@@ -145,7 +145,7 @@ std::vector<LevelBlock*> Level::getInRangeBlocks(const MovingEntity* entity
     return inRangeBlocks;
 }
 
-std::vector<LevelBlock*> Level::getBlockTypeInRange(const MovingEntity* entity
+std::vector<LevelBlock*> Level::getBlockTypeInRange(const Entity* entity
                                                     , float radius
                                                     , LevelBlock::Type blockType) const
 {
@@ -163,12 +163,13 @@ std::vector<LevelBlock*> Level::getBlockTypeInRange(const MovingEntity* entity
     return returnBlocks;
 }
 
-std::vector<MovingEntity*> Level::getEntitiesInRange(const MovingEntity* entity
-                                                     , float neighbourhood) const
+std::vector<Entity*> Level::getEntitiesInRange(const Entity* entity
+                                                , float neighbourhood
+                                                , int type) const
 {
     assert(entity);
 
-    std::vector<MovingEntity*> neighbourEntities;
+    std::vector<Entity*> neighbourEntities;
     std::vector<LevelBlock*> inRangeBlocks = getInRangeBlocks(entity
                                                               , neighbourhood);
 
@@ -176,19 +177,21 @@ std::vector<MovingEntity*> Level::getEntitiesInRange(const MovingEntity* entity
 
     for(LevelBlock* lvlBlck : inRangeBlocks)
     {
-        std::list<MovingEntity*> entitiesInBlock = lvlBlck->getEntities();
+        std::list<Entity*> entitiesInBlock = lvlBlck->getEntities();
 
-        for(MovingEntity* e : entitiesInBlock)
+        for(Entity* e : entitiesInBlock)
         {
             assert(e);
 
-            sf::Vector2f toNeighbour = e->getWorldPosition() - entityPos;
+            if(e->getEntityType() == type)
+            {
+               sf::Vector2f toNeighbour = e->getWorldPosition() - entityPos;
 
-            if(magVec(toNeighbour) <= neighbourhood)
-                neighbourEntities.push_back(e);
+               if(magVec(toNeighbour) <= neighbourhood)
+                  neighbourEntities.push_back(e);
+            }
         }
     }
-
 
     return neighbourEntities;
 }
@@ -340,7 +343,7 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
     }
 }
 
-LevelBlock* Level::insertEntityIntoLevel(MovingEntity* entity) const
+LevelBlock* Level::insertEntityIntoLevel(Entity* entity) const
 {
     sf::Vector2i index = worldCordsToIndex(entity->getWorldPosition());
     return mLevelArray.at(index.y).at(index.x)->insertEntity(entity);

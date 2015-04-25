@@ -1,8 +1,8 @@
 #include <SFML/Window/Event.hpp>
 
-#include "incl/PausedScreen.hpp"
-#include "incl/Controller.hpp"
-#include "incl/GameState.hpp"
+#include "App/PausedScreen.hpp"
+#include "App/Controller.hpp"
+#include "App/GameState.hpp"
 
 PausedScreen::PausedScreen(Controller& cntrl
 							, GameState& gameState

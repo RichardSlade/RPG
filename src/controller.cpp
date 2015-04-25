@@ -7,10 +7,10 @@
 
 #include <iostream>
 
-#include "incl/Controller.hpp"
-#include "incl/MenuState.hpp"
-#include "incl/GameState.hpp"
-#include "incl/LevelBlock.hpp"
+#include "App/Controller.hpp"
+#include "App/MenuState.hpp"
+#include "App/GameState.hpp"
+#include "World/LevelBlock.hpp"
 
 // Const FPS for frame cap
 const sf::Time Controller::mFPS = sf::seconds(1.f / 60.f);
@@ -47,7 +47,7 @@ void Controller::loadMedia()
         mTextures.push_back(sf::Texture());
 
     std::vector<std::string> fileNames;
-    fileNames.push_back("media/textures/character.png");
+    fileNames.push_back("media/textures/adventurer.png");
     fileNames.push_back("media/textures/enemy.png");
     fileNames.push_back("media/textures/grass.png");
     fileNames.push_back("media/textures/wall.png");

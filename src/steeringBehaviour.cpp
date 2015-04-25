@@ -1,19 +1,19 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include <cassert>
 
-#include "incl/SteeringBehaviour.hpp"
-#include "incl/MovingEntity.hpp"
-#include "incl/MovingTarget.hpp"
-#include "incl/Utility.hpp"
-#include "incl/Wall.hpp"
-#include "incl/LevelBlock.hpp"
-#include "incl/Enemy.hpp"
-#include "incl/Params.hpp"
+#include "App/Utility.hpp"
+#include "App/Params.hpp"
+#include "World/Wall.hpp"
+#include "World/LevelBlock.hpp"
+#include "Entity/Entity.hpp"
+#include "Entity/SteeringBehaviour.hpp"
+#include "Entity/Entity.hpp"
 
 const float SteeringBehaviour::mPI = 3.14159265358979;
 
-SteeringBehaviour::SteeringBehaviour(MovingEntity* host
+SteeringBehaviour::SteeringBehaviour(Entity* host
                                      , const Params& params)
 : mWanderRadius(params.WanderRadius)
 , mWanderDistance(params.WanderDistance)
@@ -41,7 +41,7 @@ SteeringBehaviour::SteeringBehaviour(MovingEntity* host
     for(bool& b : mBehaviourFlags)
         b = false;
 
-    if(mHost->getEntityType() != MovingEntity::EntityType::Character)
+    if(mHost->getEntityType() != Entity::Type::Adventurer)
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
@@ -126,23 +126,23 @@ sf::Vector2f SteeringBehaviour::seek(sf::Vector2f target)
 
 sf::Vector2f SteeringBehaviour::evade()
 {
-    const MovingTarget* pursuer = mHost->getMovingTarget();
+    const Entity* pursuer = mHost->getCurrentTarget();
 
-    const Enemy* sheepHost = dynamic_cast<const Enemy*>(mHost);
+    const Entity* sheepHost = dynamic_cast<const Entity*>(mHost);
 
     if(!mHost)
-        throw std::runtime_error("Error:\n SteeringBehaviour::evade(): Casting Host* to Enemy*");
+        throw std::runtime_error("Error:\n SteeringBehaviour::evade(): Casting Host* to Entity*");
 
-    sf::Vector2f toPursuer(pursuer->targetPosition() - mHost->getWorldPosition());
+    sf::Vector2f toPursuer(pursuer->getWorldPosition() - mHost->getWorldPosition());
 
     float magPursuer = magVec(toPursuer);
 
     if((magPursuer * magPursuer) > sheepHost->mPanicDistance * sheepHost->mPanicDistance)
         return sf::Vector2f();
 
-    float lookAheadTime = magPursuer / (mHost->getMaxSpeed() + pursuer->targetSpeed());
+    float lookAheadTime = magPursuer / (mHost->getMaxSpeed() + pursuer->getSpeed());
 
-    return flee(pursuer->targetPosition() + pursuer->targetVelocity() * lookAheadTime);
+    return flee(pursuer->getWorldPosition() + pursuer->getVelocity() * lookAheadTime);
 }
 
 sf::Vector2f SteeringBehaviour::flee(sf::Vector2f target)
@@ -326,9 +326,9 @@ sf::Vector2f SteeringBehaviour::seperation()
 {
     sf::Vector2f steeringForce;
 
-    std::vector<MovingEntity*> neighbours = mHost->getNeighbours(mSeperationRadius);
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius);
 
-    for(MovingEntity* e : neighbours)
+    for(Entity* e : neighbours)
     {
         sf::Vector2f toNeighbour = mHost->getWorldPosition() - e->getWorldPosition();
 
@@ -343,9 +343,9 @@ sf::Vector2f SteeringBehaviour::alignment()
     sf::Vector2f averageHeading;
     int neighbourCount = 0;
 
-    std::vector<MovingEntity*> neighbours = mHost->getNeighbours(mAlignRadius);
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mAlignRadius);
 
-    for(MovingEntity* e : neighbours)
+    for(Entity* e : neighbours)
     {
         if(e != mHost)
         {
@@ -368,9 +368,9 @@ sf::Vector2f SteeringBehaviour::cohesion()
     sf::Vector2f steeringForce, centerOfMass;
     int neighbourCount = 0;
 
-    std::vector<MovingEntity*> neighbours = mHost->getNeighbours(mCohesionRadius);
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mCohesionRadius);
 
-    for(MovingEntity* e : neighbours)
+    for(Entity* e : neighbours)
     {
         if(e != mHost
            && e)
@@ -500,7 +500,7 @@ void SteeringBehaviour::setNewBehaviours(SteeringBehaviour::Behaviour newType)
 
     mBehaviourFlags.at(newType) = true;
 
-    if(mHost->getEntityType() != MovingEntity::EntityType::Character)
+    if(mHost->getEntityType() != Entity::Type::Adventurer)
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;

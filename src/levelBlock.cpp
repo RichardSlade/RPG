@@ -1,8 +1,9 @@
 #include <iostream>
 #include <cassert>
 
-#include "incl/LevelBlock.hpp"
-#include "incl/Utility.hpp"
+#include "App/Utility.hpp"
+#include "World/LevelBlock.hpp"
+#include "Entity/Entity.hpp"
 
 const sf::Color LevelBlock::mBrown = sf::Color(150, 70, 0, 255);
 const sf::Color LevelBlock::mYellow = sf::Color(200, 200, 0, 255);
@@ -81,13 +82,13 @@ void LevelBlock::setBackgroundColour()
     mBackground.setColor(backgroundColour);
 }
 
-LevelBlock* LevelBlock::insertEntity(MovingEntity* entity)
+LevelBlock* LevelBlock::insertEntity(Entity* entity)
 {
     mEntitiesInBlock.push_back(entity);
     return this;
 }
 
-void LevelBlock::deleteEntity(MovingEntity* entity)
+void LevelBlock::deleteEntity(Entity* entity)
 {
     auto it = find (mEntitiesInBlock.begin(), mEntitiesInBlock.end(), entity);
 

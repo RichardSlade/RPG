@@ -1,4 +1,4 @@
-#include "incl/Path.hpp"
+#include "Entity/Path.hpp"
 
 void Path::resetPath()
 {
