@@ -13,7 +13,12 @@ Entity::Entity(Level* level
                            , float panicDist
                            , float scale)
 //: mLevel(world)
-: mLevel(level)
+: Killable(stats.health)
+, Intelligent(stats)
+, MeleeFighter(sf::seconds(stats.attackDelay)
+               , stats.baseDamage
+               , stats.attackDistance)
+, mLevel(level)
 , mMass(stats.mass)
 , mHealth(stats.health)
 , mWalkMaxSpeed(stats.walkMaxSpeed)
@@ -104,7 +109,7 @@ void Entity::updateCurrent(sf::Time dt)
 
 void Entity::ensureZeroOverlap()
 {
-    std::vector<Entity*> neighbours = getNeighbours(25.f);
+    std::vector<Entity*> neighbours = getNeighbours(25.f, mEntityType);
     sf::Vector2f pos = getWorldPosition();
     float radius = getRadius();
 
@@ -124,11 +129,12 @@ void Entity::ensureZeroOverlap()
     }
 }
 
-std::vector<Entity*> Entity::getNeighbours(float radius) const
+std::vector<Entity*> Entity::getNeighbours(float radius
+                                          , unsigned int type) const
 {
     return mLevel->getEntitiesInRange(const_cast<Entity*>(this)
                                    , radius
-                                   , mEntityType);
+                                   , type);
 }
 
 std::vector<LevelBlock*> Entity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const

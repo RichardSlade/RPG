@@ -16,8 +16,9 @@ public:
         LookOut,
         Evade,
         Relax,
+        Attack,
 //        Exit,
-        NumSheepStates
+        NumStates
     };
 
 
@@ -72,6 +73,8 @@ public:
                                     mText.setString(msg);
                                     mText.setColor(sf::Color(255, 255, 255, 255));
                                 }
+
+      unsigned int                     getCurrentStateType() {return mStateMachine.getCurrentStateType(); }
 //
 //    void                        setTargetBlockIndex(sf::Vector2i index)
 //                                { mTargetBlockIndex = index; }

@@ -17,7 +17,7 @@ void LookOut::enter(Enemy* host)
 
 void LookOut::execute(Enemy* host)
 {
-	if(host->getCurrentStateType() == Enemy::StateType::Relax)
+	if(host->getCurrentStateType() == Enemy::States::Relax)
 	{
       std::vector<Entity*> chars;
 
@@ -25,10 +25,10 @@ void LookOut::execute(Enemy* host)
 
       if(isHealthy) // Get all chars in agro distance
          chars = host->getNeighbours(host->agroDistance
-                                    , Entity::EntityType::Adventurer);
+                                    , Entity::Type::Adventurer);
       else // Get all chars in panic distance
          chars = host->getNeighbours(host->panicDistance
-                                    , Entity::EntityType::Adventurer);
+                                    , Entity::Type::Adventurer);
 
       sf::Vector2f hostPos = host->getWorldPosition();
 
@@ -55,9 +55,9 @@ void LookOut::execute(Enemy* host)
 //         host->setCurrentTarget(closestChar);
 
          if(isHealthy)
-            host->changeState(Enemy::StateType::Attack);
+            host->changeState(Enemy::States::Attack);
          else
-            host->changeState(Enemy::StateType::Evade);
+            host->changeState(Enemy::States::Evade);
       }
 	}
 }
@@ -96,7 +96,7 @@ void Evade::execute(Enemy* host)
 
       if(mag > host->panicDistance)
       {
-         host->changeState(Enemy::StateType::Relax);
+         host->changeState(Enemy::States::Relax);
       }
    }
 }
@@ -183,7 +183,7 @@ void Attack::execute(Enemy* host)
    }
    else // If no target
    {
-      host->changeState(Enemy::StateType::Relax);
+      host->changeState(Enemy::States::Relax);
    }
 }
 

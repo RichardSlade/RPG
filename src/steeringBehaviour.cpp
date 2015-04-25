@@ -326,7 +326,7 @@ sf::Vector2f SteeringBehaviour::seperation()
 {
     sf::Vector2f steeringForce;
 
-    std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius);
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius, mHost->getEntityType);
 
     for(Entity* e : neighbours)
     {

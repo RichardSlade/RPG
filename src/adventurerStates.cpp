@@ -23,7 +23,7 @@ void LookOut::execute(Adventurer* host)
    {
       // get all close enemies
       std::vector<Entity*> enemies = host->getNeighbours(host->agroDistance
-                                                               , Entity::EntityType::Enemy);
+                                                               , Entity::Type::Enemy);
 
       sf::Vector2f hostPos = host->getWorldPosition();
 
@@ -48,7 +48,7 @@ void LookOut::execute(Adventurer* host)
       if(closestEnemy)
       {
          // Change to attack state and set target
-         host->changeState(Adventurer::StateType::Attack);
+         host->changeState(Adventurer::States::Attack);
 //         host->setCurrentTarget(closestEnemy);
       }
    }
@@ -174,7 +174,7 @@ void Attack::execute(Adventurer* host)
    }
    else // If no target
    {
-      host->changeState(Adventurer::StateType::Relax);
+      host->changeState(Adventurer::States::Relax);
    }
 }
 

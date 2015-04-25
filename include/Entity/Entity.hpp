@@ -19,7 +19,7 @@
 
 //class World;
 
-class Entity : public SceneNode :
+class Entity : public SceneNode, public Killable, public Intelligent, public MeleeFighter
 {
 public:
     enum Type
@@ -96,7 +96,8 @@ public:
 //                                { return getRadius(); }
 
     // Getters
-    std::vector<Entity*>         getNeighbours(float = 50.f) const;
+    std::vector<Entity*>         getNeighbours(float radius
+                                                , unsigned int type) const;
 
     std::vector<LevelBlock*>    getBlockTypeInRange(LevelBlock::Type, float) const;
 

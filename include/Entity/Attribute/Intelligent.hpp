@@ -11,9 +11,9 @@ public:
    const float             attackDistance;
 
                            Intelligent(EntityStats stats)
-                           : panicDistance(stats.panicDist)
-                           , agroDistance(stats.agroDist)
-                           , attackDistance(stats.attackDist)
+                           : panicDistance(stats.panicDistance)
+                           , agroDistance(stats.agroDistance)
+                           , attackDistance(stats.attackDistance)
                            {};
 
 };

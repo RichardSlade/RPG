@@ -28,6 +28,7 @@ public:
         LookOut,
         Evade,
         Relax,
+        Attack,
 //        Exit,
         NumStates
     };

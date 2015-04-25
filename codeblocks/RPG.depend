@@ -948,14 +948,14 @@
 	<SFML/Graphics/Font.hpp>
 	<SFML/System/Time.hpp>
 
-1429970291 source:/media/richard/ubuntu-storage/projects/RPG/src/controller.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/controller.cpp
 	<iostream>
 	"App/Controller.hpp"
 	"App/MenuState.hpp"
 	"App/GameState.hpp"
 	"World/LevelBlock.hpp"
 
-1429970905 source:/media/richard/ubuntu-storage/projects/RPG/src/enemy.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/enemy.cpp
 	<iostream>
 	<cmath>
 	<vector>
@@ -963,7 +963,7 @@
 	"World/World.hpp"
 	"Entity/Enemy.hpp"
 
-1429971034 source:/media/richard/ubuntu-storage/projects/RPG/src/gameCompleteScreen.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/gameCompleteScreen.cpp
 	<SFML/Window/Event.hpp>
 	"App/GameCompleteScreen.hpp"
 	"App/Controller.hpp"
@@ -997,18 +997,18 @@
 
 1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Vector3.inl
 
-1429971051 source:/media/richard/ubuntu-storage/projects/RPG/src/gameState.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/gameState.cpp
 	<SFML/Window/Event.hpp>
 	"App/GameState.hpp"
 	"App/Controller.hpp"
 	"App/Params.hpp"
 
-1429971061 source:/media/richard/ubuntu-storage/projects/RPG/src/hud.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/hud.cpp
 	<string>
 	"App/HUD.hpp"
 	"World/World.hpp"
 
-1429971079 source:/media/richard/ubuntu-storage/projects/RPG/src/levelCompleteScreen.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/levelCompleteScreen.cpp
 	<SFML/Window/Event.hpp>
 	"App/LevelCompleteScreen.hpp"
 	"App/Controller.hpp"
@@ -1020,7 +1020,7 @@
 	<iostream>
 	"App/Controller.hpp"
 
-1429971097 source:/media/richard/ubuntu-storage/projects/RPG/src/menuState.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/menuState.cpp
 	<SFML/Window/Event.hpp>
 	"App/MenuState.hpp"
 	"App/Controller.hpp"
@@ -1029,19 +1029,19 @@
 1429971105 source:/media/richard/ubuntu-storage/projects/RPG/src/path.cpp
 	"Entity/Path.hpp"
 
-1429971115 source:/media/richard/ubuntu-storage/projects/RPG/src/pausedScreen.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/pausedScreen.cpp
 	<SFML/Window/Event.hpp>
 	"App/PausedScreen.hpp"
 	"App/Controller.hpp"
 	"App/GameState.hpp"
 
-1429971123 source:/media/richard/ubuntu-storage/projects/RPG/src/sceneNode.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/sceneNode.cpp
 	<algorithm>
 	<cassert>
 	<iostream>
 	"SceneNode/SceneNode.hpp"
 
-1429971132 source:/media/richard/ubuntu-storage/projects/RPG/src/spriteNode.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/spriteNode.cpp
 	"SceneNode/SpriteNode.hpp"
 
 1429970933 source:/media/richard/ubuntu-storage/projects/RPG/src/steeringBehaviour.cpp
@@ -1068,11 +1068,11 @@
 1429971162 source:/media/richard/ubuntu-storage/projects/RPG/src/wall.cpp
 	"World/Wall.hpp"
 
-1429975625 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurer.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurer.cpp
 	"Entity/Adventurer.hpp"
 	"World/World.hpp"
 
-1429975809 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Adventurer.hpp
+1429977686 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Adventurer.hpp
 	<SFML/Graphics/CircleShape.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/System/Time.hpp>
@@ -1080,7 +1080,7 @@
 	"Entity/Path.hpp"
 	"Entity/State/StateMachine.hpp"
 
-1429970887 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Entity.hpp
+1429977658 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Entity.hpp
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/Text.hpp>
@@ -1090,8 +1090,11 @@
 	"SceneNode/SceneNode.hpp"
 	"Entity/SteeringBehaviour.hpp"
 	"Entity/EntityStats.hpp"
+	"Entity/Attribute/Killable.hpp"
+	"Entity/Attribute/Intelligent.hpp"
+	"Entity/Attribute/MeleeFighter.hpp"
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/Params.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/Params.hpp
 	<fstream>
 	<string>
 	<stdexcept>
@@ -1103,18 +1106,18 @@
 	<string>
 	<SFML/System/Vector2.hpp>
 
-1429967213 /media/richard/ubuntu-storage/projects/RPG/include/World/Level.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/World/Level.hpp
 	"World/LevelBlock.hpp"
 	"World/Wall.hpp"
 	"SceneNode/SceneNode.hpp"
 
-1429966764 /media/richard/ubuntu-storage/projects/RPG/include/World/LevelBlock.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/World/LevelBlock.hpp
 	<list>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/CircleShape.hpp>
 	"World/Scenery.hpp"
 
-1429968398 /media/richard/ubuntu-storage/projects/RPG/include/World/Scenery.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/World/Scenery.hpp
 	<memory>
 	<SFML/Graphics/Color.hpp>
 	<SFML/Graphics/Sprite.hpp>
@@ -1122,7 +1125,7 @@
 	<SFML/Graphics/Texture.hpp>
 	"SceneNode/SceneNode.hpp"
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SceneNode.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SceneNode.hpp
 	<vector>
 	<memory>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -1131,11 +1134,11 @@
 	<SFML/System/NonCopyable.hpp>
 	<SFML/System/Time.hpp>
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/World/Wall.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/World/Wall.hpp
 	<memory>
 	"Scenery.hpp"
 
-1429969131 /media/richard/ubuntu-storage/projects/RPG/include/Entity/SteeringBehaviour.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/Entity/SteeringBehaviour.hpp
 	<vector>
 	<memory>
 	<SFML/Graphics/CircleShape.hpp>
@@ -1145,21 +1148,22 @@
 	<SFML/System/Time.hpp>
 	"Entity/Path.hpp"
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Path.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Path.hpp
 	<SFML/Graphics/CircleShape.hpp>
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/Entity/EntityStats.hpp
+1429977865 /media/richard/ubuntu-storage/projects/RPG/include/Entity/EntityStats.hpp
 	<fstream>
 	<string>
+	<stdexcept>
 
-1429975703 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/StateMachine.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/StateMachine.hpp
 	<cassert>
 	<Entity/State/State.hpp>
 
 1429973925 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/State.hpp
 	<memory>
 
-1429971304 /media/richard/ubuntu-storage/projects/RPG/include/World/World.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/World/World.hpp
 	<memory>
 	<SFML/Graphics/RenderWindow.hpp>
 	<SFML/Graphics/Texture.hpp>
@@ -1175,31 +1179,31 @@
 	"Entity/EntityStats.hpp"
 	"App/HUD.hpp"
 
-1429975726 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Enemy.hpp
+1429977818 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Enemy.hpp
 	<memory>
 	"Entity/Entity.hpp"
 	"Entity/State/StateMachine.hpp"
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/HUD.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/HUD.hpp
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/Text.hpp>
 	<SFML/Graphics/Font.hpp>
 	<SFML/System/Time.hpp>
 
-1429969010 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurerStates.cpp
+1429977764 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurerStates.cpp
 	<cassert>
 	<iostream>
 	"App/Utility.hpp"
+	"Entity/Enemy.hpp"
 	"Entity/State/AdventurerStates.hpp"
 	"Entity/SteeringBehaviour.hpp"
-	"Entity/Entity.hpp"
 
-1429968928 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/AdventurerStates.hpp
-	"Entity/State/State.hpp"
-	"Entity/Adventurer.hpp"
+1429974323 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/AdventurerStates.hpp
+	<Entity/State/State.hpp>
+	<Entity/Adventurer.hpp>
 
-1429969049 source:/media/richard/ubuntu-storage/projects/RPG/src/enemyStates.cpp
+1429977795 source:/media/richard/ubuntu-storage/projects/RPG/src/enemyStates.cpp
 	<cassert>
 	<iostream>
 	"App/Utility.hpp"
@@ -1208,16 +1212,15 @@
 	"Entity/SteeringBehaviour.hpp"
 	"Entity/Entity.hpp"
 
-1429968942 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/EnemyStates.hpp
+1429974323 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/EnemyStates.hpp
 	"Entity/State/State.hpp"
-	"Entity/Enemy.hpp"
 
-1429970921 source:/media/richard/ubuntu-storage/projects/RPG/src/entity.cpp
+1429977839 source:/media/richard/ubuntu-storage/projects/RPG/src/entity.cpp
 	"Entity/Entity.hpp"
 	"World/World.hpp"
 	"World/LevelBlock.hpp"
 
-1429969236 source:/media/richard/ubuntu-storage/projects/RPG/src/level.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/level.cpp
 	<iostream>
 	<list>
 	<string>
@@ -1228,7 +1231,7 @@
 	"SceneNode/SceneNode.hpp"
 	"Entity/Entity.hpp"
 
-1429970171 /media/richard/ubuntu-storage/projects/RPG/include/App/Controller.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/Controller.hpp
 	<array>
 	<memory>
 	<string>
@@ -1247,24 +1250,24 @@
 	<SFML/Graphics/Texture.hpp>
 	<SFML/Graphics/RenderTarget.hpp>
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/AppState.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/AppState.hpp
 	<SFML/System/Time.hpp>
 
-1429969247 source:/media/richard/ubuntu-storage/projects/RPG/src/levelBlock.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/levelBlock.cpp
 	<iostream>
 	<cassert>
 	"App/Utility.hpp"
 	"World/LevelBlock.hpp"
 	"Entity/Entity.hpp"
 
-1429966411 /media/richard/ubuntu-storage/projects/RPG/include/App/MenuState.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/MenuState.hpp
 	<SFML/Graphics/RenderWindow.hpp>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/Text.hpp>
 	<SFML/Graphics/Font.hpp>
 	"App/AppState.hpp"
 
-1429966403 /media/richard/ubuntu-storage/projects/RPG/include/App/GameState.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/GameState.hpp
 	<string>
 	<SFML/Graphics/RenderWindow.hpp>
 	<SFML/Graphics/Text.hpp>
@@ -1274,7 +1277,7 @@
 	"App/PausedScreen.hpp"
 	"World/World.hpp"
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/LevelCompleteScreen.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/LevelCompleteScreen.hpp
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -1282,7 +1285,7 @@
 	<SFML/Graphics/Text.hpp>
 	<SFML/System/Time.hpp>
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/GameCompleteScreen.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/GameCompleteScreen.hpp
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -1290,7 +1293,7 @@
 	<SFML/Graphics/Text.hpp>
 	<SFML/System/Time.hpp>
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/App/PausedScreen.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/PausedScreen.hpp
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -1317,10 +1320,23 @@
 	"Entity/State/AdventurerStates.hpp"
 	"SceneNode/SpriteNode.hpp"
 
-1429962695 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SpriteNode.hpp
+1429976152 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SpriteNode.hpp
 	<vector>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/System/Time.hpp>
 	"SceneNode.hpp"
+
+1429975921 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Attribute/Killable.hpp
+	"Entity/EntityStats.hpp"
+
+1429977568 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Attribute/Intelligent.hpp
+	"Entity/EntityStats.hpp"
+
+1429975921 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Attribute/MeleeFighter.hpp
+	<SFML/System/Time.hpp>
+
+1429976127 source:/media/richard/ubuntu-storage/projects/RPG/src/meleeFighter.cpp
+	"Entity/Attribute/MeleeFighter.hpp"
+	"Entity/Attribute/Killable.hpp"
 

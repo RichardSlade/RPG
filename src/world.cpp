@@ -65,11 +65,13 @@ void World::initialiseStatesAndStats()
     mEnemyStates.push_back(std::unique_ptr<EnemyStates::LookOut>(new EnemyStates::LookOut));
     mEnemyStates.push_back(std::unique_ptr<EnemyStates::Evade>(new EnemyStates::Evade));
     mEnemyStates.push_back(std::unique_ptr<EnemyStates::Relax>(new EnemyStates::Relax));
+    mEnemyStates.push_back(std::unique_ptr<EnemyStates::Attack>(new EnemyStates::Attack));
 //    mEnemyStates.push_back(std::unique_ptr<Exit>(new Exit));
 
     mAdventurerStates.push_back(std::unique_ptr<AdventurerStates::LookOut>(new AdventurerStates::LookOut));
-    mAdventurerStates.push_back(std::unique_ptr<AdventurerStates::Evade>(new AdventurerStates::Evade));
+//    mAdventurerStates.push_back(std::unique_ptr<AdventurerStates::Evade>(new AdventurerStates::Evade));
     mAdventurerStates.push_back(std::unique_ptr<AdventurerStates::Relax>(new AdventurerStates::Relax));
+    mAdventurerStates.push_back(std::unique_ptr<AdventurerStates::Attack>(new AdventurerStates::Attack));
 //    mAdventurerStates.push_back(std::unique_ptr<Exit>(new Exit));
 
     mEntityStats.push_back(EntityStats("data/entityStats/enemyStats.dat"));
