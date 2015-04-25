@@ -16,14 +16,14 @@
 const sf::Time Controller::mFPS = sf::seconds(1.f / 60.f);
 
 Controller::Controller()
-    : mParams()
-    , mWindowX(mParams.WindowX)
-    , mWindowY(mParams.WindowY)
-    , mWindow(sf::VideoMode(mWindowX, mWindowY), "AI Steering behaviours")// sf::Style::Fullscreen)
-    , mCountDown(mFPS)
-    , mResetViewCenter(mWindow.getView().getCenter())
-    , mAppStateType(AppState::StateType::Menu)
-    , mChangeState(false)
+: mParams()
+, mWindowX(mParams.WindowX)
+, mWindowY(mParams.WindowY)
+, mWindow(sf::VideoMode(mWindowX, mWindowY), "AI Steering behaviours")// sf::Style::Fullscreen)
+, mCountDown(mFPS)
+, mResetViewCenter(mWindow.getView().getCenter())
+, mAppStateType(AppState::StateType::Menu)
+, mChangeState(false)
 {
     mWindow.setPosition(sf::Vector2i(0, 0));
     loadMedia();

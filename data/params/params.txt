@@ -3,8 +3,8 @@ WindowY 640
 LevelBlockSize 40
 WorldDimMin 1000
 WorldDimMax 2000
-NumSheepMin 50
-NumSheepMax 200
+NumEnemyMin 50
+NumEnemyMax 200
 LevelTimeMin 0.5
 LevelTimeMax 2
 WaypointRadius 10

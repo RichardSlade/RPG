@@ -194,7 +194,7 @@ std::vector<Entity*> Level::getEntitiesInRange(const Entity* entity
 
         if(typeLookup)
         {
-           std::cout << type << ", " << e->getEntityType() << std::endl;
+//           std::cout << type << ", " << e->getEntityType() << std::endl;
 
           if(type == e->getEntityType())
           {

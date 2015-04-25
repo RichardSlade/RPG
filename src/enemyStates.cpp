@@ -1,5 +1,5 @@
 #include <cassert>
-#include <iostream>
+//#include <iostream>
 
 #include "App/Utility.hpp"
 #include "World/World.hpp"

@@ -1,5 +1,5 @@
 #include <cassert>
-#include <iostream>
+//#include <iostream>
 
 #include "App/Utility.hpp"
 #include "Entity/Enemy.hpp"
@@ -46,9 +46,10 @@ void LookOut::execute(Adventurer* host)
 
       // If enemy target exists
       if(closestEnemy)
+
       {
          // Change to attack state and set target
-         host->changeState(Adventurer::StateType::Attack);
+//         host->changeState(Adventurer::StateType::Attack);
 //         host->setCurrentTarget(closestEnemy);
       }
    }

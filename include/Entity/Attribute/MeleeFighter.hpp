@@ -26,7 +26,7 @@ public:
                                  , float baseDmg
                                  , float attkDist);
 
-   void              update(sf::Time dt);
+//   void              update(sf::Time dt);
    void              meleeAttack(Killable* target);
 
    // Getters

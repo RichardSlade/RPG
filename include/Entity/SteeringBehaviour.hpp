@@ -76,9 +76,9 @@ private:
     const float                            mCohesionRadius;
 
 //    DynamicEntity*                          mHost;
-    Entity*                               mHost;
-    float                                   mTheta;
-    Path                                    mPath;
+    Entity*                                mHost;
+    float                                  mTheta;
+    Path                                   mPath;
 
     std::array<bool,
         Behaviour::NumBehaviour>    mBehaviourFlags;

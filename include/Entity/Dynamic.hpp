@@ -31,6 +31,8 @@ protected:
 
 
    virtual void                updateCurrent(sf::Time dt){};
+   virtual void               drawCurrent(sf::RenderTarget& target
+                                          , sf::RenderStates states){};
 
 //   void                       update(sf::Time dt);
 
@@ -48,7 +50,7 @@ public:
 
    virtual                     ~Dynamic() {};
 
-   void                       move(sf::Vector2f newDir);
+   void                       changePosition(sf::Vector2f newDir);
 
    // Getters
 //   virtual std::vector<Dynamic*>    getNeighbours(float radius, int type) const;

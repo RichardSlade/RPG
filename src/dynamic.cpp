@@ -22,6 +22,8 @@ Dynamic::Dynamic(const sf::Texture& texture
 //, mSteering(this, params)
 , mSpeed(0.f)
 {
+//   std::cout << mWalkMaxSpeed << std::endl;
+
     float theta = randomClamped() * (2.f * SteeringBehaviour::mPI);
     rotate(theta * (180 / SteeringBehaviour::mPI));
     mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
@@ -30,7 +32,7 @@ Dynamic::Dynamic(const sf::Texture& texture
     mRadius = std::max(bounds.width, bounds.height);
 }
 
-void Dynamic::move(sf::Vector2f newDir)
+void Dynamic::changePosition(sf::Vector2f newDir)
 {
 //   sf::Vector2f steering = mSteering.calculate(dt);
    sf::Vector2f acceleration = newDir / mMass;
@@ -56,7 +58,7 @@ void Dynamic::move(sf::Vector2f newDir)
    mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
 
    truncateVec(mVelocity, mMaxSpeed);
-   move(mVelocity);
+//   move(mVelocity);
 
 //   mCurrentBlock->deleteEntity(this);
 //   mCurrentBlock = mLevel->insertEntityIntoLevel(this);

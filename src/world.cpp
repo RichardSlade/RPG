@@ -92,7 +92,7 @@ void World::initialiseStatesAndStats()
 
 //    mCharacterStates.push_back(std::unique_ptr<Exit>(new Exit));
 
-    mEntityStats.push_back(EntityStats("data/entityStats/goblinStats.dat"));
+    mEntityStats.push_back(EntityStats("data/entityStats/enemyStats.dat"));
     mEntityStats.push_back(EntityStats("data/entityStats/characterStats.dat"));
 }
 
@@ -125,14 +125,15 @@ void World::buildScene(const Controller& controller)
 void World::generateAgents(const Controller& controller)
 {
     // Initialise characters and add to scene graph
-    for(int i = 0; i < 2; i++)
+    for(int i = 0; i < 1; i++)
     {
         float inc = i * 40.f;
 
-        std::unique_ptr<Adventurer> characterNode(new Adventurer(Adventurer::Type::Barbarian
+        std::unique_ptr<Adventurer> adventurerNode(new Adventurer(Adventurer::Type::Barbarian
                                                                 , controller.getTexture(Controller::Textures::Adventurer)
                                                                 , controller.getFont(Controller::Fonts::Sansation)
                                                                 , sf::Vector2f((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc)
+//                                                                , sf::Vector2f(mWorldBounds.width / 2.f, mWorldBounds.height / 2.f)
                                                                 , rangedClamped(0.75f, 1.25f)
                                                                 , mEntityStats.at(StatsType::AdventurerStats)
                                                                 , controller.getParams()
@@ -143,17 +144,16 @@ void World::generateAgents(const Controller& controller)
                                                                 , Adventurer::StateType::Relax));
 
         // Save pointer to character for enemy initialisation
-        Adventurer* characterPtr = characterNode.get();
-        mAdventurers.push_back(characterPtr);
+        Adventurer* adventurerPtr = adventurerNode.get();
+        mAdventurers.push_back(adventurerPtr);
 
-        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(characterNode));
+        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(adventurerNode));
     }
 
     mCurrentAdventurer = mAdventurers.at(mCurrentAdventurerIndex);
 
     // Initialise enemy and add to scene graph
-//    for(int i = 0 ; i < mNumEnemy; i++)
-    for(int i = 0 ; i < 10; i++)
+    for(int i = 0 ; i < 0; i++)
     {
         // Find square for enemy to start in
         LevelBlock* levelBlock;
@@ -195,7 +195,7 @@ void World::generateAgents(const Controller& controller)
                                                   , Enemy::StateType::Relax));
 
 //        enemyNode->setMovingTarget(mCharacters.at(0));
-        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(enemyNode));
+//        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(enemyNode));
     }
 }
 
@@ -266,57 +266,60 @@ void World::update(sf::Time dt)
 
 void World::handleInput()
 {
-    sf::Event event;
+   sf::Event event;
 
-    bool characterChange = false;
+   bool characterChange = false;
 
-    while(mWindow.pollEvent(event))
-    {
-        if(event.type == sf::Event::Closed)
-            mWindow.close();
-        else if(event.type == sf::Event::KeyReleased)
-        {
-            if(event.key.code == sf::Keyboard::Escape)
-                mWindow.close();
-            else if(event.key.code == sf::Keyboard::Tab)
+   while(mWindow.pollEvent(event))
+   {
+     if(event.type == sf::Event::Closed)
+         mWindow.close();
+     else if(event.type == sf::Event::KeyReleased)
+     {
+         if(event.key.code == sf::Keyboard::Escape)
+             mWindow.close();
+         else if(event.key.code == sf::Keyboard::Tab)
+         {
+            changeAdventurer();
+            characterChange = true;
+         }
+     }
+     else if(event.type == sf::Event::MouseButtonPressed)
+     {
+         sf::Vector2i mousePos;
+         sf::FloatRect vBounds = getViewBounds();
+
+         mousePos.x = sf::Mouse::getPosition(mWindow).x + vBounds.left;
+         mousePos.y = sf::Mouse::getPosition(mWindow).y + vBounds.top;
+
+         sf::Vector2f mousePosF(mousePos.x, mousePos.y);
+
+         if(event.mouseButton.button == sf::Mouse::Left)
+         {
+            if(mCurrentAdventurer)
             {
-               changeAdventurer();
-               characterChange = true;
-            }
-        }
-        else if(event.type == sf::Event::MouseButtonPressed)
-        {
-            sf::Vector2i mousePos;
-            sf::FloatRect vBounds = getViewBounds();
+               mousePosF.x = std::min(mousePosF.x, static_cast<float>(mWorldBounds.width - (mLevelBlockSize + mWaypointRadius)));
+               mousePosF.x = std::max(mousePosF.x, static_cast<float>(mLevelBlockSize + mWaypointRadius));
 
-            mousePos.x = sf::Mouse::getPosition(mWindow).x + vBounds.left;
-            mousePos.y = sf::Mouse::getPosition(mWindow).y + vBounds.top;
+               mousePosF.y = std::min(mousePosF.y, static_cast<float>(mWorldBounds.height - (mLevelBlockSize + mWaypointRadius)));
+               mousePosF.y = std::max(mousePosF.y, static_cast<float>(mLevelBlockSize + mWaypointRadius));
 
-            sf::Vector2f mousePosF(mousePos.x, mousePos.y);
-
-            if(event.mouseButton.button == sf::Mouse::Left)
-            {
-                mousePosF.x = std::min(mousePosF.x, static_cast<float>(mWorldBounds.width - (mLevelBlockSize + mWaypointRadius)));
-                mousePosF.x = std::max(mousePosF.x, static_cast<float>(mLevelBlockSize + mWaypointRadius));
-
-                mousePosF.y = std::min(mousePosF.y, static_cast<float>(mWorldBounds.height - (mLevelBlockSize + mWaypointRadius)));
-                mousePosF.y = std::max(mousePosF.y, static_cast<float>(mLevelBlockSize + mWaypointRadius));
-
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-                {
+               if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+               {
                   mCurrentAdventurer->addToPath(mousePosF);
-                }
-                else
-                {
+               }
+               else
+               {
                   mCurrentAdventurer->startNewPath(mousePosF);
-                }
+               }
             }
-        }
-    }
+         }
+      }
+   }
 
-    handleRealTimeInput();
+   handleRealTimeInput();
 
-    if(characterChange)
+   if(characterChange)
       mFocusPoint = mCurrentAdventurer->getWorldPosition();
 }
 

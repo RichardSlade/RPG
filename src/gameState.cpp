@@ -7,38 +7,38 @@
 GameState::GameState(Controller& cntrl
                      , sf::RenderWindow& window
                      , std::string username)
-    : mWorldDimMax(cntrl.getParams().WorldDimMax)
-    , mNumEnemyMax(cntrl.getParams().NumEnemyMax)
-    , mLevelTimeMin(cntrl.getParams().LevelTimeMin)
-    , mResetWorldDim(cntrl.getParams().WorldDimMin)
-    , mResetNumEnemy(cntrl.getParams().NumEnemyMin)
-    , mResetLevelTime(cntrl.getParams().LevelTimeMax)
-    , mController(cntrl)
-    , mWindow(window)
-    , mWorldDim(mResetWorldDim)
-    , mNumEnemy(mResetNumEnemy)
-    , mLevelTime(sf::seconds(mResetLevelTime * 60.f))
-    , mTotalEnemyHerded(0)
-    , mUsername(username)
-    , mWorld(new World(*this
-                       , cntrl
-                       , window
-                       , username
-                       , mWorldDim
-                       , mNumEnemy
-                       , mLevelTime))
-    , mPausedScreen(mController
+: mWorldDimMax(cntrl.getParams().WorldDimMax)
+, mNumEnemyMax(cntrl.getParams().NumEnemyMax)
+, mLevelTimeMin(cntrl.getParams().LevelTimeMin)
+, mResetWorldDim(cntrl.getParams().WorldDimMin)
+, mResetNumEnemy(cntrl.getParams().NumEnemyMin)
+, mResetLevelTime(cntrl.getParams().LevelTimeMax)
+, mController(cntrl)
+, mWindow(window)
+, mWorldDim(mResetWorldDim)
+, mNumEnemy(mResetNumEnemy)
+, mLevelTime(sf::seconds(mResetLevelTime * 60.f))
+, mTotalEnemyHerded(0)
+, mUsername(username)
+, mWorld(new World(*this
+                 , cntrl
+                 , window
+                 , username
+                 , mWorldDim
+                 , mNumEnemy
+                 , mLevelTime))
+, mPausedScreen(mController
+              , *this
+              , mWindow)
+, mLevelCompleteScreen(mController
+                     , *this
+                     , mWindow)
+, mGameCompleteScreen(mController
                     , *this
                     , mWindow)
-    , mLevelCompleteScreen(mController
-                           , *this
-                           , mWindow)
-    , mGameCompleteScreen(mController
-                          , *this
-                          , mWindow)
-    , mCurrentScreen(GameState::Screen::Game)
-    , mNewScreen(mCurrentScreen)
-    , mPaused(false)
+, mCurrentScreen(GameState::Screen::Game)
+, mNewScreen(mCurrentScreen)
+, mPaused(false)
 {
 
 }

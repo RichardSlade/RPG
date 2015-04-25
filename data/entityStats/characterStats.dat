@@ -1,10 +1,10 @@
 Mass 1.2
-Health 10.0
-Damage 1.0
 WalkSpeed 2.0
 RunSpeed 3.0
 MaxForce 15.0
 MaxTurnRate 0.4
+Health 10.0
+MeleeDamage 1.0
 PanicDistance 200
 AgroDistance 200
 AttackDistance 20

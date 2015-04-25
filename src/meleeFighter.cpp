@@ -18,14 +18,14 @@ MeleeFighter::MeleeFighter(sf::Time delay
 , mCanAttack(true)
 {}
 
-void MeleeFighter::update(sf::Time dt)
-{
-   if(!mCanAttack)
-      mAttackCountdown -= dt;
-
-   if(mAttackCountdown < sf::Time::Zero)
-      mCanAttack = true;
-}
+//void MeleeFighter::update(sf::Time dt)
+//{
+//   if(!mCanAttack)
+//      mAttackCountdown -= dt;
+//
+//   if(mAttackCountdown < sf::Time::Zero)
+//      mCanAttack = true;
+//}
 
 void MeleeFighter::meleeAttack(Killable* target)
 {

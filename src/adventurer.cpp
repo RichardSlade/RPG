@@ -49,13 +49,10 @@ Adventurer::Adventurer(Adventurer::Type adventurerType
 */
 void Adventurer::updateCurrent(sf::Time dt)
 {
-   mStateMachine.update();
-   Entity::updateCurrent(dt);
+//   mStateMachine.update();
+//   Entity::updateCurrent(dt);
 }
 
-/*
-*   Draw function used by SFML to render to sf::RenderTarget
-*/
 void Adventurer::drawCurrent(sf::RenderTarget& target
                             , sf::RenderStates states) const
 {

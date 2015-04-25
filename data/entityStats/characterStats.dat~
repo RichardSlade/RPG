@@ -1,5 +1,6 @@
 Mass 1.2
 Health 10.0
+MeleeDamage 1.0
 WalkSpeed 2.0
 RunSpeed 3.0
 MaxForce 15.0

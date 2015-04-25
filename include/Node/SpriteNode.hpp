@@ -44,6 +44,8 @@ public:
                                  mSprite.setPosition(pos);
                               };
 
+   virtual                    ~SpriteNode(){};
+
     // Getters
     sf::FloatRect               getGlobalBounds() {return mSprite.getGlobalBounds();}
 

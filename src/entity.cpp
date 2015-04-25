@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "World/Level.hpp"
 #include "Entity/Entity.hpp"
 
@@ -17,29 +19,41 @@ Entity::Entity(const sf::Texture& texture
 , mEntityType(type)
 , mLevel(level)
 , mCurrentBlock(nullptr)
-, mText("", font)
+, mText("adadawdadw", font)
 , mSteering(this
          , params)
 {
    mText.setPosition(-10.f, -40.f);
+
+   std::string str = mText.getString();
+   std::cout << str << std::endl;
 
    insertIntoLevel();
 }
 
 void Entity::updateCurrent(sf::Time dt)
 {
-   Dynamic::move(mSteering.calculate(dt));
+   setPosition(500.f, 500.f);
 
-   insertIntoLevel();
+   std::cout << "Here" << std::endl;
+
+//   Dynamic::changePosition(mSteering.calculate(dt));
+
+//   insertIntoLevel();
 }
 
 void Entity::drawCurrent(sf::RenderTarget& target
                         , sf::RenderStates states) const
 {
-   SpriteNode::drawCurrent(target
-                           , states);
+//   SpriteNode::drawCurrent(target
+//                           , states);
 
-   target.draw(mText);
+//   std::cout << "Here" << std::endl;
+
+      std::string str = mText.getString();
+   std::cout << str << std::endl;
+
+//   target.draw(mText);
 }
 
 void Entity::insertIntoLevel()

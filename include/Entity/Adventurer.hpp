@@ -46,9 +46,9 @@ public:
    };
 
 protected:
-   Adventurer::Type       mAdventurerType;
+   Adventurer::Type              mAdventurerType;
 
-   StateContainer&                 mStates;
+   StateContainer&               mStates;
    StateMachine<Adventurer>         mStateMachine;
 
 //   Enemy                           mCurrentTarget;

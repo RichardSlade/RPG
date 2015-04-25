@@ -10,8 +10,7 @@
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/System/Time.hpp>
 
-class SceneNode : public sf::Transformable, public sf::Drawable
-    , private sf::NonCopyable
+class SceneNode : public sf::Transformable, public sf::Drawable, private sf::NonCopyable
 {
 public:
     typedef std::unique_ptr<SceneNode>      upScNode;
@@ -39,7 +38,7 @@ protected:
 
 public:
                                              SceneNode();
-    virtual                                 ~SceneNode() {};
+    virtual                                 ~SceneNode(){};
 
     void                                    update(sf::Time);
 
@@ -47,14 +46,11 @@ public:
     SceneNode::upScNode                     deleteChild(const SceneNode&);
     void                                    removeDeletedNodes();
 
-    sf::Transform			                getWorldTransform() const;
-    sf::Vector2f			                getWorldPosition() const;
+    sf::Transform			                     getWorldTransform() const;
+    sf::Vector2f			                     getWorldPosition() const;
 
     // Getters
-    bool                                    getToRemove() const
-    {
-        return mToRemove;
-    }
+    bool                                    getToRemove() const {return mToRemove;}
 };
 
 #endif // SCENENODE_HPP
