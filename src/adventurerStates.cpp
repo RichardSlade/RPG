@@ -19,7 +19,7 @@ void LookOut::enter(Adventurer* host)
 void LookOut::execute(Adventurer* host)
 {
    // If host is currently relaxed
-   if(host->getCurrentState() == Adventurer::StateType::Relax)
+   if(host->getCurrentStateType() == Adventurer::States::Relax)
    {
       // get all close enemies
       std::vector<Entity*> enemies = host->getNeighbours(host->agroDistance
@@ -182,4 +182,59 @@ void Attack::exit(Adventurer* host)
 {
 
 }
+
+//void Follow::enter(Adventurer* host)
+//{
+//    assert(host);
+//
+////    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
+////    {
+////        std::vector<SteeringBehaviour::Behaviour> behaviours;
+////        behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
+////
+////        if(isFlocking)
+////            behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
+////
+////        host->setSteeringTypes(behaviours);
+////    }
+////
+//////    host->setText("Baaah");
+////    host->setMaxSpeed(host->getMaxWalkSpeed());
+//}
+//
+//void Follow::execute(Adventurer* host)
+//{
+//
+//}
+//
+//void Follow::exit(Adventurer* host)
+//{
+//
+//}
+
+//void Exit::enter(Adventurer* host)
+//{
+//    assert(host);
+//
+//    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
+//    {
+//        std::vector<SteeringBehaviour::Behaviour> behaviours;
+//        behaviours.push_back(SteeringBehaviour::Behaviour::Arrive);
+//
+//        host->setSteeringTypes(behaviours);
+//    }
+//
+//    host->setText("Maaah");
+//    host->setMaxSpeed(host->getMaxRunSpeed());
+//}
+//
+//void Exit::execute(Adventurer* host)
+//{
+//
+//}
+//
+//void Exit::exit(Adventurer* host)
+//{
+//
+//}
 

@@ -2,17 +2,6 @@
 #include <algorithm>
 #include <iostream>
 #include <cassert>
-<<<<<<< HEAD
-
-#include "App/Utility.hpp"
-#include "App/Params.hpp"
-#include "World/Wall.hpp"
-#include "World/LevelBlock.hpp"
-#include "Entity/SteeringBehaviour.hpp"
-#include "Entity/Entity.hpp"
-#include "Entity/Enemy.hpp"
-
-=======
 
 #include "App/Utility.hpp"
 #include "App/Params.hpp"
@@ -21,7 +10,6 @@
 #include "Entity/Entity.hpp"
 #include "Entity/SteeringBehaviour.hpp"
 #include "Entity/Entity.hpp"
->>>>>>> working
 
 const float SteeringBehaviour::mPI = 3.14159265358979;
 
@@ -53,11 +41,7 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
     for(bool& b : mBehaviourFlags)
         b = false;
 
-<<<<<<< HEAD
-    if(mHost->getEntityType() != Entity::EntityType::Adventurer)
-=======
     if(mHost->getEntityType() != Entity::Type::Adventurer)
->>>>>>> working
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
@@ -90,27 +74,27 @@ void SteeringBehaviour::createFeelers()
     mFeelers.clear();
 
     mFeelers.push_back(sf::Vector2f(std::sin(-45.f * (mPI / 180.f)) * mFeelerLength
-                                    , -std::cos(-45.f *(mPI / 180.f)) * mFeelerLength));
+                                      , -std::cos(-45.f *(mPI / 180.f)) * mFeelerLength));
 
     mFeelers.push_back(sf::Vector2f(0.f
-                                    , -mFeelerLength));
+                                      , -mFeelerLength));
 
     mFeelers.push_back(sf::Vector2f(std::sin(45.f * (mPI / 180.f)) * mFeelerLength
-                                    , -std::cos(45.f *(mPI / 180.f)) * mFeelerLength));
+                                      , -std::cos(45.f *(mPI / 180.f)) * mFeelerLength));
 }
 
 sf::Vector2f SteeringBehaviour::rest()
 {
-    sf::Vector2f steeringForce;
-    sf::Vector2f hostVel = mHost->getVelocity();
+    sf::Vector2f steeringForce, hostVel = mHost->getVelocity();
 
-    steeringForce = -hostVel / 2.f;
+    steeringForce = -hostVel;
 
     return steeringForce;
 }
 
 sf::Vector2f SteeringBehaviour::arrive(sf::Vector2f targ, Deceleration deceleration)
 {
+
     sf::Vector2f toTarget = targ - mHost->getWorldPosition();
 
     float dist = magVec(toTarget);
@@ -142,19 +126,6 @@ sf::Vector2f SteeringBehaviour::seek(sf::Vector2f target)
 
 sf::Vector2f SteeringBehaviour::evade()
 {
-<<<<<<< HEAD
-   //    const Entity* pursuer = mHost->getCurrentTarget();
-   const Entity* pursuer = nullptr;
-
-//    const Enemy* host = dynamic_cast<const Enemy*>(mHost);
-
-//    if(!mHost)
-//        throw std::runtime_error("Error:\n SteeringBehaviour::evade(): Casting Host* to Enemy*");
-
-   if(pursuer)
-   {
-      sf::Vector2f toPursuer(pursuer->getWorldPosition() - mHost->getWorldPosition());
-=======
     const Entity* pursuer = mHost->getCurrentTarget();
 
     const Entity* sheepHost = dynamic_cast<const Entity*>(mHost);
@@ -163,27 +134,15 @@ sf::Vector2f SteeringBehaviour::evade()
         throw std::runtime_error("Error:\n SteeringBehaviour::evade(): Casting Host* to Entity*");
 
     sf::Vector2f toPursuer(pursuer->getWorldPosition() - mHost->getWorldPosition());
->>>>>>> working
 
-      float magPursuer = magVec(toPursuer);
+    float magPursuer = magVec(toPursuer);
 
-//      if((magPursuer * magPursuer) > mHost->panicDistance * mHost->panicDistance)
-//        return sf::Vector2f();
+    if((magPursuer * magPursuer) > sheepHost->mPanicDistance * sheepHost->mPanicDistance)
+        return sf::Vector2f();
 
-<<<<<<< HEAD
-      float lookAheadTime = magPursuer / (mHost->getMaxSpeed() + pursuer->getSpeed());
-
-      return flee(pursuer->getWorldPosition() + pursuer->getVelocity() * lookAheadTime);
-   }
-   else
-   {
-      return sf::Vector2f();
-   }
-=======
     float lookAheadTime = magPursuer / (mHost->getMaxSpeed() + pursuer->getSpeed());
 
     return flee(pursuer->getWorldPosition() + pursuer->getVelocity() * lookAheadTime);
->>>>>>> working
 }
 
 sf::Vector2f SteeringBehaviour::flee(sf::Vector2f target)
@@ -250,8 +209,8 @@ sf::Vector2f SteeringBehaviour::followPath()
 sf::Vector2f SteeringBehaviour::obstacleAvoidance()
 {
     float boxLength = mMinViewBoxLength
-                      + (mHost->getSpeed() / mHost->getMaxSpeed())
-                      * mMinViewBoxLength;
+                    + (mHost->getSpeed() / mHost->getMaxSpeed())
+                    * mMinViewBoxLength;
 
     std::vector<LevelBlock*> nearObstacles = mHost->getBlockTypeInRange(LevelBlock::Type::ObstacleBlock
                                                                         , mHost->getRadius());
@@ -272,19 +231,19 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance()
 
             if(std::fabs(blckPos.x) < expandedRadius)
             {
-                float sqrtPart = std::sqrt((expandedRadius * expandedRadius) - (blckPos.x * blckPos.x));
-                float intersectionPoint = blckPos.y - sqrtPart;
+                    float sqrtPart = std::sqrt((expandedRadius * expandedRadius) - (blckPos.x * blckPos.x));
+                    float intersectionPoint = blckPos.y - sqrtPart;
 
-                if(intersectionPoint <= 0.f)
-                {
-                    intersectionPoint = blckPos.y + sqrtPart;
-                }
+                    if(intersectionPoint <= 0.f)
+                    {
+                        intersectionPoint = blckPos.y + sqrtPart;
+                    }
 
-                if(intersectionPoint < distToClosest)
-                {
-                    distToClosest = intersectionPoint;
-                    closestObstacle = blck;
-                }
+                    if(intersectionPoint < distToClosest)
+                    {
+                        distToClosest = intersectionPoint;
+                        closestObstacle = blck;
+                    }
             }
         }
     }
@@ -318,8 +277,7 @@ sf::Vector2f SteeringBehaviour::wallAvoidance()
 
     sf::Vector2f steeringForce, point, closestPoint, closestNorm;
 
-    std::vector<LevelBlock*> wallBlocks = mHost->getBlockTypeInRange(LevelBlock::Type::WallBlock
-                                                                     , mFeelerLength);
+    std::vector<LevelBlock*> wallBlocks = mHost->getBlockTypeInRange(LevelBlock::Type::WallBlock, mFeelerLength);
 
     for(size_t flr = 0; flr < Feelers::NumFlr; flr++)
     {
@@ -368,12 +326,7 @@ sf::Vector2f SteeringBehaviour::seperation()
 {
     sf::Vector2f steeringForce;
 
-<<<<<<< HEAD
-    std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius
-                                                                 , mHost->getEntityType());
-=======
     std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius);
->>>>>>> working
 
     for(Entity* e : neighbours)
     {
@@ -390,12 +343,7 @@ sf::Vector2f SteeringBehaviour::alignment()
     sf::Vector2f averageHeading;
     int neighbourCount = 0;
 
-<<<<<<< HEAD
-    std::vector<Entity*> neighbours = mHost->getNeighbours(mAlignRadius
-                                                                 , mHost->getEntityType());
-=======
     std::vector<Entity*> neighbours = mHost->getNeighbours(mAlignRadius);
->>>>>>> working
 
     for(Entity* e : neighbours)
     {
@@ -420,17 +368,12 @@ sf::Vector2f SteeringBehaviour::cohesion()
     sf::Vector2f steeringForce, centerOfMass;
     int neighbourCount = 0;
 
-<<<<<<< HEAD
-    std::vector<Entity*> neighbours = mHost->getNeighbours(mCohesionRadius
-                                                                 , mHost->getEntityType());
-=======
     std::vector<Entity*> neighbours = mHost->getNeighbours(mCohesionRadius);
->>>>>>> working
 
     for(Entity* e : neighbours)
     {
         if(e != mHost
-                && e)
+           && e)
         {
             centerOfMass += e->getWorldPosition();
             neighbourCount ++;
@@ -486,8 +429,7 @@ sf::Vector2f SteeringBehaviour::calculate(sf::Time dt)
 
     if(mBehaviourFlags.at(Arrive))
     {
-//        sf::Vector2f force = arrive(mHost->getTargetPos(), Deceleration::Fast) * mArriveMultiplier;
-        sf::Vector2f force = arrive(mHost->getWorldPosition(), Deceleration::Fast) * mArriveMultiplier;
+        sf::Vector2f force = arrive(mHost->getTargetPos(), Deceleration::Fast) * mArriveMultiplier;
 
         if(!accumulateForce(steeringForce, force))
             return steeringForce;
@@ -520,7 +462,6 @@ sf::Vector2f SteeringBehaviour::calculate(sf::Time dt)
     if(mBehaviourFlags.at(Wander))
     {
         sf::Vector2f force = wander(dt) * mWanderMultiplier;
-//        sf::Vector2f force;
 
         if(!accumulateForce(steeringForce, force))
             return steeringForce;
@@ -559,11 +500,7 @@ void SteeringBehaviour::setNewBehaviours(SteeringBehaviour::Behaviour newType)
 
     mBehaviourFlags.at(newType) = true;
 
-<<<<<<< HEAD
-    if(mHost->getEntityType() != Entity::EntityType::Adventurer)
-=======
     if(mHost->getEntityType() != Entity::Type::Adventurer)
->>>>>>> working
         mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
 
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;

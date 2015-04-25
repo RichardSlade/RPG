@@ -7,9 +7,9 @@ HUD::HUD(World* world
          , const sf::Font& font
          , sf::FloatRect viewBounds
          , std::string username)
-    : mWorld(world)
-    , mHUDBackground(sf::Vector2f(viewBounds.width
-                                  , viewBounds.height / 16.f))
+: mWorld(world)
+, mHUDBackground(sf::Vector2f(viewBounds.width
+                              , viewBounds.height / 16.f))
 {
     mHUDBackground.setFillColor(sf::Color::Black);
 
@@ -20,7 +20,7 @@ HUD::HUD(World* world
 }
 
 void HUD::draw(sf::RenderTarget& target
-               , sf::RenderStates states) const
+                      , sf::RenderStates states) const
 {
     target.draw(mHUDBackground);
 
@@ -34,7 +34,7 @@ void HUD::update()
     mHUDText.at(HUD::DataType::Enemy).setString("Enemy: "
 //                                                + std::to_string(mWorld->getEnemyHerded())
 //                                                + "/"
-            + std::to_string(mWorld->getEnemyNum()));
+                                                + std::to_string(mWorld->getEnemyNum()));
 
     int time = static_cast<int>(mWorld->getTimeLeft().asSeconds());
     int mins = time / 60;
@@ -55,7 +55,7 @@ void HUD::update()
                         + secStr);
 
     mHUDText.at(HUD::DataType::Time).setString("Time: "
-            + timeStr);
+                                               + timeStr);
 
     for(sf::Text& txt : mHUDText)
     {
@@ -70,14 +70,14 @@ void HUD::setHUDPosition(sf::FloatRect viewBounds)
                                , viewBounds.top);
 
     mHUDText.at(HUD::DataType::Name).setPosition(viewBounds.left
-            + (viewBounds.width / 4.f)
-            , viewBounds.top + 10.f);
+                                                    + (viewBounds.width / 4.f)
+                                                 , viewBounds.top + 10.f);
 
     mHUDText.at(HUD::DataType::Enemy).setPosition(viewBounds.left
-            + (viewBounds.width / 2.f)
-            , viewBounds.top + 10.f);
+                                                    + (viewBounds.width / 2.f)
+                                                  , viewBounds.top + 10.f);
 
     mHUDText.at(HUD::DataType::Time).setPosition(viewBounds.left
-            + (viewBounds.width - (viewBounds.width / 4.f))
-            , viewBounds.top + 10.f);
+                                                    + (viewBounds.width - (viewBounds.width / 4.f))
+                                                 , viewBounds.top + 10.f);
 }

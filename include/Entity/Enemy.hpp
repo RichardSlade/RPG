@@ -49,12 +49,13 @@ public:
                                       , State<Enemy>*
                                       , State<Enemy>*
                                       , StateContainer&
+                                      , unsigned int currentState
                                       , float = 1.f);
 
     virtual                    ~Enemy(){};
 
     void                        changeState(Enemy::States newState)
-                                { mStateMachine.changeState(mStates.at(newState).get()); }
+                                { mStateMachine.changeState(mStates.at(newState).get(), newState); }
 
     // Getters
 //    LevelBlock*                 getTargetBlock()
@@ -75,8 +76,8 @@ public:
 //    void                        setTargetBlockIndex(sf::Vector2i index)
 //                                { mTargetBlockIndex = index; }
 
-    void                        returnToPreviousState()
-                                { mStateMachine.returnToPreviousState(); }
+//    void                        returnToPreviousState()
+//                                { mStateMachine.returnToPreviousState(); }
 };
 
 #endif // ENEMY_HPP

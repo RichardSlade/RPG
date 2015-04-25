@@ -17,6 +17,7 @@ Adventurer::Adventurer(Level* level
          , State<Adventurer>* globalState
          , State<Adventurer>* initState
          , StateContainer& states
+         , unsigned int currentState
          , float scale)
 : Entity(level
                , texture
@@ -25,10 +26,10 @@ Adventurer::Adventurer(Level* level
                , stats
                , params
                , Entity::Type::Adventurer
-               , 20.f
+               , params.CharacterPanicDistance
                , scale)
 , mStates(states)
-, mStateMachine(this, globalState, initState)
+, mStateMachine(this, globalState, initState, currentState)
 {
     setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
     mText.setString("Woof!");

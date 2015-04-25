@@ -3,10 +3,7 @@
 
 #include "App/Utility.hpp"
 #include "World/LevelBlock.hpp"
-<<<<<<< HEAD
-=======
 #include "Entity/Entity.hpp"
->>>>>>> working
 
 const sf::Color LevelBlock::mBrown = sf::Color(150, 70, 0, 255);
 const sf::Color LevelBlock::mYellow = sf::Color(200, 200, 0, 255);
@@ -26,91 +23,76 @@ LevelBlock::LevelBlock(const sf::Texture& background
 , mSize(size)
 , mRadius(rad)
 {
-   sf::FloatRect bounds = mOriginCircle.getLocalBounds();
-   mOriginCircle.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-   mOriginCircle.setFillColor(sf::Color::Yellow);
-   mOriginCircle.setPosition(mSize / 2.f, mSize / 2.f);
+    sf::FloatRect bounds = mOriginCircle.getLocalBounds();
+    mOriginCircle.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    mOriginCircle.setFillColor(sf::Color::Yellow);
+    mOriginCircle.setPosition(mSize / 2.f, mSize / 2.f);
 
-   setPosition(pos);
-   setBackgroundColour();
+    setPosition(pos);
+    setBackgroundColour();
 }
 
 LevelBlock::LevelBlock(const sf::Texture& texture
                        , sf::Vector2f pos)
-    : mBackground(texture)
+: mBackground(texture)
 {
-   mBackground.setPosition(pos);
-   setBackgroundColour();
+    mBackground.setPosition(pos);
+    setBackgroundColour();
 }
 
 void LevelBlock::drawCurrent(sf::RenderTarget& target
                              , sf::RenderStates states) const
 {
-   target.draw(mBackground, states);
+    target.draw(mBackground, states);
 
-   if(mScenery)
-     target.draw(mScenery->getSprite(), states);
+    if(mScenery)
+        target.draw(mScenery->getSprite(), states);
 }
 
 void LevelBlock::setBackgroundColour()
 {
-   const float MaxGrass = 100.f;
-   float grass = rangedClamped(MaxGrass / 2.f, MaxGrass);
+    const float MaxGrass = 100.f;
+    float grass = rangedClamped(MaxGrass / 2.f, MaxGrass);
 
-   sf::Color bottomColour, topColour, backgroundColour;
-   float max, min;
+    sf::Color bottomColour, topColour, backgroundColour;
+    float max, min;
 
-   if(grass < MaxGrass / 2.f)
-   {
-     bottomColour = mBrown;
-     topColour = mYellow;
-     max = MaxGrass / 2.f;
-     min = 0.f;
-   }
-   else
-   {
-     bottomColour = mYellow;
-     topColour = mGreen;
-     max = MaxGrass;
-     min = MaxGrass / 2.f;
-   }
+    if(grass < MaxGrass / 2.f)
+    {
+        bottomColour = mBrown;
+        topColour = mYellow;
+        max = MaxGrass / 2.f;
+        min = 0.f;
+    }
+    else
+    {
+        bottomColour = mYellow;
+        topColour = mGreen;
+        max = MaxGrass;
+        min = MaxGrass / 2.f;
+    }
 
-   float topPercentage = (grass - min) / max;
-   float botPercentage = 1.f - topPercentage;
+    float topPercentage = (grass - min) / max;
+    float botPercentage = 1.f - topPercentage;
 
-   backgroundColour.r = (topColour.r * topPercentage) + (bottomColour.r * botPercentage);
-   backgroundColour.g = (topColour.g * topPercentage) + (bottomColour.g * botPercentage);
-   backgroundColour.b = 0.f;
+    backgroundColour.r = (topColour.r * topPercentage) + (bottomColour.r * botPercentage);
+    backgroundColour.g = (topColour.g * topPercentage) + (bottomColour.g * botPercentage);
+    backgroundColour.b = 0.f;
 
-   mBackground.setColor(backgroundColour);
+    mBackground.setColor(backgroundColour);
 }
 
 LevelBlock* LevelBlock::insertEntity(Entity* entity)
 {
-    mEntities.push_back(entity);
+    mEntitiesInBlock.push_back(entity);
     return this;
 }
 
 void LevelBlock::deleteEntity(Entity* entity)
 {
-    auto it = find (mEntities.begin(), mEntities.end(), entity);
+    auto it = find (mEntitiesInBlock.begin(), mEntitiesInBlock.end(), entity);
 
-    assert(it != mEntities.end());
+    assert(it != mEntitiesInBlock.end());
 
-    mEntities.erase(it);
+    mEntitiesInBlock.erase(it);
 }
-
-//LevelBlock* LevelBlock::insertEntity(DynamicEntity* entity)
-//{
-//    mDynamicEntities.push_back(entity);
-//    return this;
-//}
-//
-//void LevelBlock::deleteEntity(DynamicEntity* entity)
-//{
-//    auto it = find (mDynamicEntities.begin(), mDynamicEntities.end(), entity);
-//
-//    assert(it != mDynamicEntities.end());
-//
-//    mDynamicEntities.erase(it);
-//}

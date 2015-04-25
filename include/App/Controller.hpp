@@ -79,38 +79,28 @@ private:
     void                            changeAppState();
 
 public:
-    Controller();
+                                    Controller();
 
     void                            run();
 
     // Getters
     const sf::Texture&              getTexture(Textures type) const
-    {
-        return mTextures.at(type);
-    }
+                                    { return mTextures.at(type); }
 
     const sf::Font&                 getFont(Controller::Fonts type) const
-    {
-        return mFonts.at(type);
-    }
+                                    { return mFonts.at(type); }
 
     const Params&                   getParams() const
-    {
-        return mParams;
-    }
+                                    { return mParams; }
 
     // Setters
     void                            resetView();
 
     void                            changeState()
-    {
-        mChangeState = true;
-    }
+                                    { mChangeState = true; }
 
     void                            setUserName(std::string name)
-    {
-        mUserName = name;
-    }
+                                    { mUserName = name; }
 };
 
 #endif // CONTROLLER_HPP

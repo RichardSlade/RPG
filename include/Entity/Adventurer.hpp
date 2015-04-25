@@ -55,9 +55,10 @@ public:
                                         , sf::Vector2f
                                         , EntityStats
                                         , const Params&
-                                        , State<Adventurer>*
-                                        , State<Adventurer>*
+                                        , State<Adventurer>* globalState
+                                        , State<Adventurer>* initState
                                         , StateContainer&
+                                        , unsigned int currentState
                                         , float = 1.f);
 
     virtual                         ~Adventurer(){};
@@ -69,7 +70,9 @@ public:
                                     { mSteering.startNewPath(pos); }
 
     void                            changeState(Adventurer::States newState)
-                                    { mStateMachine.changeState(mStates.at(newState).get()); }
+                                    { mStateMachine.changeState(mStates.at(newState).get(), newState); }
+
+   unsigned int                     getCurrentStateType() {return mStateMachine.getCurrentStateType(); }
 
 //   Entity*                           getCurrentTarget() {return mCurrentTarget;}
 };

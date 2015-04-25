@@ -6,19 +6,13 @@
 #include "App/Controller.hpp"
 #include "World/Level.hpp"
 #include "World/World.hpp"
-<<<<<<< HEAD
-#include "Node/SceneNode.hpp"
-=======
 #include "SceneNode/SceneNode.hpp"
->>>>>>> working
 #include "Entity/Entity.hpp"
 
 Level::Level(int blockSize
              , int exitWidth
-//             , float nRadius
              , sf::IntRect worldBounds)
 : mExitWidth(exitWidth)
-//, mNeighbourhoodRadius(nRadius)
 , mWorldBounds(worldBounds)
 , mBlockSize(blockSize)
 , mLevelX(mWorldBounds.width / mBlockSize)
@@ -78,7 +72,7 @@ void Level::defineWallData()
 
     mBoundaryWallData.at(Wall::WallType::TopLeftWall) = Wall::WallData(points, norm);
 
-    // Top wall right
+     // Top wall right
     pointA = sf::Vector2f(mBlockSize * (mMidX + exitBorder), mBlockSize);
     pointB = sf::Vector2f(mWorldBounds.width, mBlockSize);
     points = Wall::PointPair(pointA, pointB);
@@ -103,25 +97,21 @@ sf::Vector2i Level::worldCordsToIndex(sf::Vector2f pos) const
     sf::Vector2i index(x, y);
     index /= mBlockSize;
 
-	if(index.x > mLevelX - 1
-		|| index.y > mLevelY - 1
-		|| index.x < 0
-		|| index.y < 0)
-		throw std::runtime_error("ERROR: Index out of bounds in worldCordsToIndex() \nX: "
-										+ std::to_string(index.x)
-										+ " Y: "
-										+ std::to_string(index.y)
-										+ "\n");
+    if(index.x > mLevelX - 1
+   || index.y > mLevelY - 1
+   || index.x < 0
+   || index.y < 0)
+    throw std::runtime_error("ERROR: Index out of bounds in worldCordsToIndex() \nX: "
+                             + std::to_string(index.x)
+                             + " Y: "
+                             + std::to_string(index.y)
+                             + "\n");
 
     return index;
 }
 
 std::vector<LevelBlock*> Level::getInRangeBlocks(const Entity* entity
-<<<<<<< HEAD
-        , float radius) const
-=======
                                                  , float radius) const
->>>>>>> working
 {
     std::vector<LevelBlock*> inRangeBlocks;
 
@@ -156,16 +146,11 @@ std::vector<LevelBlock*> Level::getInRangeBlocks(const Entity* entity
 }
 
 std::vector<LevelBlock*> Level::getBlockTypeInRange(const Entity* entity
-<<<<<<< HEAD
-                                                   , float radius
-                                                   , LevelBlock::Type blockType) const
-=======
                                                     , float radius
                                                     , LevelBlock::Type blockType) const
->>>>>>> working
 {
     std::vector<LevelBlock*> inRangeBlocks = getInRangeBlocks(entity
-            , radius);
+                                                              , radius);
 
     std::vector<LevelBlock*> returnBlocks;
 
@@ -179,59 +164,19 @@ std::vector<LevelBlock*> Level::getBlockTypeInRange(const Entity* entity
 }
 
 std::vector<Entity*> Level::getEntitiesInRange(const Entity* entity
-<<<<<<< HEAD
-                                                     , float neighbourhood
-                                                     , int type) const
-=======
                                                 , float neighbourhood
                                                 , int type) const
->>>>>>> working
 {
-	assert(entity);
+    assert(entity);
 
-<<<<<<< HEAD
-  bool typeLookup = false;
-=======
     std::vector<Entity*> neighbourEntities;
     std::vector<LevelBlock*> inRangeBlocks = getInRangeBlocks(entity
                                                               , neighbourhood);
->>>>>>> working
 
-  if(type != Entity::EntityType::All)
-    typeLookup = true;
+    const sf::Vector2f entityPos = entity->getWorldPosition();
 
-	std::vector<Entity*> neighbours;
-	std::vector<LevelBlock*> inRangeBlocks = getInRangeBlocks(entity
-                                                            , neighbourhood);
-
-  const sf::Vector2f entityPos = entity->getWorldPosition();
-
-  for(LevelBlock* lvlBlck : inRangeBlocks)
-  {
-    std::list<Entity*> entitiesInBlock = lvlBlck->getEntities();
-
-    for(Entity* e : entitiesInBlock)
+    for(LevelBlock* lvlBlck : inRangeBlocks)
     {
-<<<<<<< HEAD
-        assert(e);
-
-        sf::Vector2f toNeighbour = e->getWorldPosition() - entityPos;
-
-        if(typeLookup)
-        {
-//           std::cout << type << ", " << e->getEntityType() << std::endl;
-
-          if(type == e->getEntityType())
-          {
-            if(magVec(toNeighbour) <= neighbourhood)
-              neighbours.push_back(e);
-          }
-        }
-        else
-        {
-          if(magVec(toNeighbour) <= neighbourhood)
-              neighbours.push_back(e);
-=======
         std::list<Entity*> entitiesInBlock = lvlBlck->getEntities();
 
         for(Entity* e : entitiesInBlock)
@@ -245,49 +190,11 @@ std::vector<Entity*> Level::getEntitiesInRange(const Entity* entity
                if(magVec(toNeighbour) <= neighbourhood)
                   neighbourEntities.push_back(e);
             }
->>>>>>> working
         }
     }
-  }
 
-<<<<<<< HEAD
-	return neighbours;
-=======
     return neighbourEntities;
->>>>>>> working
 }
-
-//std::vector<Entity*> Level::getEntityTypeInRange(const Entity* entity
-//																		, int type) const
-//{
-//	assert(entity);
-//
-//	std::vector<Entity*> neighbours;
-//	std::vector<LevelBlock*> inRangeBlocks = getInRangeBlocks(entity
-//																				, mNeighbourhoodRadius);
-//
-//	const sf::Vector2f entityPos = entity->getWorldPosition();
-//
-//	for(LevelBlock* lvlBlck : inRangeBlocks)
-//	{
-//		std::list<Entity*> entitiesInBlock = lvlBlck->getEntities();
-//
-//		for(Entity* e : entitiesInBlock)
-//		{
-//			assert(e);
-//
-//			if(e->getEntityType() == type)
-//			{
-//				sf::Vector2f toNeighbour = e->getWorldPosition() - entityPos;
-//
-//				if(magVec(toNeighbour) <= mNeighbourhoodRadius)
-//					 neighbours.push_back(e);
-//			}
-//		}
-//	}
-//
-//	return neighbours;
-//}
 
 void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLayers
                           , const Controller& controller)
@@ -307,10 +214,10 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
         {
             blockPos = sf::Vector2f(levelX, levelY);
             LevelBlock::BlockPtr levelBlock = LevelBlock::BlockPtr(new LevelBlock(controller.getTexture(Controller::Textures::Grass)
-                                              , blockPos
-                                              , sf::Vector2i(col, row)
-                                              , mBlockSize
-                                              , radius));
+                                                                                  , blockPos
+                                                                                  , sf::Vector2i(col, row)
+                                                                                  , mBlockSize
+                                                                                  , radius));
 
 
 
@@ -338,10 +245,10 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
             levelBlock->setType(LevelBlock::Type::WallBlock);
 
             Wall::WallPtr wall(new Wall(levelBlock
-                                        , controller.getTexture(Controller::Textures::Wall)
-                                        , wallData.first.first
-                                        , wallData.first.second
-                                        , wallData.second));
+                                   , controller.getTexture(Controller::Textures::Wall)
+                                   , wallData.first.first
+                                   , wallData.first.second
+                                   , wallData.second));
 
             wall->rotateSprite(angleToRotate);
             levelBlock->addScenery(std::move(wall));
@@ -362,10 +269,10 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
         levelBlock->setType(LevelBlock::Type::WallBlock);
 
         Wall::WallPtr wall(new Wall(levelBlock
-                                    , controller.getTexture(Controller::Textures::Wall)
-                                    , wallData.first.first
-                                    , wallData.first.second
-                                    , wallData.second));
+                           , controller.getTexture(Controller::Textures::Wall)
+                           , wallData.first.first
+                           , wallData.first.second
+                           , wallData.second));
 
         wall->rotateSprite(angleToRotate);
         levelBlock->addScenery(std::move(wall));
@@ -383,10 +290,10 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
             levelBlock->setType(LevelBlock::Type::WallBlock);
 
             Wall::WallPtr wall(new Wall(levelBlock
-                                        , controller.getTexture(Controller::Textures::Wall)
-                                        , wallData.first.first
-                                        , wallData.first.second
-                                        , wallData.second));
+                                   , controller.getTexture(Controller::Textures::Wall)
+                                   , wallData.first.first
+                                   , wallData.first.second
+                                   , wallData.second));
 
             wall->rotateSprite(angleToRotate);
             levelBlock->addScenery(std::move(wall));
@@ -427,8 +334,8 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
     for(col = exitIndex - exitBorder; col < exitIndex + exitBorder; col ++)
     {
         LevelBlock* levelBlock = mLevelArray.at(0).at(col);
-        Scenery::SceneryPtr exit(new Scenery(levelBlock
-                                             , controller.getTexture(Controller::Textures::Exit)));
+            Scenery::SceneryPtr exit(new Scenery(levelBlock
+                                                   , controller.getTexture(Controller::Textures::Exit)));
 
         levelBlock->addScenery(std::move(exit));
         levelBlock->setType(LevelBlock::Type::ExitBlock);
@@ -441,12 +348,6 @@ LevelBlock* Level::insertEntityIntoLevel(Entity* entity) const
     sf::Vector2i index = worldCordsToIndex(entity->getWorldPosition());
     return mLevelArray.at(index.y).at(index.x)->insertEntity(entity);
 }
-
-//LevelBlock* Level::insertEntityIntoLevel(Entity* entity) const
-//{
-//    sf::Vector2i index = worldCordsToIndex(entity->getWorldPosition());
-//    return mLevelArray.at(index.y).at(index.x)->insertEntity(entity);
-//}
 
 void Level::resetColours()
 {

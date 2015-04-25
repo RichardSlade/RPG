@@ -38,8 +38,8 @@ public:
     float ScrollSpeed;
     float EnemySightRange;
     float EnemyAngleOfVision;
-//    float EnemyPanicDistance;
-//    float CharacterPanicDistance;
+    float EnemyPanicDistance;
+    float CharacterPanicDistance;
     float PI;
     float WanderRadius;
     float WanderDistance;
@@ -61,7 +61,6 @@ public:
     float SeperationRadius;
     float AlignRadius;
     float CohesionRadius;
-//    float NeighbourhoodRadius;
 
     friend void operator>>(std::ifstream &in, Params &params)
     {
@@ -104,11 +103,11 @@ public:
         in.ignore(255, ' ');
         in >> params.EnemyAngleOfVision;
 
-//        in.ignore(255, ' ');
-//        in >> params.EnemyPanicDistance;
-//
-//        in.ignore(255, ' ');
-//        in >> params.CharacterPanicDistance;
+        in.ignore(255, ' ');
+        in >> params.EnemyPanicDistance;
+
+        in.ignore(255, ' ');
+        in >> params.CharacterPanicDistance;
 
         in.ignore(255, ' ');
         in >> params.PI;
@@ -172,9 +171,6 @@ public:
 
         in.ignore(255, ' ');
         in >> params.CohesionRadius;
-
-//        in.ignore(255, ' ');
-//        in >> params.NeighbourhoodRadius;
     }
 
 };

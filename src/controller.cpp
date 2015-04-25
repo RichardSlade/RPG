@@ -33,8 +33,8 @@ Controller::Controller()
 //                                                                mWindow));
 
     mCurrentAppState = std::unique_ptr<GameState>(new GameState(*this,
-                       mWindow
-                       , "Debug"));
+                                                                mWindow
+                                                                , "Debug"));
 };
 
 /*
@@ -76,7 +76,7 @@ void Controller::loadMedia()
 //    fileNames.push_back("media/fonts/AlphaSmoke.TTF");
 //    fileNames.push_back("media/fonts/KingthingsSheepishly.ttf");
 
-    for(std::string s : fileNames)
+     for(std::string s : fileNames)
     {
         sf::Font f;
 
@@ -109,7 +109,7 @@ const sf::Texture& Controller::createBackgroundTexture()
         for(float col = 0; col < TextureX; col += BlockSize)
         {
             LevelBlock levelBlock(mTextures.at(Textures::Grass)
-                                  , sf::Vector2f(col, row));
+                                            , sf::Vector2f(col, row));
 
             mBackgroundTexture.draw(levelBlock.getBackground());
         }
@@ -127,24 +127,23 @@ void Controller::changeAppState()
 
     switch(mAppStateType)
     {
-    case AppState::StateType::Menu:
-    {
-        mCurrentAppState = std::unique_ptr<GameState>(new GameState(*this
-                           , mWindow
-                           , mUserName));
-        mAppStateType = AppState::StateType::Game;
-        break;
+        case AppState::StateType::Menu:
+        {
+            mCurrentAppState = std::unique_ptr<GameState>(new GameState(*this
+                                                                        , mWindow
+                                                                        , mUserName));
+            mAppStateType = AppState::StateType::Game;
+            break;
 
-    }
-    case AppState::StateType::Game:
-    {
-        mCurrentAppState = std::unique_ptr<MenuState>(new MenuState(*this
-                           , mWindow));
-        mAppStateType = AppState::StateType::Menu;
-        break;
-    }
-    default:
-        break;
+        }
+        case AppState::StateType::Game:
+        {
+            mCurrentAppState = std::unique_ptr<MenuState>(new MenuState(*this
+                                                                        , mWindow));
+            mAppStateType = AppState::StateType::Menu;
+            break;
+        }
+        default: break;
     }
 
     mChangeState = false;
