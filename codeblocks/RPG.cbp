@@ -14,7 +14,6 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-Wall" />
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
@@ -61,10 +60,6 @@
 		<Unit filename="../include/App/PausedScreen.hpp" />
 		<Unit filename="../include/App/Utility.hpp" />
 		<Unit filename="../include/Entity/Adventurer.hpp" />
-		<Unit filename="../include/Entity/Attribute/Intelligent.hpp" />
-		<Unit filename="../include/Entity/Attribute/Killable.hpp" />
-		<Unit filename="../include/Entity/Attribute/MeleeFighter.hpp" />
-		<Unit filename="../include/Entity/Dynamic.hpp" />
 		<Unit filename="../include/Entity/Enemy.hpp" />
 		<Unit filename="../include/Entity/Entity.hpp" />
 		<Unit filename="../include/Entity/EntityStats.hpp" />
@@ -74,9 +69,8 @@
 		<Unit filename="../include/Entity/State/State.hpp" />
 		<Unit filename="../include/Entity/State/StateMachine.hpp" />
 		<Unit filename="../include/Entity/SteeringBehaviour.hpp" />
-		<Unit filename="../include/Node/Node.hpp" />
-		<Unit filename="../include/Node/SceneNode.hpp" />
-		<Unit filename="../include/Node/SpriteNode.hpp" />
+		<Unit filename="../include/SceneNode/SceneNode.hpp" />
+		<Unit filename="../include/SceneNode/SpriteNode.hpp" />
 		<Unit filename="../include/World/Level.hpp" />
 		<Unit filename="../include/World/LevelBlock.hpp" />
 		<Unit filename="../include/World/Scenery.hpp" />
@@ -84,9 +78,7 @@
 		<Unit filename="../include/World/World.hpp" />
 		<Unit filename="../src/adventurer.cpp" />
 		<Unit filename="../src/adventurerStates.cpp" />
-		<Unit filename="../src/agent.cpp" />
 		<Unit filename="../src/controller.cpp" />
-		<Unit filename="../src/dynamic.cpp" />
 		<Unit filename="../src/enemy.cpp" />
 		<Unit filename="../src/enemyStates.cpp" />
 		<Unit filename="../src/entity.cpp" />
@@ -97,7 +89,6 @@
 		<Unit filename="../src/levelBlock.cpp" />
 		<Unit filename="../src/levelCompleteScreen.cpp" />
 		<Unit filename="../src/main.cpp" />
-		<Unit filename="../src/meleeFighter.cpp" />
 		<Unit filename="../src/menuState.cpp" />
 		<Unit filename="../src/path.cpp" />
 		<Unit filename="../src/pausedScreen.cpp" />

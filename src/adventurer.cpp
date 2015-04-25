@@ -25,7 +25,7 @@ Adventurer::Adventurer(Level* level
                , stats
                , params
                , Entity::Type::Adventurer
-               , params.CharacterPanicDistance
+               , 20.f
                , scale)
 , mStates(states)
 , mStateMachine(this, globalState, initState)
