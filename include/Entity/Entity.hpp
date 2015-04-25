@@ -12,11 +12,14 @@
 #include "Entity/SteeringBehaviour.hpp"
 //#include "LevelBlock.hpp"
 #include "Entity/EntityStats.hpp"
+#include "Entity/Attribute/Killable.hpp"
+#include "Entity/Attribute/Intelligent.hpp"
+#include "Entity/Attribute/MeleeFighter.hpp"
 //#include "MovingTarget.hpp"
 
 //class World;
 
-class Entity : public SceneNode
+class Entity : public SceneNode :
 {
 public:
     enum Type
