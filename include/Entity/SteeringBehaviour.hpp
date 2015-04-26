@@ -30,6 +30,7 @@ public:
     enum Behaviour
     {
         Rest,
+        Face,
         Arrive,
         Evade,
         Wander,
@@ -88,6 +89,7 @@ private:
     void                                    createFeelers();
 
     sf::Vector2f                            rest();
+    sf::Vector2f                            face();
 
     sf::Vector2f                            arrive(sf::Vector2f
                                                    , Deceleration);

@@ -24,10 +24,10 @@ void LookOut::execute(Enemy* host)
       bool isHealthy = host->getHealthPercentage() > 50.f ? true : false;
 
       if(isHealthy) // Get all chars in agro distance
-         chars = host->getNeighbours(host->agroDistance
+         chars = host->getNeighbours(host->AgroDistance
                                     , Entity::Type::Adventurer);
       else // Get all chars in panic distance
-         chars = host->getNeighbours(host->panicDistance
+         chars = host->getNeighbours(host->PanicDistance
                                     , Entity::Type::Adventurer);
 
       sf::Vector2f hostPos = host->getWorldPosition();
@@ -52,7 +52,9 @@ void LookOut::execute(Enemy* host)
       // and change state accordingly to health
       if(closestChar)
       {
-//         host->setCurrentTarget(closestChar);
+         host->setCurrentTarget(closestChar);
+
+//         std::cout << "enemyStates.cpp: LookOut(): closest char pos = " << closestChar->getWorldPosition().x << ", " << closestChar->getWorldPosition().y << std::endl;
 
          if(isHealthy)
             host->changeState(Enemy::States::Attack);
@@ -86,15 +88,15 @@ void Evade::enter(Enemy* host)
 
 void Evade::execute(Enemy* host)
 {
-//   Entity* pursuer = host->getCurrentTarget();
-   Adventurer* pursuer = nullptr;
+   const Entity* pursuer = host->getCurrentTarget();
+//   Adventurer* pursuer = nullptr;
 
    if(pursuer)
    {
       sf::Vector2f vecToHost = host->getWorldPosition() - pursuer->getWorldPosition();
       float mag = magVec(vecToHost);
 
-      if(mag > host->panicDistance)
+      if(mag > host->PanicDistance)
       {
          host->changeState(Enemy::States::Relax);
       }
@@ -149,27 +151,31 @@ void Attack::enter(Enemy* host)
 
 void Attack::execute(Enemy* host)
 {
-//   Adventurer* curTarg = host->getCurrentTarget();
-   Adventurer* curTarg = nullptr;
+   const Entity* curTarg = host->getCurrentTarget();
+//   Adventurer* curTarg = nullptr;
 
-   if(curTarg) // If there is current target
+   if(curTarg
+      && !curTarg->isDead()) // If there is current target
    {
       sf::Vector2f vecToTarget = curTarg->getWorldPosition() - host->getWorldPosition();
       float mag = magVec(vecToTarget);
 
       // If target close enough to attack
-      if(mag < host->attackDistance)
+      if(mag < host->AttackDistance)
       {
          // If not at stand still change steering behaviour
          if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Rest))
          {
             std::vector<SteeringBehaviour::Behaviour> behaviours;
             behaviours.push_back(SteeringBehaviour::Behaviour::Rest);
+            behaviours.push_back(SteeringBehaviour::Behaviour::Face);
             host->setSteeringTypes(behaviours);
          }
 
          // Attack current target (overloaded function)
-         host->meleeAttack(curTarg);
+         host->meleeAttack(const_cast<Entity*>(curTarg));
+
+         host->setText("Yarrr!");
       }
       else // Approach target
       {

@@ -22,8 +22,8 @@ void LookOut::execute(Adventurer* host)
    if(host->getCurrentStateType() == Adventurer::States::Relax)
    {
       // get all close enemies
-      std::vector<Entity*> enemies = host->getNeighbours(host->agroDistance
-                                                               , Entity::Type::Enemy);
+      std::vector<Entity*> enemies = host->getNeighbours(host->AgroDistance
+                                                         , Entity::Type::Enemy);
 
       sf::Vector2f hostPos = host->getWorldPosition();
 
@@ -49,7 +49,7 @@ void LookOut::execute(Adventurer* host)
       {
          // Change to attack state and set target
          host->changeState(Adventurer::States::Attack);
-//         host->setCurrentTarget(closestEnemy);
+         host->setCurrentTarget(closestEnemy);
       }
    }
 
@@ -134,7 +134,7 @@ void Attack::enter(Adventurer* host)
         host->setSteeringTypes(behaviours);
     }
 
-    host->setText("");
+    host->setText("DIE!");
     host->setMaxSpeed(host->getMaxRunSpeed());
 }
 
@@ -149,18 +149,21 @@ void Attack::execute(Adventurer* host)
       float mag = magVec(vecToTarget);
 
       // If target close enough to attack
-      if(mag < host->mAttackDistance)
+      if(mag < host->AttackDistance)
       {
          // If not at stand still change steering behaviour
          if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Rest))
          {
             std::vector<SteeringBehaviour::Behaviour> behaviours;
             behaviours.push_back(SteeringBehaviour::Behaviour::Rest);
+            behaviours.push_back(SteeringBehaviour::Behaviour::Face);
             host->setSteeringTypes(behaviours);
          }
 
          // Attack current target (overloaded function)
          host->meleeAttack(curTarg);
+
+         host->setText("Have at Ye!");
       }
       else // Approach target
       {

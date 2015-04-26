@@ -107,21 +107,22 @@ void World::buildScene(const Controller& controller)
 void World::generateAgents(const Controller& controller)
 {
     // Initialise characters and add to scene graph
-    for(int i = 0; i < 2; i++)
+    for(int i = 0; i < 1; i++)
     {
         float inc = i * 40.f;
 
-        std::unique_ptr<Adventurer> adventurerNode(new Adventurer(mLevel.get()
-                                             , controller.getTexture(Controller::Textures::Adventurer)
-                                             , controller.getFont(Controller::Fonts::Sansation)
-                                             , sf::Vector2f((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc)
-                                             , mEntityStats.at(World::Stats::AdventurerStats)
-                                             , controller.getParams()
-                                             , mAdventurerStates.at(Adventurer::States::LookOut).get()
-                                             , mAdventurerStates.at(Adventurer::States::Relax).get()
-                                             , mAdventurerStates
-                                             , Adventurer::States::Relax
-                                             , rangedClamped(0.75f, 1.25f)));
+        std::unique_ptr<Adventurer> adventurerNode(new Adventurer(mWindow
+                                                                  , mLevel.get()
+                                                                  , controller.getTexture(Controller::Textures::Adventurer)
+                                                                  , controller.getFont(Controller::Fonts::Sansation)
+                                                                  , sf::Vector2f((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc)
+                                                                  , mEntityStats.at(World::Stats::AdventurerStats)
+                                                                  , controller.getParams()
+                                                                  , mAdventurerStates.at(Adventurer::States::LookOut).get()
+                                                                  , mAdventurerStates.at(Adventurer::States::Relax).get()
+                                                                  , mAdventurerStates
+                                                                  , Adventurer::States::Relax
+                                                                  , rangedClamped(0.75f, 1.25f)));
 
         // Save pointer to character for enemy initialisation
         Adventurer* adventurerPtr = adventurerNode.get();
@@ -131,6 +132,7 @@ void World::generateAgents(const Controller& controller)
     }
 
     mCurrentAdventurer = mAdventurers.at(0);
+    mCurrentAdventurer->setIsSelected(true);
 
     // Initialise enemy and add to scene graph
 //    for(int i = 0 ; i < mNumEnemy; i++)
@@ -181,51 +183,77 @@ void World::generateAgents(const Controller& controller)
 
 void World::handleRealTimeInput()
 {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)
-       || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-    {
-        mFocusPoint.x -= mScrollSpeed;
-    }
+   sf::Vector2f adventurerMovement;
+   float speed = 5.f;
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)
-       || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-    {
-        mFocusPoint.x += mScrollSpeed;
-    }
+   if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)
+    || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+   {
+      adventurerMovement.x -= speed;
+   }
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)
-       || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-    {
-        mFocusPoint.y -= mScrollSpeed;
-    }
+   if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)
+   || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+   {
+      adventurerMovement.x += speed;
+   }
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)
-       || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-    {
-        mFocusPoint.y += mScrollSpeed;
-    }
+   if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)
+    || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+   {
+      adventurerMovement.y -= speed;
+   }
+
+   if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)
+    || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+   {
+      adventurerMovement.y += speed;
+   }
+
+   mCurrentAdventurer->setVelocity(adventurerMovement);
 }
 
 void World::adjustView()
 {
-    sf::View view = mWindow.getView();
-    view.setCenter(mFocusPoint);
+   sf::View view = mWindow.getView();
+   view.setCenter(mFocusPoint);
 
-    sf::FloatRect bckgrndBounds = mBackground->getGlobalBounds();
+   sf::FloatRect bckgrndBounds = mBackground->getGlobalBounds();
 
-    sf::Vector2f center = view.getCenter();
-    sf::Vector2f dim = view.getSize();
-    dim /= 2.f;
+   sf::Vector2f center = view.getCenter();
+   sf::Vector2f dim = view.getSize();
+   dim /= 2.f;
 
-    if(center.x - dim.x < bckgrndBounds.left)
-        mFocusPoint.x += mScrollSpeed;
-    else if(center.x + dim.x > bckgrndBounds.left + bckgrndBounds.width)
-        mFocusPoint.x -= mScrollSpeed;
+   if(center.x - dim.x < bckgrndBounds.left)
+      mFocusPoint.x += mScrollSpeed;
+   else if(center.x + dim.x > bckgrndBounds.left + bckgrndBounds.width)
+      mFocusPoint.x -= mScrollSpeed;
 
-    if(center.y - dim.y < bckgrndBounds.top)
-        mFocusPoint.y += mScrollSpeed;
-    else if(center.y + dim.y > bckgrndBounds.top + bckgrndBounds.height)
-        mFocusPoint.y -= mScrollSpeed;
+   if(center.y - dim.y < bckgrndBounds.top)
+      mFocusPoint.y += mScrollSpeed;
+   else if(center.y + dim.y > bckgrndBounds.top + bckgrndBounds.height)
+      mFocusPoint.y -= mScrollSpeed;
+}
+
+void World::rotateViewToAdventurer()
+{
+//   if(std::fabs(magVec(mVelocity)) > MINFLOAT)
+//   {
+//     int sign = signVec(mHeading, mVelocity);
+//
+//     float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
+//     angle *= sign;
+//
+//     clampRotation(angle
+//                   , -mMaxTurnRate
+//                   , mMaxTurnRate);
+//
+//     if(angle > MINFLOAT || angle < -MINFLOAT)
+//         rotate(angle * (180.f / SteeringBehaviour::mPI));
+//   }
+//
+//   float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
+//   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
 }
 
 void World::cycleAdventurer()
@@ -235,7 +263,13 @@ void World::cycleAdventurer()
    if(mCurrentAdventurerIndex > mAdventurers.size() - 1)
       mCurrentAdventurerIndex = 0;
 
+   mCurrentAdventurer->setIsSelected(false);
+   mCurrentAdventurer->resetVelocity();
+
    mCurrentAdventurer = mAdventurers.at(mCurrentAdventurerIndex);
+   mCurrentAdventurer->setIsSelected(true);
+
+
 }
 
 void World::update(sf::Time dt)
@@ -269,7 +303,7 @@ void World::handleInput()
             else if(event.key.code == sf::Keyboard::Tab)
             {
                cycleAdventurer();
-                  mFocusPoint = mCurrentAdventurer->getWorldPosition();
+//                  mFocusPoint = mCurrentAdventurer->getWorldPosition();
             }
         }
         else if(event.type == sf::Event::MouseButtonPressed)
@@ -309,20 +343,22 @@ void World::handleInput()
 
 void World::display()
 {
-    adjustView();
+//    adjustView();
 
-    mWorldView.setCenter(mFocusPoint);
-    mWindow.setView(mWorldView);
+   mFocusPoint = mCurrentAdventurer->getWorldPosition();
 
-    mWindow.draw(mSceneGraph);
+   mWorldView.setCenter(mFocusPoint);
+   mWindow.setView(mWorldView);
 
-    mHUD.setHUDPosition(getViewBounds());
-    mWindow.draw(mHUD);
+   mWindow.draw(mSceneGraph);
+
+   mHUD.setHUDPosition(getViewBounds());
+   mWindow.draw(mHUD);
 }
 
 const sf::FloatRect World::getViewBounds() const
 {
-	return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
+   return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
 }
 
 //std::vector<LevelBlock*> World::getBlockTypeInRange(const MovingEntity* entity

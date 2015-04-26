@@ -3,6 +3,7 @@
 
 #include <SFML/System/Time.hpp>
 
+#include "Entity/EntityStats.hpp"
 //#include "Entity/Attribute/Killable.hpp"
 
 //class MovingEntity;
@@ -13,18 +14,16 @@ class MeleeFighter
 
 //   MovingEntity*     mHost;
 public:
-   const sf::Time    mAttackDelay;
-   const float       mBaseDmg;
-   const float       mAttackDistance;
+   const sf::Time    AttackDelay;
+   const float       BaseDmg;
+   const float       AttackDistance;
 
 protected:
    sf::Time          mAttackCountdown;
    bool              mCanAttack;
 
 public:
-                     MeleeFighter(sf::Time delay
-                                 , float baseDmg
-                                 , float attkDist);
+                     MeleeFighter(EntityStats stats);
 
    void              update(sf::Time dt);
    void              meleeAttack(Killable* target);

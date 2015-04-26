@@ -30,6 +30,8 @@ private:
     static const sf::Color      mBrown;
     static const sf::Color      mYellow;
     static const sf::Color      mGreen;
+    static const sf::Color      mGray;
+    static const sf::Color      mDarkGray;
 
     Type                        mType;
     sf::Sprite                  mBackground;

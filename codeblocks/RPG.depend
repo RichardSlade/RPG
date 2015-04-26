@@ -955,7 +955,7 @@
 	"App/GameState.hpp"
 	"World/LevelBlock.hpp"
 
-1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/enemy.cpp
+1430057217 source:/media/richard/ubuntu-storage/projects/RPG/src/enemy.cpp
 	<iostream>
 	<cmath>
 	<vector>
@@ -1044,7 +1044,7 @@
 1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/spriteNode.cpp
 	"SceneNode/SpriteNode.hpp"
 
-1429970933 source:/media/richard/ubuntu-storage/projects/RPG/src/steeringBehaviour.cpp
+1430064730 source:/media/richard/ubuntu-storage/projects/RPG/src/steeringBehaviour.cpp
 	<cmath>
 	<algorithm>
 	<iostream>
@@ -1057,7 +1057,7 @@
 	"Entity/SteeringBehaviour.hpp"
 	"Entity/Entity.hpp"
 
-1429971153 source:/media/richard/ubuntu-storage/projects/RPG/src/utility.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/utility.cpp
 	<cmath>
 	<ctime>
 	<cstdlib>
@@ -1065,22 +1065,25 @@
 	"App/Utility.hpp"
 	"App/Params.hpp"
 
-1429971162 source:/media/richard/ubuntu-storage/projects/RPG/src/wall.cpp
+1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/wall.cpp
 	"World/Wall.hpp"
 
-1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurer.cpp
+1430076173 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurer.cpp
+	<cstdlib>
 	"Entity/Adventurer.hpp"
 	"World/World.hpp"
 
-1429977686 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Adventurer.hpp
+1430073216 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Adventurer.hpp
 	<SFML/Graphics/CircleShape.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/System/Time.hpp>
+	<SFML/Graphics/RenderWindow.hpp>
+	<SFML/Window.hpp>
 	"Entity/Entity.hpp"
 	"Entity/Path.hpp"
 	"Entity/State/StateMachine.hpp"
 
-1429977658 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Entity.hpp
+1430067135 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Entity.hpp
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/Text.hpp>
@@ -1111,7 +1114,7 @@
 	"World/Wall.hpp"
 	"SceneNode/SceneNode.hpp"
 
-1429976152 /media/richard/ubuntu-storage/projects/RPG/include/World/LevelBlock.hpp
+1430059095 /media/richard/ubuntu-storage/projects/RPG/include/World/LevelBlock.hpp
 	<list>
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/CircleShape.hpp>
@@ -1125,7 +1128,7 @@
 	<SFML/Graphics/Texture.hpp>
 	"SceneNode/SceneNode.hpp"
 
-1429976152 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SceneNode.hpp
+1430063004 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SceneNode.hpp
 	<vector>
 	<memory>
 	<SFML/Graphics/RenderWindow.hpp>
@@ -1138,7 +1141,7 @@
 	<memory>
 	"Scenery.hpp"
 
-1429976152 /media/richard/ubuntu-storage/projects/RPG/include/Entity/SteeringBehaviour.hpp
+1430061031 /media/richard/ubuntu-storage/projects/RPG/include/Entity/SteeringBehaviour.hpp
 	<vector>
 	<memory>
 	<SFML/Graphics/CircleShape.hpp>
@@ -1163,7 +1166,7 @@
 1429973925 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/State.hpp
 	<memory>
 
-1429976152 /media/richard/ubuntu-storage/projects/RPG/include/World/World.hpp
+1430071833 /media/richard/ubuntu-storage/projects/RPG/include/World/World.hpp
 	<memory>
 	<SFML/Graphics/RenderWindow.hpp>
 	<SFML/Graphics/Texture.hpp>
@@ -1179,7 +1182,7 @@
 	"Entity/EntityStats.hpp"
 	"App/HUD.hpp"
 
-1429977818 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Enemy.hpp
+1430055523 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Enemy.hpp
 	<memory>
 	"Entity/Entity.hpp"
 	"Entity/State/StateMachine.hpp"
@@ -1191,7 +1194,7 @@
 	<SFML/Graphics/Font.hpp>
 	<SFML/System/Time.hpp>
 
-1429977764 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurerStates.cpp
+1430061875 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurerStates.cpp
 	<cassert>
 	<iostream>
 	"App/Utility.hpp"
@@ -1203,7 +1206,7 @@
 	<Entity/State/State.hpp>
 	<Entity/Adventurer.hpp>
 
-1429977795 source:/media/richard/ubuntu-storage/projects/RPG/src/enemyStates.cpp
+1430064402 source:/media/richard/ubuntu-storage/projects/RPG/src/enemyStates.cpp
 	<cassert>
 	<iostream>
 	"App/Utility.hpp"
@@ -1215,12 +1218,13 @@
 1429974323 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/EnemyStates.hpp
 	"Entity/State/State.hpp"
 
-1429977839 source:/media/richard/ubuntu-storage/projects/RPG/src/entity.cpp
+1430067164 source:/media/richard/ubuntu-storage/projects/RPG/src/entity.cpp
+	<string>
 	"Entity/Entity.hpp"
 	"World/World.hpp"
 	"World/LevelBlock.hpp"
 
-1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/level.cpp
+1430053991 source:/media/richard/ubuntu-storage/projects/RPG/src/level.cpp
 	<iostream>
 	<list>
 	<string>
@@ -1253,7 +1257,7 @@
 1429976152 /media/richard/ubuntu-storage/projects/RPG/include/App/AppState.hpp
 	<SFML/System/Time.hpp>
 
-1429976152 source:/media/richard/ubuntu-storage/projects/RPG/src/levelBlock.cpp
+1430059247 source:/media/richard/ubuntu-storage/projects/RPG/src/levelBlock.cpp
 	<iostream>
 	<cassert>
 	"App/Utility.hpp"
@@ -1301,7 +1305,7 @@
 	<SFML/Graphics/Text.hpp>
 	<SFML/System/Time.hpp>
 
-1429970714 source:/media/richard/ubuntu-storage/projects/RPG/src/world.cpp
+1430073641 source:/media/richard/ubuntu-storage/projects/RPG/src/world.cpp
 	<iostream>
 	<SFML/Graphics/PrimitiveType.hpp>
 	<SFML/Graphics/Text.hpp>
@@ -1327,16 +1331,95 @@
 	<SFML/System/Time.hpp>
 	"SceneNode.hpp"
 
-1429975921 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Attribute/Killable.hpp
+1430064355 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Attribute/Killable.hpp
 	"Entity/EntityStats.hpp"
 
-1429977568 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Attribute/Intelligent.hpp
+1430055370 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Attribute/Intelligent.hpp
 	"Entity/EntityStats.hpp"
 
-1429975921 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Attribute/MeleeFighter.hpp
+1430055427 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Attribute/MeleeFighter.hpp
 	<SFML/System/Time.hpp>
+	"Entity/EntityStats.hpp"
 
-1429976127 source:/media/richard/ubuntu-storage/projects/RPG/src/meleeFighter.cpp
+1430062668 source:/media/richard/ubuntu-storage/projects/RPG/src/meleeFighter.cpp
 	"Entity/Attribute/MeleeFighter.hpp"
 	"Entity/Attribute/Killable.hpp"
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/Window.hpp
+	<SFML/System.hpp>
+	<SFML/Window/Context.hpp>
+	<SFML/Window/ContextSettings.hpp>
+	<SFML/Window/Event.hpp>
+	<SFML/Window/Joystick.hpp>
+	<SFML/Window/Keyboard.hpp>
+	<SFML/Window/Mouse.hpp>
+	<SFML/Window/Touch.hpp>
+	<SFML/Window/Sensor.hpp>
+	<SFML/Window/VideoMode.hpp>
+	<SFML/Window/Window.hpp>
+	<SFML/Window/WindowStyle.hpp>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Clock.hpp>
+	<SFML/System/Err.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/Lock.hpp>
+	<SFML/System/Mutex.hpp>
+	<SFML/System/Sleep.hpp>
+	<SFML/System/String.hpp>
+	<SFML/System/Thread.hpp>
+	<SFML/System/ThreadLocal.hpp>
+	<SFML/System/ThreadLocalPtr.hpp>
+	<SFML/System/Utf.hpp>
+	<SFML/System/Vector2.hpp>
+	<SFML/System/Vector3.hpp>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Err.hpp
+	<SFML/System/Export.hpp>
+	<ostream>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/InputStream.hpp
+	<SFML/Config.hpp>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Lock.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Mutex.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Sleep.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Thread.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdlib>
+	<SFML/System/Thread.inl>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Thread.inl
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/ThreadLocal.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdlib>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/ThreadLocalPtr.hpp
+	<SFML/System/ThreadLocal.hpp>
+	<SFML/System/ThreadLocalPtr.inl>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/ThreadLocalPtr.inl
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/Window/Context.hpp
+	<SFML/Window/Export.hpp>
+	<SFML/Window/GlResource.hpp>
+	<SFML/Window/ContextSettings.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/Window/Touch.hpp
+	<SFML/Window/Export.hpp>
+	<SFML/System/Vector2.hpp>
 

@@ -35,7 +35,7 @@ Enemy::Enemy(//World* world
 , mStates(states)
 , mStateMachine(this, globalState, initState, currentState)
 {
-    mText.setPosition(-10.f, -40.f);
+//    mText.setPosition(-10.f, -40.f);
 
 //    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 }
@@ -46,8 +46,8 @@ void Enemy::updateCurrent(sf::Time dt)
 
     Entity::updateCurrent(dt);
 
-    mCurrentBlock->deleteEntity(this);
-    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+//    mCurrentBlock->deleteEntity(this);
+//    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 
 //    if(mCurrentBlock->getType() == LevelBlock::Type::ExitBlock)
 //    {
@@ -62,8 +62,7 @@ void Enemy::updateCurrent(sf::Time dt)
 void Enemy::drawCurrent(sf::RenderTarget& target
                         , sf::RenderStates states) const
 {
-    target.draw(mSprite, states);
-    target.draw(mText);
+   Entity::drawCurrent(target, states);
 }
 
 //void Enemy::changeState(Enemy::States newState)

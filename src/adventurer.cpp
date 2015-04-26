@@ -5,20 +5,23 @@
 *   @Date 12/2014
 */
 
+#include <cstdlib>
+
 #include "Entity/Adventurer.hpp"
 #include "World/World.hpp"
 
-Adventurer::Adventurer(Level* level
-         , const sf::Texture& texture
-         , const sf::Font& font
-         , sf::Vector2f startPos
-         , EntityStats stats
-         , const Params& params
-         , State<Adventurer>* globalState
-         , State<Adventurer>* initState
-         , StateContainer& states
-         , unsigned int currentState
-         , float scale)
+Adventurer::Adventurer(const sf::RenderWindow& window
+                     , Level* level
+                     , const sf::Texture& texture
+                     , const sf::Font& font
+                     , sf::Vector2f startPos
+                     , EntityStats stats
+                     , const Params& params
+                     , State<Adventurer>* globalState
+                     , State<Adventurer>* initState
+                     , StateContainer& states
+                     , unsigned int currentState
+                     , float scale)
 : Entity(level
                , texture
                , font
@@ -28,11 +31,13 @@ Adventurer::Adventurer(Level* level
                , Entity::Type::Adventurer
                , params.CharacterPanicDistance
                , scale)
+, mWindow(window)
 , mStates(states)
 , mStateMachine(this, globalState, initState, currentState)
+, mIsSelected(false)
 {
     setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
-    mText.setString("Woof!");
+    mText.setString("....");
 }
 
 /*
@@ -40,44 +45,27 @@ Adventurer::Adventurer(Level* level
 */
 void Adventurer::updateCurrent(sf::Time dt)
 {
-    sf::Color currentTextColor = mText.getColor();
+   if(!mIsSelected)
+   {
+      mStateMachine.update();
+      Entity::updateMovement(dt);
+   }
+   else
+   {
+      rotateToCursor();
 
-    currentTextColor.a -= 1;
+      float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
 
-    mText.setColor(currentTextColor);
+      mVelocity.x = std::sin(currentRotation);
+      mVelocity.y = -std::cos(currentRotation);
 
-    sf::Vector2f steering = mSteering.calculate(dt);
+      truncateVec(mVelocity, mMaxSpeed);
+      move(mVelocity);
+   }
 
-    mVelocity += steering;
+   Entity::updateCurrent(dt);
 
-    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
-    {
-        int sign = signVec(mHeading, mVelocity);
-
-        float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
-        angle *= sign;
-
-        clampRotation(angle
-                      , -mMaxTurnRate
-                      , mMaxTurnRate);
-
-        if(angle > MINFLOAT || angle < -MINFLOAT)
-            rotate(angle * (180.f / SteeringBehaviour::mPI));
-    }
-
-    float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
-    mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
-
-    move(mVelocity);
-
-//    adjustPosition();
-
-    sf::FloatRect bounds = mText.getLocalBounds();
-    mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-
-    sf::Vector2f textPos = getWorldPosition();
-    textPos.y -= 20.f;
-    mText.setPosition(textPos);
+   ensureZeroOverlap();
 }
 
 /*
@@ -86,11 +74,25 @@ void Adventurer::updateCurrent(sf::Time dt)
 void Adventurer::drawCurrent(sf::RenderTarget& target
                                     , sf::RenderStates states) const
 {
-    target.draw(mSprite, states);
-    target.draw(mText);
+   Entity::drawCurrent(target, states);
 
-    std::vector<sf::CircleShape> wypnts = mSteering.getPathToDraw();
+   std::vector<sf::CircleShape> wypnts = mSteering.getPathToDraw();
 
-    for(sf::CircleShape circle : wypnts)
-        target.draw(circle);
+   for(sf::CircleShape circle : wypnts)
+     target.draw(circle);
+}
+
+void Adventurer::rotateToCursor()
+{
+   sf::Vector2i mousepos = sf::Mouse::getPosition(mWindow);
+   sf::Vector2f converted = mWindow.mapPixelToCoords(mousepos);
+
+   sf::Vector2f toCursor = converted - getWorldPosition();
+
+   float rotation = std::atan2(toCursor.x, -toCursor.y);
+
+   setRotation(rotation * (180.f / SteeringBehaviour::mPI));
+
+   float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
+   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
 }

@@ -64,21 +64,21 @@ void Level::defineWallData()
 
     mBoundaryWallData.at(Wall::WallType::TopWall) = Wall::WallData(points, norm);
 
-    // Top wall left
-    pointA = sf::Vector2f(0.f, mBlockSize);
-    pointB = sf::Vector2f(mBlockSize * (mMidX - exitBorder), mBlockSize);
-    points = Wall::PointPair(pointA, pointB);
-    norm = sf::Vector2f(0.f, 1.f);
-
-    mBoundaryWallData.at(Wall::WallType::TopLeftWall) = Wall::WallData(points, norm);
-
-     // Top wall right
-    pointA = sf::Vector2f(mBlockSize * (mMidX + exitBorder), mBlockSize);
-    pointB = sf::Vector2f(mWorldBounds.width, mBlockSize);
-    points = Wall::PointPair(pointA, pointB);
-    norm = sf::Vector2f(0.f, 1.f);
-
-    mBoundaryWallData.at(Wall::WallType::TopRightWall) = Wall::WallData(points, norm);
+//    // Top wall left
+//    pointA = sf::Vector2f(0.f, mBlockSize);
+//    pointB = sf::Vector2f(mBlockSize * (mMidX - exitBorder), mBlockSize);
+//    points = Wall::PointPair(pointA, pointB);
+//    norm = sf::Vector2f(0.f, 1.f);
+//
+//    mBoundaryWallData.at(Wall::WallType::TopLeftWall) = Wall::WallData(points, norm);
+//
+//     // Top wall right
+//    pointA = sf::Vector2f(mBlockSize * (mMidX + exitBorder), mBlockSize);
+//    pointB = sf::Vector2f(mWorldBounds.width, mBlockSize);
+//    points = Wall::PointPair(pointA, pointB);
+//    norm = sf::Vector2f(0.f, 1.f);
+//
+//    mBoundaryWallData.at(Wall::WallType::TopRightWall) = Wall::WallData(points, norm);
 
     // Bottom wall
     pointA = sf::Vector2f(0.f, mWorldBounds.height - mBlockSize);
@@ -183,7 +183,8 @@ std::vector<Entity*> Level::getEntitiesInRange(const Entity* entity
         {
             assert(e);
 
-            if(e->getEntityType() == type)
+            if(e->getEntityType() == type
+               || type == Entity::Type::AllTypes)
             {
                sf::Vector2f toNeighbour = e->getWorldPosition() - entityPos;
 
@@ -234,7 +235,7 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
     }
 
     // Fill in top wall and bottom walls
-    Wall::WallData wallData = mBoundaryWallData.at(Wall::WallType::TopLeftWall);
+    Wall::WallData wallData = mBoundaryWallData.at(Wall::WallType::TopWall);
     float angleToRotate = 90.f;
 
     for(row = 0; row < mLevelY; row += mLevelY - 1)
@@ -259,24 +260,49 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
 
     }
 
-    int exitIndex = mLevelX / 2.f;
-    angleToRotate = 90.f;
-    wallData = mBoundaryWallData.at(Wall::WallType::TopRightWall);
+//    Wall::WallData wallData = mBoundaryWallData.at(Wall::WallType::TopLeftWall);
+//    float angleToRotate = 90.f;
+//
+//    for(row = 0; row < mLevelY; row += mLevelY - 1)
+//    {
+//        for(col = 0; col < mLevelX; col++)
+//        {
+//            LevelBlock* levelBlock = mLevelArray.at(row).at(col);
+//            levelBlock->setType(LevelBlock::Type::WallBlock);
+//
+//            Wall::WallPtr wall(new Wall(levelBlock
+//                                   , controller.getTexture(Controller::Textures::Wall)
+//                                   , wallData.first.first
+//                                   , wallData.first.second
+//                                   , wallData.second));
+//
+//            wall->rotateSprite(angleToRotate);
+//            levelBlock->addScenery(std::move(wall));
+//        }
+//
+//        wallData = mBoundaryWallData.at(Wall::WallType::BottomWall);
+//        angleToRotate = -90.f;
+//
+//    }
 
-    for(col = exitIndex + 2; col < mLevelX; col++)
-    {
-        LevelBlock* levelBlock = mLevelArray.at(0).at(col);
-        levelBlock->setType(LevelBlock::Type::WallBlock);
-
-        Wall::WallPtr wall(new Wall(levelBlock
-                           , controller.getTexture(Controller::Textures::Wall)
-                           , wallData.first.first
-                           , wallData.first.second
-                           , wallData.second));
-
-        wall->rotateSprite(angleToRotate);
-        levelBlock->addScenery(std::move(wall));
-    }
+//    int exitIndex = mLevelX / 2.f;
+//    angleToRotate = 90.f;
+//    wallData = mBoundaryWallData.at(Wall::WallType::TopRightWall);
+//
+//    for(col = exitIndex + 2; col < mLevelX; col++)
+//    {
+//        LevelBlock* levelBlock = mLevelArray.at(0).at(col);
+//        levelBlock->setType(LevelBlock::Type::WallBlock);
+//
+//        Wall::WallPtr wall(new Wall(levelBlock
+//                           , controller.getTexture(Controller::Textures::Wall)
+//                           , wallData.first.first
+//                           , wallData.first.second
+//                           , wallData.second));
+//
+//        wall->rotateSprite(angleToRotate);
+//        levelBlock->addScenery(std::move(wall));
+//    }
 
     // Fill in left and right walls
     wallData = mBoundaryWallData.at(Wall::WallType::LeftWall);
@@ -331,16 +357,16 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
 
     int exitBorder = (mExitWidth - 1) / 2;
 
-    for(col = exitIndex - exitBorder; col < exitIndex + exitBorder; col ++)
-    {
-        LevelBlock* levelBlock = mLevelArray.at(0).at(col);
-            Scenery::SceneryPtr exit(new Scenery(levelBlock
-                                                   , controller.getTexture(Controller::Textures::Exit)));
-
-        levelBlock->addScenery(std::move(exit));
-        levelBlock->setType(LevelBlock::Type::ExitBlock);
-        mLevelExit.push_back(levelBlock);
-    }
+//    for(col = exitIndex - exitBorder; col < exitIndex + exitBorder; col ++)
+//    {
+//        LevelBlock* levelBlock = mLevelArray.at(0).at(col);
+//            Scenery::SceneryPtr exit(new Scenery(levelBlock
+//                                                   , controller.getTexture(Controller::Textures::Exit)));
+//
+//        levelBlock->addScenery(std::move(exit));
+//        levelBlock->setType(LevelBlock::Type::ExitBlock);
+//        mLevelExit.push_back(levelBlock);
+//    }
 }
 
 LevelBlock* Level::insertEntityIntoLevel(Entity* entity) const
@@ -359,3 +385,4 @@ void Level::resetColours()
         }
     }
 }
+

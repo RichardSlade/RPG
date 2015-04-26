@@ -86,6 +86,7 @@ private:
     void                                        generateAgents(const Controller&);
     void                                        handleRealTimeInput();
     void                                        adjustView();
+    void                                        rotateViewToAdventurer();
 
     void                                        cycleAdventurer();
 

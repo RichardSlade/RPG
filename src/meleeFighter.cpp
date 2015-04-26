@@ -8,13 +8,11 @@
 #include "Entity/Attribute/MeleeFighter.hpp"
 #include "Entity/Attribute/Killable.hpp"
 
-MeleeFighter::MeleeFighter(sf::Time delay
-                              , float baseDmg
-                              , float attkDist)
-: mAttackDelay(delay)
-, mBaseDmg(baseDmg)
-, mAttackDistance(attkDist)
-, mAttackCountdown(delay)
+MeleeFighter::MeleeFighter(EntityStats stats)
+: AttackDelay(sf::seconds(stats.attackDelay))
+, BaseDmg(stats.baseDamage)
+, AttackDistance(stats.attackDistance)
+, mAttackCountdown(AttackDelay)
 , mCanAttack(true)
 {}
 
@@ -29,10 +27,13 @@ void MeleeFighter::update(sf::Time dt)
 
 void MeleeFighter::meleeAttack(Killable* target)
 {
-   float dmg = -mBaseDmg;
+   if(mCanAttack)
+   {
+      float dmg = -BaseDmg;
 
-   target->changeHealth(dmg);
+      target->changeHealth(dmg);
 
-   mAttackCountdown = mAttackDelay;
-   mCanAttack = false;
+      mAttackCountdown = AttackDelay;
+      mCanAttack = false;
+   }
 }

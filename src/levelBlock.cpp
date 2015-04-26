@@ -8,6 +8,8 @@
 const sf::Color LevelBlock::mBrown = sf::Color(150, 70, 0, 255);
 const sf::Color LevelBlock::mYellow = sf::Color(200, 200, 0, 255);
 const sf::Color LevelBlock::mGreen = sf::Color(0, 150, 0, 255);
+const sf::Color LevelBlock::mGray = sf::Color(100, 100, 100, 255);
+const sf::Color LevelBlock::mDarkGray = sf::Color(50, 50, 50, 255);
 
 LevelBlock::LevelBlock(const sf::Texture& background
                        , sf::Vector2f pos
@@ -59,15 +61,15 @@ void LevelBlock::setBackgroundColour()
 
     if(grass < MaxGrass / 2.f)
     {
-        bottomColour = mBrown;
-        topColour = mYellow;
+        bottomColour = mGray;
+        topColour = mBrown;
         max = MaxGrass / 2.f;
         min = 0.f;
     }
     else
     {
-        bottomColour = mYellow;
-        topColour = mGreen;
+        bottomColour = mDarkGray;
+        topColour = mGray;
         max = MaxGrass;
         min = MaxGrass / 2.f;
     }
@@ -80,6 +82,8 @@ void LevelBlock::setBackgroundColour()
     backgroundColour.b = 0.f;
 
     mBackground.setColor(backgroundColour);
+
+//    mBackground.setColor(mBrown);
 }
 
 LevelBlock* LevelBlock::insertEntity(Entity* entity)

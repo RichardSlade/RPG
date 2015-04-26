@@ -9,22 +9,20 @@
 class Enemy : public Entity
 {
 public:
-    typedef std::vector<std::unique_ptr<State<Enemy>>> StateContainer;
+   typedef std::vector<std::unique_ptr<State<Enemy>>> StateContainer;
 
-    enum States
-    {
-        LookOut,
-        Evade,
-        Relax,
-        Attack,
-//        Exit,
-        NumStates
-    };
+   enum States
+   {
+      LookOut,
+      Evade,
+      Relax,
+      Attack,
+      //        Exit,
+      NumStates
+   };
 
-
-    const float                 mSightRange;
-
-    const float                 mAngleOfVision;
+   const float                 mSightRange;
+   const float                 mAngleOfVision;
 //    const float                 mPanicDistance;
 
 private:

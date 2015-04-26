@@ -11,6 +11,8 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Time.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window.hpp>
 
 #include "Entity/Entity.hpp"
 #include "Entity/Path.hpp"
@@ -21,27 +23,30 @@ class Enemy;
 class Adventurer : public Entity
 {
 public:
-    typedef std::vector<std::unique_ptr<State<Adventurer>>> StateContainer;
+   typedef std::vector<std::unique_ptr<State<Adventurer>>> StateContainer;
 
-    enum States
-    {
-        LookOut,
-        Evade,
-        Relax,
-        Attack,
-//        Exit,
-        NumStates
-    };
+   enum States
+   {
+      LookOut,
+      Relax,
+//      Evade,
+      Attack,
+      //        Exit,
+      NumStates
+   };
 
-    enum Type
-    {
-       Barbarian,
-       NumTypes
-    };
+   enum Type
+   {
+      Barbarian,
+      NumTypes
+   };
 
 private:
+    const sf::RenderWindow&        mWindow;
     StateContainer&                 mStates;
     StateMachine<Adventurer>         mStateMachine;
+
+    bool                           mIsSelected;
 
 //    Entity*                          mCurrentTarget;
 
@@ -50,30 +55,39 @@ private:
                                             , sf::RenderStates) const;
 
 public:
-                                    Adventurer(Level*
-                                        , const sf::Texture&
-                                        , const sf::Font&
-                                        , sf::Vector2f
-                                        , EntityStats
-                                        , const Params&
-                                        , State<Adventurer>* globalState
-                                        , State<Adventurer>* initState
-                                        , StateContainer&
-                                        , unsigned int currentState
-                                        , float = 1.f);
+                                    Adventurer(const sf::RenderWindow& window
+                                              , Level*
+                                              , const sf::Texture&
+                                              , const sf::Font&
+                                              , sf::Vector2f
+                                              , EntityStats
+                                              , const Params&
+                                              , State<Adventurer>* globalState
+                                              , State<Adventurer>* initState
+                                              , StateContainer&
+                                              , unsigned int currentState
+                                              , float = 1.f);
 
-    virtual                         ~Adventurer(){};
+   virtual                         ~Adventurer(){};
 
-    void                            addToPath(sf::Vector2f pos)
-                                    { mSteering.addToPath(pos); }
+   void                             rotateToCursor();
 
-    void                            startNewPath(sf::Vector2f pos)
-                                    { mSteering.startNewPath(pos); }
+   void                            addToPath(sf::Vector2f pos)
+                                 { mSteering.addToPath(pos); }
 
-    void                            changeState(Adventurer::States newState)
+   void                            startNewPath(sf::Vector2f pos)
+                                 { mSteering.startNewPath(pos); }
+
+   // Getters
+   unsigned int                     getCurrentStateType() {return mStateMachine.getCurrentStateType(); }
+
+   bool                             isSelected(){ return mIsSelected; }
+
+   // Setters
+   void                            changeState(Adventurer::States newState)
                                     { mStateMachine.changeState(mStates.at(newState).get(), newState); }
 
-   unsigned int                     getCurrentStateType() {return mStateMachine.getCurrentStateType(); }
+   void                             setIsSelected(bool status){ mIsSelected = status; }
 
 //   Entity*                           getCurrentTarget() {return mCurrentTarget;}
 };

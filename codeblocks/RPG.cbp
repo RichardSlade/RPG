@@ -17,9 +17,9 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="sfml-graphics-d" />
-					<Add library="sfml-window-d" />
-					<Add library="sfml-system-d" />
+					<Add library="sfml-graphics" />
+					<Add library="sfml-window" />
+					<Add library="sfml-system" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -43,54 +43,57 @@
 		<Compiler>
 			<Add option="-std=c++0x" />
 			<Add option="-Wall" />
-			<Add directory="../../../Libraries/SFML-2.2/include" />
+			<Add directory="../../../libraries/SFML-2.2/include" />
+			<Add directory="../include" />
 		</Compiler>
 		<Linker>
-			<Add directory="../../../Libraries/SFML-2.2/lib" />
+			<Add directory="../../../libraries/SFML-2.2/lib" />
 		</Linker>
-		<Unit filename="../src/character.cpp" />
-		<Unit filename="../src/characterStates.cpp" />
+		<Unit filename="../include/App/AppState.hpp" />
+		<Unit filename="../include/App/Controller.hpp" />
+		<Unit filename="../include/App/GameCompleteScreen.hpp" />
+		<Unit filename="../include/App/GameState.hpp" />
+		<Unit filename="../include/App/HUD.hpp" />
+		<Unit filename="../include/App/LevelCompleteScreen.hpp" />
+		<Unit filename="../include/App/MenuState.hpp" />
+		<Unit filename="../include/App/Params.hpp" />
+		<Unit filename="../include/App/PausedScreen.hpp" />
+		<Unit filename="../include/App/Utility.hpp" />
+		<Unit filename="../include/Entity/Adventurer.hpp" />
+		<Unit filename="../include/Entity/Attribute/Intelligent.hpp" />
+		<Unit filename="../include/Entity/Attribute/Killable.hpp" />
+		<Unit filename="../include/Entity/Attribute/MeleeFighter.hpp" />
+		<Unit filename="../include/Entity/Enemy.hpp" />
+		<Unit filename="../include/Entity/Entity.hpp" />
+		<Unit filename="../include/Entity/EntityStats.hpp" />
+		<Unit filename="../include/Entity/Path.hpp" />
+		<Unit filename="../include/Entity/State/AdventurerStates.hpp" />
+		<Unit filename="../include/Entity/State/EnemyStates.hpp" />
+		<Unit filename="../include/Entity/State/State.hpp" />
+		<Unit filename="../include/Entity/State/StateMachine.hpp" />
+		<Unit filename="../include/Entity/SteeringBehaviour.hpp" />
+		<Unit filename="../include/SceneNode/SceneNode.hpp" />
+		<Unit filename="../include/SceneNode/SpriteNode.hpp" />
+		<Unit filename="../include/World/Level.hpp" />
+		<Unit filename="../include/World/LevelBlock.hpp" />
+		<Unit filename="../include/World/Scenery.hpp" />
+		<Unit filename="../include/World/Wall.hpp" />
+		<Unit filename="../include/World/World.hpp" />
+		<Unit filename="../src/adventurer.cpp" />
+		<Unit filename="../src/adventurerStates.cpp" />
 		<Unit filename="../src/controller.cpp" />
 		<Unit filename="../src/enemy.cpp" />
 		<Unit filename="../src/enemyStates.cpp" />
+		<Unit filename="../src/entity.cpp" />
 		<Unit filename="../src/gameCompleteScreen.cpp" />
 		<Unit filename="../src/gameState.cpp" />
 		<Unit filename="../src/hud.cpp" />
-		<Unit filename="../src/incl/AppState.hpp" />
-		<Unit filename="../src/incl/Character.hpp" />
-		<Unit filename="../src/incl/CharacterStates.hpp" />
-		<Unit filename="../src/incl/Controller.hpp" />
-		<Unit filename="../src/incl/Enemy.hpp" />
-		<Unit filename="../src/incl/EnemyStates.hpp" />
-		<Unit filename="../src/incl/EntityStats.hpp" />
-		<Unit filename="../src/incl/Enum.hpp" />
-		<Unit filename="../src/incl/GameCompleteScreen.hpp" />
-		<Unit filename="../src/incl/GameState.hpp" />
-		<Unit filename="../src/incl/HUD.hpp" />
-		<Unit filename="../src/incl/Level.hpp" />
-		<Unit filename="../src/incl/LevelBlock.hpp" />
-		<Unit filename="../src/incl/LevelCompleteScreen.hpp" />
-		<Unit filename="../src/incl/MenuState.hpp" />
-		<Unit filename="../src/incl/MovingEntity.hpp" />
-		<Unit filename="../src/incl/MovingTarget.hpp" />
-		<Unit filename="../src/incl/Params.hpp" />
-		<Unit filename="../src/incl/Path.hpp" />
-		<Unit filename="../src/incl/PausedScreen.hpp" />
-		<Unit filename="../src/incl/SceneNode.hpp" />
-		<Unit filename="../src/incl/Scenery.hpp" />
-		<Unit filename="../src/incl/SpriteNode.hpp" />
-		<Unit filename="../src/incl/State.hpp" />
-		<Unit filename="../src/incl/StateMachine.hpp" />
-		<Unit filename="../src/incl/SteeringBehaviour.hpp" />
-		<Unit filename="../src/incl/Utility.hpp" />
-		<Unit filename="../src/incl/Wall.hpp" />
-		<Unit filename="../src/incl/World.hpp" />
 		<Unit filename="../src/level.cpp" />
 		<Unit filename="../src/levelBlock.cpp" />
 		<Unit filename="../src/levelCompleteScreen.cpp" />
 		<Unit filename="../src/main.cpp" />
+		<Unit filename="../src/meleeFighter.cpp" />
 		<Unit filename="../src/menuState.cpp" />
-		<Unit filename="../src/movingEntity.cpp" />
 		<Unit filename="../src/path.cpp" />
 		<Unit filename="../src/pausedScreen.cpp" />
 		<Unit filename="../src/sceneNode.cpp" />
