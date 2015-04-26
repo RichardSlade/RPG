@@ -326,7 +326,8 @@ sf::Vector2f SteeringBehaviour::seperation()
 {
     sf::Vector2f steeringForce;
 
-    std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius, mHost->getEntityType);
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mSeperationRadius
+                                                          , mHost->getEntityType());
 
     for(Entity* e : neighbours)
     {
@@ -343,7 +344,8 @@ sf::Vector2f SteeringBehaviour::alignment()
     sf::Vector2f averageHeading;
     int neighbourCount = 0;
 
-    std::vector<Entity*> neighbours = mHost->getNeighbours(mAlignRadius);
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mAlignRadius
+                                                          , mHost->getEntityType());
 
     for(Entity* e : neighbours)
     {
@@ -368,7 +370,8 @@ sf::Vector2f SteeringBehaviour::cohesion()
     sf::Vector2f steeringForce, centerOfMass;
     int neighbourCount = 0;
 
-    std::vector<Entity*> neighbours = mHost->getNeighbours(mCohesionRadius);
+    std::vector<Entity*> neighbours = mHost->getNeighbours(mCohesionRadius
+                                                          , mHost->getEntityType());
 
     for(Entity* e : neighbours)
     {
