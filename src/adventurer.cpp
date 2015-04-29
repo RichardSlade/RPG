@@ -35,6 +35,7 @@ Adventurer::Adventurer(const sf::RenderWindow& window
 , mStates(states)
 , mStateMachine(this, globalState, initState, currentState)
 , mIsSelected(false)
+, mMove(false)
 {
     setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
     mText.setString("....");
@@ -54,13 +55,25 @@ void Adventurer::updateCurrent(sf::Time dt)
    {
       rotateToCursor();
 
-      float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
-
-      mVelocity.x = std::sin(currentRotation);
-      mVelocity.y = -std::cos(currentRotation);
-
-      truncateVec(mVelocity, mMaxSpeed);
       move(mVelocity);
+
+      std::vector<LevelBlock*> wallsInRange = getBlockTypeInRange(LevelBlock::Type::WallBlock
+                                                                  , mRadius);
+      float expandedRadius = mRadius;
+
+      for(unsigned int wall = 0; wall < wallsInRange.size(); wall++)
+      {
+         sf::Vector2f toWall = getWorldPosition() - wallsInRange.at(wall)->getCenter();
+         float mag = magVec(toWall);
+
+         if(mag < expandedRadius)
+         {
+            move(-mVelocity);
+            break;
+         }
+      }
+
+      mVelocity = sf::Vector2f();
    }
 
    Entity::updateCurrent(dt);

@@ -135,7 +135,7 @@ std::vector<LevelBlock*> Level::getInRangeBlocks(const Entity* entity
             LevelBlock* curBlock = mLevelArray.at(y).at(x);
 
             float expandedRadius = curBlock->getRadius() + radius;
-            sf::Vector2f toBlock = entity->getWorldPosition() - curBlock->getMiddle();
+            sf::Vector2f toBlock = entity->getWorldPosition() - curBlock->getCenter();
 
             if(magVec(toBlock) < expandedRadius)
                 inRangeBlocks.push_back(curBlock);

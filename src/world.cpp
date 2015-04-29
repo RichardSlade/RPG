@@ -162,7 +162,7 @@ void World::generateAgents(const Controller& controller)
 
         levelBlock = mLevel->getBlock(index);
 
-        pos = levelBlock->getMiddle();
+        pos = levelBlock->getCenter();
 
         std::unique_ptr<Enemy> enemyNode(new Enemy(mLevel.get()
                                                     , controller.getTexture(Controller::Textures::Enemy)

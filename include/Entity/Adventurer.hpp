@@ -47,6 +47,7 @@ private:
     StateMachine<Adventurer>         mStateMachine;
 
     bool                           mIsSelected;
+    bool                            mMove;
 
 //    Entity*                          mCurrentTarget;
 
@@ -88,6 +89,8 @@ public:
                                     { mStateMachine.changeState(mStates.at(newState).get(), newState); }
 
    void                             setIsSelected(bool status){ mIsSelected = status; }
+
+   void                          setMove() { mMove = true; }
 
 //   Entity*                           getCurrentTarget() {return mCurrentTarget;}
 };

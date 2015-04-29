@@ -30,6 +30,11 @@ LevelBlock::LevelBlock(const sf::Texture& background
     mOriginCircle.setFillColor(sf::Color::Yellow);
     mOriginCircle.setPosition(mSize / 2.f, mSize / 2.f);
 
+    mGlobalBounds.left = pos.x;
+    mGlobalBounds.top = pos.y;
+    mGlobalBounds.width = size;
+    mGlobalBounds.height = size;
+
     setPosition(pos);
     setBackgroundColour();
 }

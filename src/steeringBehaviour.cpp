@@ -233,7 +233,7 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance()
 
     for(LevelBlock* blck : nearObstacles)
     {
-        sf::Vector2f blckPos = hostTrans * blck->getMiddle();
+        sf::Vector2f blckPos = hostTrans * blck->getCenter();
 
         if(blckPos.y <= 0.f)
         {
@@ -262,7 +262,7 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance()
 
     if(closestObstacle)
     {
-        sf::Vector2f closestPos = hostTrans * closestObstacle->getMiddle();
+        sf::Vector2f closestPos = hostTrans * closestObstacle->getCenter();
 
         float multiplier = 1.f + (boxLength - closestPos.y) / boxLength;
 
