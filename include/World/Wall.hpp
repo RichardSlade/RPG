@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "World/Scenery.hpp"
+#include "Scenery.hpp"
 
 class Wall : public Scenery
 {
@@ -33,19 +33,17 @@ private:
 
 public:
 
-    Wall(LevelBlock*
-         , const sf::Texture&
-         , sf::Vector2f
-         , sf::Vector2f
-         , sf::Vector2f);
+                                    Wall(LevelBlock*
+                                         , const sf::Texture&
+                                         , sf::Vector2f
+                                         , sf::Vector2f
+                                         , sf::Vector2f);
 
-    virtual                         ~Wall() {};
+    virtual                         ~Wall(){};
 
     // Getters
     virtual WallData                getSceneryData()
-    {
-        return retrieveWallData();
-    };
+                                    { return retrieveWallData(); };
 };
 
 #endif // WALL_HPP

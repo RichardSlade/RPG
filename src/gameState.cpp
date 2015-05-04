@@ -21,21 +21,21 @@ GameState::GameState(Controller& cntrl
 , mTotalEnemyHerded(0)
 , mUsername(username)
 , mWorld(new World(*this
-                 , cntrl
-                 , window
-                 , username
-                 , mWorldDim
-                 , mNumEnemy
-                 , mLevelTime))
+                   , cntrl
+                   , window
+                   , username
+                   , mWorldDim
+                   , mNumEnemy
+                   , mLevelTime))
 , mPausedScreen(mController
-              , *this
-              , mWindow)
+                , *this
+                , mWindow)
 , mLevelCompleteScreen(mController
                      , *this
                      , mWindow)
 , mGameCompleteScreen(mController
-                    , *this
-                    , mWindow)
+                   , *this
+                   , mWindow)
 , mCurrentScreen(GameState::Screen::Game)
 , mNewScreen(mCurrentScreen)
 , mPaused(false)
@@ -46,12 +46,12 @@ GameState::GameState(Controller& cntrl
 void GameState::restartWorld()
 {
     mWorld = std::unique_ptr<World>(new World(*this
-                                    , mController
-                                    , mWindow
-                                    , mUsername
-                                    , mWorldDim
-                                    , mNumEnemy
-                                    , mLevelTime));
+                                              , mController
+                                              , mWindow
+                                              , mUsername
+                                              , mWorldDim
+                                              , mNumEnemy
+                                              , mLevelTime));
 
     mNewScreen = GameState::Screen::Game;
 }
@@ -63,30 +63,25 @@ void GameState::update(sf::Time dt)
 
     switch(mCurrentScreen)
     {
-    case GameState::Screen::Game:
-    {
-        if(!mPausedScreen.isPaused())
-            mWorld->update(dt);
-        else
-            mPausedScreen.update(dt);
+        case GameState::Screen::Game:
+        {
+            if(!mPausedScreen.isPaused())
+                mWorld->update(dt);
+            else
+                mPausedScreen.update(dt);
 
-        break;
-    }
-    case GameState::Screen::LevelComplete:
-        mLevelCompleteScreen.update(dt);
-        break;
-    case GameState::Screen::GameComplete:
-        mGameCompleteScreen.update(dt);
-        break;
-    default:
-        break;
+            break;
+        }
+        case GameState::Screen::LevelComplete: mLevelCompleteScreen.update(dt); break;
+        case GameState::Screen::GameComplete: mGameCompleteScreen.update(dt); break;
+        default: break;
     }
 }
 
 void GameState::handleInput()
 {
     if(mCurrentScreen == GameState::Screen::Game
-            && mWorld)
+       && mWorld)
     {
         if(!mPausedScreen.isPaused())
             mWorld->handleInput();

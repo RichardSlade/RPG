@@ -1,33 +1,3 @@
-<<<<<<< HEAD
-#include "Entity/Enemy.hpp"
-
-Enemy::Enemy(Enemy::Type enemyType
-            , const sf::Texture& texture
-            , const sf::Font& font
-            , sf::Vector2f startPos
-            , float scale
-            , const EntityStats& stats
-            , const Params& params
-            , Level* level
-            , State<Enemy>* globalState
-            , State<Enemy>* initState
-            , StateContainer& states
-            , Enemy::StateType currentStateType)
-: Entity(texture
-         , font
-         , startPos
-         , scale
-         , stats
-         , params
-         , Entity::EntityType::Enemy
-         , level)
-, Intelligent(stats)
-, Killable(stats.health)
-, MeleeFighter(sf::seconds(stats.attackDelay)
-                , stats.meleeDamage
-                , stats.attackDist)
-, mEnemyType(enemyType)
-=======
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -46,6 +16,7 @@ Enemy::Enemy(//World* world
 		  , State<Enemy>* globalState
 		  , State<Enemy>* initState
 		  , StateContainer& states
+		  , unsigned int currentState
 		  , float scale)
 : Entity(//world
          level
@@ -61,23 +32,10 @@ Enemy::Enemy(//World* world
 , mSightRange(params.EnemySightRange)
 , mAngleOfVision(params.EnemyAngleOfVision)
 //, mPanicDistance(params.EnemyPanicDistance)
->>>>>>> working
 , mStates(states)
-, mStateMachine(this
-               , globalState
-               , initState
-               , currentStateType)
+, mStateMachine(this, globalState, initState, currentState)
 {
-<<<<<<< HEAD
 //    mText.setPosition(-10.f, -40.f);
-};
-
-void Enemy::updateCurrent(sf::Time dt)
-{
-   mStateMachine.update();
-   Entity::updateCurrent(dt);
-=======
-    mText.setPosition(-10.f, -40.f);
 
 //    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 }
@@ -88,8 +46,8 @@ void Enemy::updateCurrent(sf::Time dt)
 
     Entity::updateCurrent(dt);
 
-    mCurrentBlock->deleteEntity(this);
-    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+//    mCurrentBlock->deleteEntity(this);
+//    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 
 //    if(mCurrentBlock->getType() == LevelBlock::Type::ExitBlock)
 //    {
@@ -99,11 +57,15 @@ void Enemy::updateCurrent(sf::Time dt)
 //
 ////        mLevel->incEnemyHerded();
 //    }
->>>>>>> working
 }
 
 void Enemy::drawCurrent(sf::RenderTarget& target
-                            , sf::RenderStates states) const
+                        , sf::RenderStates states) const
 {
    Entity::drawCurrent(target, states);
 }
+
+//void Enemy::changeState(Enemy::States newState)
+//{
+//    mStateMachine.changeState(mStates.at(newState).get());
+//}

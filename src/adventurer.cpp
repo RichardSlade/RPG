@@ -5,19 +5,23 @@
 *   @Date 12/2014
 */
 
+#include <cstdlib>
+
 #include "Entity/Adventurer.hpp"
 #include "World/World.hpp"
 
-Adventurer::Adventurer(Level* level
-         , const sf::Texture& texture
-         , const sf::Font& font
-         , sf::Vector2f startPos
-         , EntityStats stats
-         , const Params& params
-         , State<Adventurer>* globalState
-         , State<Adventurer>* initState
-         , StateContainer& states
-         , float scale)
+Adventurer::Adventurer(const sf::RenderWindow& window
+                     , Level* level
+                     , const sf::Texture& texture
+                     , const sf::Font& font
+                     , sf::Vector2f startPos
+                     , EntityStats stats
+                     , const Params& params
+                     , State<Adventurer>* globalState
+                     , State<Adventurer>* initState
+                     , StateContainer& states
+                     , unsigned int currentState
+                     , float scale)
 : Entity(level
                , texture
                , font
@@ -25,13 +29,16 @@ Adventurer::Adventurer(Level* level
                , stats
                , params
                , Entity::Type::Adventurer
-               , 20.f
+               , params.CharacterPanicDistance
                , scale)
+, mWindow(window)
 , mStates(states)
-, mStateMachine(this, globalState, initState)
+, mStateMachine(this, globalState, initState, currentState)
+, mIsSelected(false)
+, mMove(false)
 {
     setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
-    mText.setString("Woof!");
+    mText.setString("....");
 }
 
 /*
@@ -39,44 +46,39 @@ Adventurer::Adventurer(Level* level
 */
 void Adventurer::updateCurrent(sf::Time dt)
 {
-    sf::Color currentTextColor = mText.getColor();
+   if(!mIsSelected)
+   {
+      mStateMachine.update();
+      Entity::updateMovement(dt);
+   }
+   else
+   {
+      rotateToCursor();
 
-    currentTextColor.a -= 1;
+      move(mVelocity);
 
-    mText.setColor(currentTextColor);
+      std::vector<LevelBlock*> wallsInRange = getBlockTypeInRange(LevelBlock::Type::WallBlock
+                                                                  , mRadius);
+      float expandedRadius = mRadius;
 
-    sf::Vector2f steering = mSteering.calculate(dt);
+      for(unsigned int wall = 0; wall < wallsInRange.size(); wall++)
+      {
+         sf::Vector2f toWall = getWorldPosition() - wallsInRange.at(wall)->getCenter();
+         float mag = magVec(toWall);
 
-    mVelocity += steering;
+         if(mag < expandedRadius)
+         {
+            move(-mVelocity);
+            break;
+         }
+      }
 
-    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
-    {
-        int sign = signVec(mHeading, mVelocity);
+      mVelocity = sf::Vector2f();
+   }
 
-        float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
-        angle *= sign;
+   Entity::updateCurrent(dt);
 
-        clampRotation(angle
-                      , -mMaxTurnRate
-                      , mMaxTurnRate);
-
-        if(angle > MINFLOAT || angle < -MINFLOAT)
-            rotate(angle * (180.f / SteeringBehaviour::mPI));
-    }
-
-    float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
-    mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
-
-    move(mVelocity);
-
-//    adjustPosition();
-
-    sf::FloatRect bounds = mText.getLocalBounds();
-    mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-
-    sf::Vector2f textPos = getWorldPosition();
-    textPos.y -= 20.f;
-    mText.setPosition(textPos);
+   ensureZeroOverlap();
 }
 
 /*
@@ -85,11 +87,25 @@ void Adventurer::updateCurrent(sf::Time dt)
 void Adventurer::drawCurrent(sf::RenderTarget& target
                                     , sf::RenderStates states) const
 {
-    target.draw(mSprite, states);
-    target.draw(mText);
+   Entity::drawCurrent(target, states);
 
-    std::vector<sf::CircleShape> wypnts = mSteering.getPathToDraw();
+   std::vector<sf::CircleShape> wypnts = mSteering.getPathToDraw();
 
-    for(sf::CircleShape circle : wypnts)
-        target.draw(circle);
+   for(sf::CircleShape circle : wypnts)
+     target.draw(circle);
+}
+
+void Adventurer::rotateToCursor()
+{
+   sf::Vector2i mousepos = sf::Mouse::getPosition(mWindow);
+   sf::Vector2f converted = mWindow.mapPixelToCoords(mousepos);
+
+   sf::Vector2f toCursor = converted - getWorldPosition();
+
+   float rotation = std::atan2(toCursor.x, -toCursor.y);
+
+   setRotation(rotation * (180.f / SteeringBehaviour::mPI));
+
+   float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
+   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
 }

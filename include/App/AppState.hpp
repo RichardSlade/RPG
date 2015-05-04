@@ -20,7 +20,7 @@ public:
         NumStateTypes
     };
 
-    virtual             ~AppState() {};
+    virtual             ~AppState(){};
 
     virtual void        update(sf::Time) = 0;
     virtual void        handleInput() = 0;

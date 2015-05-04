@@ -12,24 +12,26 @@
 #include "Entity/SteeringBehaviour.hpp"
 //#include "LevelBlock.hpp"
 #include "Entity/EntityStats.hpp"
+#include "Entity/Attribute/Killable.hpp"
+#include "Entity/Attribute/Intelligent.hpp"
+#include "Entity/Attribute/MeleeFighter.hpp"
 //#include "MovingTarget.hpp"
 
 //class World;
 
-class Entity : public SceneNode
+class Entity : public SceneNode, public Killable, public Intelligent, public MeleeFighter
 {
 public:
     enum Type
     {
         Adventurer,
         Enemy,
-        NumEntityTypes
+        AllTypes
     };
 
-    const float                 mPanicDistance;
+//    const float                 mPanicDistance;
 
 protected:
-//    World*                      mWorld;
     Level*                      mLevel;
 
     const float                 mMass;
@@ -41,7 +43,7 @@ protected:
 
 
     float                       mMaxSpeed;
-    Type                  mEntityType;
+    Type                        mEntityType;
 
     LevelBlock*                 mCurrentBlock;
 
@@ -53,12 +55,17 @@ protected:
     float                       mSpeed;
 
     SteeringBehaviour           mSteering;
-    sf::Vector2f                mTargetPos;
+//    sf::Vector2f                mTargetPos;
     Entity*                      mCurrentTarget;
     sf::Text                    mText;
+    sf::Text                     mHPText;
 
 
     virtual void                updateCurrent(sf::Time);
+    virtual void                drawCurrent(sf::RenderTarget& target
+                                           , sf::RenderStates states) const;
+
+   void                         updateMovement(sf::Time);
 
     void                        adjustPosition();
     void                        ensureZeroOverlap();
@@ -76,24 +83,9 @@ public:
 
     virtual                     ~Entity(){};
 
-//    // Virtual Functions
-//    virtual sf::Vector2f        targetPosition() const
-//                                { return getWorldPosition(); }
-//
-//    virtual sf::Vector2f        targetVelocity() const
-//                                { return getVelocity(); }
-//
-//    virtual sf::Vector2f        targetHeading() const
-//                                { return getHeading(); }
-//
-//    virtual float               targetSpeed() const
-//                                { return getSpeed(); }
-//
-//    virtual float               targetRadius() const
-//                                { return getRadius(); }
-
     // Getters
-    std::vector<Entity*>         getNeighbours(float = 50.f) const;
+    std::vector<Entity*>         getNeighbours(float radius
+                                                , unsigned int type) const;
 
     std::vector<LevelBlock*>    getBlockTypeInRange(LevelBlock::Type, float) const;
 
@@ -135,8 +127,8 @@ public:
     float                       getSpriteWidth() const
                                 { return mSprite.getLocalBounds().width; }
 
-    sf::Vector2f                getTargetPos() const
-                                { return mTargetPos; }
+//    sf::Vector2f                getTargetPos() const
+//                                { return mTargetPos; }
 
     const Entity*                getCurrentTarget() const
                                  { return mCurrentTarget; }
@@ -146,36 +138,48 @@ public:
     LevelBlock*                 getLevelBlock()
                                 { return mCurrentBlock; }
 
-    Entity::Type          getEntityType()
+    Entity::Type                 getEntityType()
                                 { return mEntityType; }
 
     // Setters
-    void                        setVelocity(sf::Vector2f newVel)
-                                { mVelocity = newVel; }
+   void                       setVelocity(sf::Vector2f newVel)
+                              { mVelocity = newVel; }
 
-    void                        setCurrentTarget(Entity* target)
-                                { mCurrentTarget = target; }
+   void                       resetVelocity()
+                              { mVelocity = sf::Vector2f(); }
 
-    void                        setMaxSpeed(float speed)
-                                { mMaxSpeed = speed; }
+   void                       changeVelocity(sf::Vector2f newVec)
+                              { mVelocity += newVec; }
 
-    void                        setSteeringTypes(std::vector<SteeringBehaviour::Behaviour> newBehaviours)
-                                { mSteering.setNewBehaviours(newBehaviours); }
+   void                       setCurrentTarget(Entity* target)
+                             { mCurrentTarget = target; }
 
-    void                        setSteeringTypes(SteeringBehaviour::Behaviour newBehaviour)
-                                { mSteering.setNewBehaviours(newBehaviour); }
+   void                       setMaxSpeed(float speed)
+                             { mMaxSpeed = speed; }
 
-    void                        changeColour(sf::Color colour)
-                                { mSprite.setColor(colour); }
+   void                       setSteeringTypes(std::vector<SteeringBehaviour::Behaviour> newBehaviours)
+                             { mSteering.setNewBehaviours(newBehaviours); }
 
-    void                        setText(std::string msg)
-                                {
-                                    mText.setString(msg);
-                                    mText.setColor(sf::Color(255, 255, 255, 255));
-                                }
+   void                       setSteeringTypes(SteeringBehaviour::Behaviour newBehaviour)
+                             { mSteering.setNewBehaviours(newBehaviour); }
 
-    void                        setTargetPos(sf::Vector2f pos)
-                                { mTargetPos = pos; }
+   void                       changeColour(sf::Color colour)
+                             { mSprite.setColor(colour); }
+
+   void                       setText(std::string msg)
+                             {
+                                 mText.setString(msg);
+                                 mText.setColor(sf::Color(255, 255, 255, 255));
+                             }
+
+   void                       setHPText(std::string msg)
+                              {
+                                 mHPText.setString(msg);
+                                 mHPText.setColor(sf::Color(255, 255, 255, 255));
+                              }
+
+//    void                        setTargetPos(sf::Vector2f pos)
+//                                { mTargetPos = pos; }
 };
 
 #endif // MOVINGENTITY_HPP

@@ -19,11 +19,11 @@ void LookOut::enter(Adventurer* host)
 void LookOut::execute(Adventurer* host)
 {
    // If host is currently relaxed
-   if(host->getCurrentState() == Adventurer::StateType::Relax)
+   if(host->getCurrentStateType() == Adventurer::States::Relax)
    {
       // get all close enemies
-      std::vector<Entity*> enemies = host->getNeighbours(host->agroDistance
-                                                               , Entity::EntityType::Enemy);
+      std::vector<Entity*> enemies = host->getNeighbours(host->AgroDistance
+                                                         , Entity::Type::Enemy);
 
       sf::Vector2f hostPos = host->getWorldPosition();
 
@@ -48,8 +48,8 @@ void LookOut::execute(Adventurer* host)
       if(closestEnemy)
       {
          // Change to attack state and set target
-         host->changeState(Adventurer::StateType::Attack);
-//         host->setCurrentTarget(closestEnemy);
+         host->changeState(Adventurer::States::Attack);
+         host->setCurrentTarget(closestEnemy);
       }
    }
 
@@ -134,7 +134,7 @@ void Attack::enter(Adventurer* host)
         host->setSteeringTypes(behaviours);
     }
 
-    host->setText("");
+    host->setText("DIE!");
     host->setMaxSpeed(host->getMaxRunSpeed());
 }
 
@@ -149,18 +149,21 @@ void Attack::execute(Adventurer* host)
       float mag = magVec(vecToTarget);
 
       // If target close enough to attack
-      if(mag < host->mAttackDistance)
+      if(mag < host->AttackDistance)
       {
          // If not at stand still change steering behaviour
          if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Rest))
          {
             std::vector<SteeringBehaviour::Behaviour> behaviours;
             behaviours.push_back(SteeringBehaviour::Behaviour::Rest);
+            behaviours.push_back(SteeringBehaviour::Behaviour::Face);
             host->setSteeringTypes(behaviours);
          }
 
          // Attack current target (overloaded function)
          host->meleeAttack(curTarg);
+
+         host->setText("Have at Ye!");
       }
       else // Approach target
       {
@@ -174,7 +177,7 @@ void Attack::execute(Adventurer* host)
    }
    else // If no target
    {
-      host->changeState(Adventurer::StateType::Relax);
+      host->changeState(Adventurer::States::Relax);
    }
 }
 
@@ -182,4 +185,59 @@ void Attack::exit(Adventurer* host)
 {
 
 }
+
+//void Follow::enter(Adventurer* host)
+//{
+//    assert(host);
+//
+////    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Wander))
+////    {
+////        std::vector<SteeringBehaviour::Behaviour> behaviours;
+////        behaviours.push_back(SteeringBehaviour::Behaviour::Wander);
+////
+////        if(isFlocking)
+////            behaviours.push_back(SteeringBehaviour::Behaviour::Flock);
+////
+////        host->setSteeringTypes(behaviours);
+////    }
+////
+//////    host->setText("Baaah");
+////    host->setMaxSpeed(host->getMaxWalkSpeed());
+//}
+//
+//void Follow::execute(Adventurer* host)
+//{
+//
+//}
+//
+//void Follow::exit(Adventurer* host)
+//{
+//
+//}
+
+//void Exit::enter(Adventurer* host)
+//{
+//    assert(host);
+//
+//    if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
+//    {
+//        std::vector<SteeringBehaviour::Behaviour> behaviours;
+//        behaviours.push_back(SteeringBehaviour::Behaviour::Arrive);
+//
+//        host->setSteeringTypes(behaviours);
+//    }
+//
+//    host->setText("Maaah");
+//    host->setMaxSpeed(host->getMaxRunSpeed());
+//}
+//
+//void Exit::execute(Adventurer* host)
+//{
+//
+//}
+//
+//void Exit::exit(Adventurer* host)
+//{
+//
+//}
 

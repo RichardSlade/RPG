@@ -1,7 +1,7 @@
 Mass 1.0
 WalkSpeed 5.0
 RunSpeed 10.0
-MaxForce 20.0
+MaxForce 2.0
 MaxTurnRate 50.0
 Health 10.0
 PanicDistance 1.0

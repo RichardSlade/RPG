@@ -10,21 +10,21 @@ const sf::Color MenuState::mOtherTextColour = sf::Color(255, 255, 255, 125);
 
 MenuState::MenuState(Controller& cntrl
                      , sf::RenderWindow& window)
-    : mView(window.getView())
-    , mViewCenter(mView.getCenter())
-    , mMenuTextPos(mViewCenter.x
-                   , mViewCenter.y + 64)
-    , mController(cntrl)
-    , mWindow(window)
-    , mBackground(cntrl.getTexture(Controller::Textures::GameBackground)
-                  , mWindow.getViewport(mView))
-    , mTitleText("RPG"
-                 , mController.getFont(Controller::Fonts::Sansation)
-                 , 128)
-    , mCurrentMenu(MenuState::MenuType::Main)
-    , mNewMenu(mCurrentMenu)
-    , mPreviousMenu(mCurrentMenu)
-    , mCurrentMenuSelection(0)
+: mView(window.getView())
+, mViewCenter(mView.getCenter())
+, mMenuTextPos(mViewCenter.x
+               , mViewCenter.y + 64)
+, mController(cntrl)
+, mWindow(window)
+, mBackground(cntrl.getTexture(Controller::Textures::GameBackground)
+                    , mWindow.getViewport(mView))
+, mTitleText("RPG"
+             , mController.getFont(Controller::Fonts::Sansation)
+             , 128)
+, mCurrentMenu(MenuState::MenuType::Main)
+, mNewMenu(mCurrentMenu)
+, mPreviousMenu(mCurrentMenu)
+, mCurrentMenuSelection(0)
 {
     mTitleText.setColor(mSelectedTextColour);
 
@@ -64,29 +64,28 @@ void MenuState::changeMenu(MenuType newMenuType)
 
     switch(newMenuType)
     {
-    case MenuState::MenuType::Main:
-    {
-        mMenuText.at(0).setString("Play");
-        mMenuText.at(1).setString("Quit");
-        break;
-    }
-    case MenuState::MenuType::Help:
-    {
-        mMenuText.at(0).setString("Back");
-        break;
-    }
-    case MenuState::MenuType::Quit:
-    {
-        mWindow.close();
-        break;
-    }
-    case MenuState::MenuType::Start:
-    {
-        mController.changeState();
-        break;
-    }
-    default:
-        break;
+        case MenuState::MenuType::Main:
+        {
+            mMenuText.at(0).setString("Play");
+            mMenuText.at(1).setString("Quit");
+            break;
+        }
+        case MenuState::MenuType::Help:
+        {
+            mMenuText.at(0).setString("Back");
+            break;
+        }
+        case MenuState::MenuType::Quit:
+        {
+            mWindow.close();
+            break;
+        }
+        case MenuState::MenuType::Start:
+        {
+            mController.changeState();
+            break;
+        }
+        default: break;
     }
 
     float inc = mMenuText.at(0).getCharacterSize();
@@ -110,12 +109,9 @@ int MenuState::getMaxMenuSelection(MenuType menuType)
 {
     switch(menuType)
     {
-    case MenuState::MenuType::Main:
-        return 2;
-    case MenuState::MenuType::Help:
-        return 1;
-    default:
-        return 0;
+        case MenuState::MenuType::Main: return 2;
+        case MenuState::MenuType::Help: return 1;
+        default: return 0;
     }
 }
 
@@ -123,21 +119,17 @@ MenuState::MenuType MenuState::getSelectionMenuType(int menuSelection)
 {
     switch(mCurrentMenu)
     {
-    case MenuState::MenuType::Main:
-    {
-        switch(menuSelection)
+        case MenuState::MenuType::Main:
         {
-        case 0:
-            return MenuState::MenuType::Start;
+            switch(menuSelection)
+            {
+                case 0: return MenuState::MenuType::Start;
 //                case 1: return MenuState::MenuType::Help;
-        case 1:
-            return MenuState::MenuType::Quit;
-        default:
-            return MenuState::MenuType::Main;
+                case 1: return MenuState::MenuType::Quit;
+                default: return MenuState::MenuType::Main;
+            }
         }
-    }
-    default:
-        return MenuState::MenuType::Main;
+        default: return MenuState::MenuType::Main;
     }
 }
 

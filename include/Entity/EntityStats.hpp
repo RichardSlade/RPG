@@ -13,16 +13,22 @@
 
 #include <fstream>
 #include <string>
+#include <stdexcept>
 
 struct EntityStats
 {
 public:
-    float       mass;
-    float       walkMaxSpeed;
-    float       runMaxSpeed;
-    float       maxForce;
-    float       maxTurnRate;
-    float       health;
+   float       mass;
+   float       walkMaxSpeed;
+   float       runMaxSpeed;
+   float       maxForce;
+   float       maxTurnRate;
+   float       health;
+   float       panicDistance;
+   float       agroDistance;
+   float       attackDistance;
+   float       attackDelay;
+   float       baseDamage;
 
                 EntityStats(std::string fileName)
                 {
@@ -42,9 +48,6 @@ public:
         in >> stats.mass;
 
         in.ignore(255, ' ');
-        in >> stats.health;
-
-        in.ignore(255, ' ');
         in >> stats.walkMaxSpeed;
 
         in.ignore(255, ' ');
@@ -55,6 +58,24 @@ public:
 
         in.ignore(255, ' ');
         in >> stats.maxTurnRate;
+
+        in.ignore(255, ' ');
+        in >> stats.health;
+
+        in.ignore(255, ' ');
+        in >> stats.panicDistance;
+
+        in.ignore(255, ' ');
+        in >> stats.agroDistance;
+
+        in.ignore(255, ' ');
+        in >> stats.attackDistance;
+
+        in.ignore(255, ' ');
+        in >> stats.attackDelay;
+
+        in.ignore(255, ' ');
+        in >> stats.baseDamage;
     }
 
 };

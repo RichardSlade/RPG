@@ -6,17 +6,31 @@
 struct Killable
 {
 protected:
-   const float                mMaxHealth;
-   float                      mHealth;
+   const float                MaxHealth;
+   float                      health;
+   bool                       dead;
 
 public:
-   float                      getHealthPercentage() const {return (mHealth / mMaxHealth) * 100.f;}
-   void                       changeHealth(float hpChange) {mHealth += hpChange;}
-
                               Killable(float hp)
-                              : mMaxHealth(hp)
-                              , mHealth(mMaxHealth)
+                              : MaxHealth(hp)
+                              , health(MaxHealth)
+                              , dead(false)
                               {};
+
+   float                      getHealthPercentage() const {return (health / MaxHealth) * 100.f;}
+
+   void                       changeHealth(float hpChange)
+                              {
+                                 health += hpChange;
+
+                                 if(health <  0.f)
+                                 {
+                                    health = 0;
+                                    dead = true;
+                                 }
+                              }
+
+   bool                       isDead() const { return dead; }
 };
 
 #endif // KILLABLE_HPP

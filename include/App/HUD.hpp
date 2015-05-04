@@ -26,15 +26,15 @@ private:
     std::vector<sf::Text>                   mHUDText;
 
     virtual void                            draw(sf::RenderTarget&
-            , sf::RenderStates) const;
+                                                 , sf::RenderStates) const;
 
 public:
-    HUD(World*
-        , const sf::Font&
-        , sf::FloatRect
-        , std::string = "");
+                                            HUD(World*
+                                                , const sf::Font&
+                                                , sf::FloatRect
+                                                , std::string = "");
 
-    virtual                                 ~HUD() {};
+    virtual                                 ~HUD(){};
 
     void                                    update();
 

@@ -1,7 +1,8 @@
+#include <string>
+
 #include "Entity/Entity.hpp"
 #include "World/World.hpp"
 #include "World/LevelBlock.hpp"
-
 
 Entity::Entity(Level* level
                            , const sf::Texture& texture
@@ -13,7 +14,10 @@ Entity::Entity(Level* level
                            , float panicDist
                            , float scale)
 //: mLevel(world)
-: mLevel(level)
+: Killable(stats.health)
+, Intelligent(stats)
+, MeleeFighter(stats)
+, mLevel(level)
 , mMass(stats.mass)
 , mHealth(stats.health)
 , mWalkMaxSpeed(stats.walkMaxSpeed)
@@ -21,7 +25,7 @@ Entity::Entity(Level* level
 , mMaxForce(stats.maxForce)
 , mMaxTurnRate(stats.maxTurnRate)
 , mMaxSpeed(mWalkMaxSpeed)
-, mPanicDistance(panicDist)
+//, mPanicDistance(PanicDista)
 , mEntityType(type)
 , mCurrentBlock(nullptr)
 , mSprite(texture)
@@ -29,63 +33,108 @@ Entity::Entity(Level* level
 , mHeading(0.f, 0.f)
 , mSteering(this, params)
 , mCurrentTarget(nullptr)
-, mText("", font, 12)
+, mText(".....", font, 12)
+, mHPText("100%", font, 12)
 {
-    mSprite.scale(scale, scale);
-    sf::FloatRect bounds = mSprite.getLocalBounds();
-    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-    mRadius = std::max(bounds.width, bounds.height);
+   mSprite.scale(scale, scale);
+   sf::FloatRect bounds = mSprite.getLocalBounds();
+   mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+   mRadius = std::max(bounds.width, bounds.height);
 
-    setPosition(startPos);
+   setPosition(startPos);
 
-    float theta = randomClamped() * (2.f * SteeringBehaviour::mPI);
-    rotate(theta * (180 / SteeringBehaviour::mPI));
-    mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
+   float theta = randomClamped() * (2.f * SteeringBehaviour::mPI);
+   rotate(theta * (180 / SteeringBehaviour::mPI));
+   mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
 
-    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+   bounds = mText.getLocalBounds();
+   mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+   mText.setPosition(0, -20.f);
+
+   bounds = mHPText.getLocalBounds();
+   mHPText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+   mHPText.setPosition(0, 20.f);
+   mHPText.setColor(sf::Color(0, 255, 0));
+
+   mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 }
 
 void Entity::updateCurrent(sf::Time dt)
 {
-    sf::Color currentTextColor = mText.getColor();
-    currentTextColor.a -= 1;
+   // Check if entity is dead and needs to be removed
+   if(isDead())
+      mToRemove = true;
 
-    mText.setColor(currentTextColor);
+   sf::Color currentTextColor = mText.getColor();
+   currentTextColor.a -= 1;
 
-    sf::Vector2f steering = mSteering.calculate(dt);
-    sf::Vector2f acceleration = steering / mMass;
+   mText.setColor(currentTextColor);
 
-    mVelocity += acceleration * dt.asSeconds();
+   //    adjustPosition();
 
-    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
-    {
-        int sign = signVec(mHeading, mVelocity);
+//   sf::FloatRect bounds = mText.getLocalBounds();
+//   mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 
-        float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
-        angle *= sign;
+//   sf::Vector2f textPos = getWorldPosition();
+//   textPos.y -= 20.f;
+//   mText.setPosition(textPos);
 
-        clampRotation(angle
-                      , -mMaxTurnRate
-                      , mMaxTurnRate);
+   MeleeFighter::update(dt);
 
-        if(angle > MINFLOAT || angle < -MINFLOAT)
-            rotate(angle * (180.f / SteeringBehaviour::mPI));
-    }
+   setHPText(std::string(std::to_string(static_cast<int>(getHealthPercentage())) +  + "%"));
 
-    float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
-    mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+   if(getHealthPercentage() < 50.f)
+      mHPText.setColor(sf::Color::Yellow);
+   else if(getHealthPercentage() < 25.f)
+      mHPText.setColor(sf::Color::Red);
+   else
+      mHPText.setColor(sf::Color::Green);
 
-    truncateVec(mVelocity, mMaxSpeed);
-    move(mVelocity);
+   mCurrentBlock->deleteEntity(this);
+   mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+}
 
-//    adjustPosition();
+void Entity::drawCurrent(sf::RenderTarget& target
+                        , sf::RenderStates states) const
+{
+   target.draw(mSprite, states);
+   target.draw(mText, states);
+   target.draw(mHPText, states);
+}
 
-    sf::FloatRect bounds = mText.getLocalBounds();
-    mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+void Entity::updateMovement(sf::Time dt)
+{
+   sf::Vector2f steering = mSteering.calculate(dt);
+   sf::Vector2f acceleration = steering / mMass;
 
-    sf::Vector2f textPos = getWorldPosition();
-    textPos.y -= 20.f;
-    mText.setPosition(textPos);
+   mVelocity *= 0.99f;
+   mVelocity += (acceleration * 2.f) * dt.asSeconds();
+//   mVelocity = acceleration * dt.asSeconds();
+
+   if(std::fabs(magVec(mVelocity)) > MINFLOAT)
+   {
+     int sign = signVec(mHeading, mVelocity);
+
+     float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
+     angle *= sign;
+
+     clampRotation(angle
+                   , -mMaxTurnRate
+                   , mMaxTurnRate);
+
+     if(angle > MINFLOAT || angle < -MINFLOAT)
+         rotate(angle * (180.f / SteeringBehaviour::mPI));
+   }
+
+   float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
+   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+
+//   mVelocity /= 0.1f;
+
+   truncateVec(mVelocity, mMaxSpeed);
+   move(mVelocity);
+
+   Entity::updateCurrent(dt);
 }
 
 //void Entity::adjustPosition()
@@ -104,7 +153,7 @@ void Entity::updateCurrent(sf::Time dt)
 
 void Entity::ensureZeroOverlap()
 {
-    std::vector<Entity*> neighbours = getNeighbours(25.f);
+    std::vector<Entity*> neighbours = getNeighbours(25.f, Entity::Type::AllTypes);
     sf::Vector2f pos = getWorldPosition();
     float radius = getRadius();
 
@@ -124,11 +173,12 @@ void Entity::ensureZeroOverlap()
     }
 }
 
-std::vector<Entity*> Entity::getNeighbours(float radius) const
+std::vector<Entity*> Entity::getNeighbours(float radius
+                                          , unsigned int type) const
 {
     return mLevel->getEntitiesInRange(const_cast<Entity*>(this)
-                                   , radius
-                                   , mEntityType);
+                                    , radius
+                                    , type);
 }
 
 std::vector<LevelBlock*> Entity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const

@@ -9,21 +9,20 @@
 class Enemy : public Entity
 {
 public:
-    typedef std::vector<std::unique_ptr<State<Enemy>>> StateContainer;
+   typedef std::vector<std::unique_ptr<State<Enemy>>> StateContainer;
 
-    enum States
-    {
-        LookOut,
-        Evade,
-        Relax,
-//        Exit,
-        NumSheepStates
-    };
+   enum States
+   {
+      LookOut,
+      Evade,
+      Relax,
+      Attack,
+      //        Exit,
+      NumStates
+   };
 
-
-    const float                 mSightRange;
-
-    const float                 mAngleOfVision;
+   const float                 mSightRange;
+   const float                 mAngleOfVision;
 //    const float                 mPanicDistance;
 
 private:
@@ -49,12 +48,13 @@ public:
                                       , State<Enemy>*
                                       , State<Enemy>*
                                       , StateContainer&
+                                      , unsigned int currentState
                                       , float = 1.f);
 
     virtual                    ~Enemy(){};
 
     void                        changeState(Enemy::States newState)
-                                { mStateMachine.changeState(mStates.at(newState).get()); }
+                                { mStateMachine.changeState(mStates.at(newState).get(), newState); }
 
     // Getters
 //    LevelBlock*                 getTargetBlock()
@@ -71,12 +71,14 @@ public:
                                     mText.setString(msg);
                                     mText.setColor(sf::Color(255, 255, 255, 255));
                                 }
+
+      unsigned int                     getCurrentStateType() {return mStateMachine.getCurrentStateType(); }
 //
 //    void                        setTargetBlockIndex(sf::Vector2i index)
 //                                { mTargetBlockIndex = index; }
 
-    void                        returnToPreviousState()
-                                { mStateMachine.returnToPreviousState(); }
+//    void                        returnToPreviousState()
+//                                { mStateMachine.returnToPreviousState(); }
 };
 
 #endif // ENEMY_HPP

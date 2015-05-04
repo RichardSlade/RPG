@@ -53,10 +53,10 @@ private:
     MenuType                    getSelectionMenuType(int);
 
 public:
-    MenuState(Controller&
-              , sf::RenderWindow&);
+                                MenuState(Controller&
+                                      , sf::RenderWindow&);
 
-    virtual                     ~MenuState() {};
+    virtual                     ~MenuState(){};
 
     virtual void                update(sf::Time);
     virtual void                handleInput();

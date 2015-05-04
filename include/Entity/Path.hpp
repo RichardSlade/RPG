@@ -15,11 +15,11 @@ private:
     void                                resetPath();
 
 public:
-    Path()
-        : mWypntIndex(0)
-        , mPathActive(false)
-        , mEndOfPath(false)
-    {};
+                                        Path()
+                                        : mWypntIndex(0)
+                                        , mPathActive(false)
+                                        , mEndOfPath(false)
+                                        {};
 
     bool                                nextWaypoint();
     void                                addToPath(sf::Vector2f);
@@ -27,19 +27,13 @@ public:
 
     // Getters
     sf::Vector2f                        currentWaypoint()
-    {
-        return mWypnts.at(mWypntIndex).getPosition();
-    }
+                                        { return mWypnts.at(mWypntIndex).getPosition();}
 
     bool                                isActive()
-    {
-        return mPathActive;
-    }
+                                        { return mPathActive; }
 
     bool                                isEnd()
-    {
-        return mEndOfPath;
-    }
+                                        { return mEndOfPath; }
 
     std::vector<sf::CircleShape>        getPathToDraw() const;
 };

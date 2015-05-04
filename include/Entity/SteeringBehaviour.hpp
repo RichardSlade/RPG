@@ -11,12 +11,6 @@
 #include <SFML/System/Time.hpp>
 
 //#include "Enum.hpp"
-#include "Entity/SteeringBehaviour.hpp"
-#include "App/Params.hpp"
-#include "Entity/Path.hpp"
-
-class Params;
-//class Dynamic;
 #include "Entity/Path.hpp"
 
 class Params;
@@ -36,6 +30,7 @@ public:
     enum Behaviour
     {
         Rest,
+        Face,
         Arrive,
         Evade,
         Wander,
@@ -55,37 +50,36 @@ public:
         NumFlr
     };
 
-    static const float                     mPI;
+     static const float                     mPI;
 
 private:
-    const float                            mWanderRadius;
-    const float                            mWanderDistance;
-    const float                            mWanderJitter;
-    const float                            mMinViewBoxLength;
-    const float                            mInteractionRadius;
-    const float                            mFeelerLength;
-    const float                            mMinArriveDist;
+     const float                            mWanderRadius;
+     const float                            mWanderDistance;
+     const float                            mWanderJitter;
+     const float                            mMinViewBoxLength;
+     const float                            mInteractionRadius;
+     const float                            mFeelerLength;
+     const float                            mMinArriveDist;
 
-    const float                            mObstacleAvoidanceMultiplier;
-    const float                            mWallAvoidanceMultiplier;
-    const float                            mArriveMultiplier;
-    const float                            mEvadeMultiplier;
-    const float                            mWanderMultiplier;
-    const float                            mSeperationMultiplier;
-    const float                            mAlignmentMultiplier;
-    const float                            mCohesionMultiplier;
-    const float                            mFlockingMultiplier;
-    const float                            mSeperationRadius;
-    const float                            mAlignRadius;
-    const float                            mCohesionRadius;
+     const float                            mObstacleAvoidanceMultiplier;
+     const float                            mWallAvoidanceMultiplier;
+     const float                            mArriveMultiplier;
+     const float                            mEvadeMultiplier;
+     const float                            mWanderMultiplier;
+     const float                            mSeperationMultiplier;
+     const float                            mAlignmentMultiplier;
+     const float                            mCohesionMultiplier;
+     const float                            mFlockingMultiplier;
+     const float                            mSeperationRadius;
+     const float                            mAlignRadius;
+     const float                            mCohesionRadius;
 
-//    DynamicEntity*                          mHost;
-    Entity*                                mHost;
-    float                                  mTheta;
-    Path                                   mPath;
+    Entity*                           mHost;
+    float                                   mTheta;
+    Path                                    mPath;
 
     std::array<bool,
-        Behaviour::NumBehaviour>    mBehaviourFlags;
+                Behaviour::NumBehaviour>    mBehaviourFlags;
 
     sf::Vector2f                            mWanderTarget;
     std::vector<sf::Vector2f>               mFeelers;
@@ -95,6 +89,7 @@ private:
     void                                    createFeelers();
 
     sf::Vector2f                            rest();
+    sf::Vector2f                            face();
 
     sf::Vector2f                            arrive(sf::Vector2f
                                                    , Deceleration);
@@ -116,19 +111,23 @@ private:
     sf::Vector2f                            flocking();
 
 public:
-                                             SteeringBehaviour(Entity* host
-                                                               , const Params& params);
+                                            SteeringBehaviour(Entity*
+                                                              , const Params&);
 
     sf::Vector2f                            calculate(sf::Time);
 
-    void                                    addToPath(sf::Vector2f pos) {mPath.addToPath(pos);}
+    void                                    addToPath(sf::Vector2f pos)
+                                            { mPath.addToPath(pos); }
 
-    void                                    startNewPath(sf::Vector2f pos) {mPath.startNewPath(pos);}
+    void                                    startNewPath(sf::Vector2f pos)
+                                            { mPath.startNewPath(pos); }
 
     // Getters
-    bool                                    checkBehaviour(SteeringBehaviour::Behaviour type) const {return mBehaviourFlags.at(type);}
+    bool                                    checkBehaviour(SteeringBehaviour::Behaviour type) const
+                                            { return mBehaviourFlags.at(type); }
 
-    std::vector<sf::CircleShape>            getPathToDraw() const{return mPath.getPathToDraw();}
+    std::vector<sf::CircleShape>            getPathToDraw() const
+                                            { return mPath.getPathToDraw(); }
 
     // Setters
     void                                    setNewBehaviours(std::vector<SteeringBehaviour::Behaviour>);

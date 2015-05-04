@@ -30,13 +30,16 @@ private:
     static const sf::Color      mBrown;
     static const sf::Color      mYellow;
     static const sf::Color      mGreen;
+    static const sf::Color      mGray;
+    static const sf::Color      mDarkGray;
 
     Type                        mType;
     sf::Sprite                  mBackground;
     Scenery::SceneryPtr         mScenery;
-    std::list<Entity*>    mEntitiesInBlock;
+    std::list<Entity*>          mEntitiesInBlock;
 
     sf::CircleShape             mOriginCircle;
+    sf::FloatRect               mGlobalBounds;
 
     sf::Vector2f                mBlockCorner;
     sf::Vector2i                mBlockIndex;
@@ -64,7 +67,7 @@ public:
     Scenery*                    getScenery()
                                 { return mScenery.get(); }
 
-    std::list<Entity*>    getEntities()
+    std::list<Entity*>           getEntities()
                                 { return mEntitiesInBlock; }
 
     float                       getRadius() const
@@ -76,14 +79,17 @@ public:
     sf::Vector2i                getIndex()
                                 { return mBlockIndex; }
 
-    sf::Vector2f                getMiddle()
-                                { return getWorldPosition() + mOriginCircle.getPosition(); }
+    sf::Vector2f                getCenter()
+                                { return getWorldPosition() + sf::Vector2f(mSize / 2.f, mSize / 2.f); }
 
     LevelBlock::Type            getType() const
                                 { return mType; }
 
     const sf::Sprite&           getBackground() const
                                 { return mBackground; }
+
+   sf::FloatRect                getGlobalBounds()
+                                 {return mGlobalBounds; }
 
     // Setters
     LevelBlock*                 insertEntity(Entity*);
