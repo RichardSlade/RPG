@@ -6,9 +6,11 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/System/NonCopyable.hpp>
+//#include <SFML/Graphics/Sprite.hpp>
+//#include <SFML/Graphics/Font.hpp>
+//#include <SFML/System/NonCopyable.hpp>
+
+#include <Box2D/Box2D.h>
 
 #include "World/Level.hpp"
 #include "SceneNode/SceneNode.hpp"
@@ -30,60 +32,67 @@ class SpriteNode;
 class World : private sf::NonCopyable
 {
 public:
-    const float                                 mWorldX;
-    const float                                 mWorldY;
-    const float                                 mExitRadius;
-
-    const int                                   mLevelBlockSize;
-    const int                                   mNumEnemy;
-
-    enum Stats
-    {
-        EnemyStats,
-        AdventurerStats,
-        StatsTypeNum
-    };
+   enum Stats
+   {
+     EnemyStats,
+     AdventurerStats,
+     StatsTypeNum
+   };
 
 private:
-    static const sf::Time                       mComboTime;
+   const sf::Vector2f                           mViewSize;
+   const float                                  mPhysicsWorldX;
+   const float                                  mPhysicsWorldY;
+   const float                                  mPhysicsWorldScale;
+   const int32                                  mVelocityIter;
+   const int32                                  mPositionIter;
+   const float32                                mTimeStep;
+   const int                                    mLevelBlockSize;
 
-    const float                                 mWaypointRadius;
-    const float                                 mScrollSpeed;
+   const float                                  mWaypointRadius;
+   const float                                  mScrollSpeed;
 
-    GameState&                                  mGameState;
-    sf::RenderWindow&                           mWindow;
-    sf::View                                    mWorldView;
-    sf::IntRect                                 mWorldBounds;
-    sf::Vector2f                                mFocusPoint;
+   GameState&                                   mGameState;
+   sf::RenderWindow&                            mWindow;
+   sf::View                                     mWorldView;
+   sf::IntRect                                  mWorldBounds;
+   sf::Vector2f                                 mFocusPoint;
 
-    SceneNode                                   mSceneGraph;
-    std::array<SceneNode*
-                , SceneNode::Layers::Num>       mSceneLayers;
+   b2World                                      mPhysicsEngine;
 
-//    int                                         mEnemyHerded;
-    sf::Time                                    mTimeLeft;
-    sf::Time                                    mTimeTaken;
+   SceneNode                                    mSceneGraph;
+   std::array<SceneNode*
+             , SceneNode::Layers::Num>          mSceneLayers;
 
-    std::unique_ptr<Level>                      mLevel;
-    HUD                                         mHUD;
+   sf::Time                                     mTimeLeft;
+   sf::Time                                     mTimeTaken;
 
-    std::vector<EntityStats>                    mEntityStats;
+   std::unique_ptr<Level>                       mLevel;
+   HUD                                          mHUD;
 
-//    std::vector<std::unique_ptr<State<Dog>>>    mDogStates;
-//    std::vector<std::unique_ptr<State<Enemy>>>  mEnemyStates;
-    Adventurer::StateContainer                   mAdventurerStates;
-    Enemy::StateContainer                       mEnemyStates;
+   std::vector<EntityStats>                     mEntityStats;
+   Adventurer::StateContainer                   mAdventurerStates;
+   Enemy::StateContainer                        mEnemyStates;
 
-    SpriteNode*                                 mBackground;
-    sf::Vector2f                                mExitPos;
-    std::vector<Adventurer*>                     mAdventurers;
+   SpriteNode*                                  mBackground;
+   sf::Vector2f                                 mExitPos;
+   std::vector<Adventurer*>                     mAdventurers;
 
-    Adventurer*                                  mCurrentAdventurer;
-    unsigned int                                         mCurrentAdventurerIndex;
+   Adventurer*                                  mCurrentAdventurer;
+   unsigned int                                 mCurrentAdventurerIndex;
 
-    void                                        initialiseStatesAndStats();
-    void                                        buildScene(const Controller&);
-    void                                        generateAgents(const Controller&);
+   b2Body*                                      generatePhysicsBody(sf::Vector2f pos,
+                                                             sf::Vector2f size,
+                                                             b2BodyType type);
+
+   b2Body*                                      generatePhysicsBody(sf::Vector2f pos,
+                                                             float radius,
+                                                             b2BodyType type);
+
+   void                                         initialiseStatesAndStats();
+   void                                         buildScene(const Controller&);
+   void                                         generateAgents(const Controller&);
+
     void                                        handleRealTimeInput();
     void                                        adjustView();
     void                                        rotateViewToAdventurer();
@@ -100,51 +109,14 @@ public:
                                                       , sf::Time levelTime);
 
     void                                        update(sf::Time);
+    void                                        updatePhysicsEngine();
     void                                        handleInput();
     void                                        display();
 
     // Getters
-    const sf::FloatRect                         getViewBounds() const;
+   const sf::FloatRect                          getViewBounds() const;
 
-//    std::vector<LevelBlock*>                    getBlockTypeInRange(const MovingEntity*
-//                                                                    , LevelBlock::Type, float) const;
-
-//    State<Dog>*                                 getDogState(Dog::States newStateType) const
-//                                                { return mDogStates.at(newStateType).get(); }
-
-    State<Enemy>*                               getEnemyState(Enemy::States newStateType) const
-                                                { return mEnemyStates.at(newStateType).get(); }
-
-    const sf::IntRect                           getWorldBounds() const
-                                                { return mWorldBounds; }
-
-//    LevelBlock*                                 getLevelBlock(sf::Vector2i index) const
-//                                                { return mLevel->getBlock(index); }
-
-    int                                         getEnemyNum() const
-                                                { return mNumEnemy; }
-
-//    int                                         getEnemyHerded() const
-//                                                { return mEnemyHerded; }
-
-    sf::Time                                    getTimeLeft() const
-                                                { return mTimeLeft; }
-
-    sf::Time                                    getTimeTaken() const
-                                                { return mTimeTaken; }
-
-
-//    std::vector<LevelBlock*>                    getLevelExit() const
-//                                                { return mLevel->getLevelExit(); }
-
-    // Setters
-//    LevelBlock*                                 insertEntityIntoLevel(MovingEntity*) const;
-//
-//    std::vector<MovingEntity*>                  getEntitiesInRange(const MovingEntity*
-//                                                                   , float) const;
-
-//    void                                        incEnemyHerded()
-//                                                { mEnemyHerded ++; }
+    const sf::IntRect                           getWorldBounds() const { return mWorldBounds; }
 };
 
 #endif // WORLD_HPP

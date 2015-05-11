@@ -63,7 +63,8 @@ public:
 
     virtual                         ~GameState(){};
 
-    virtual void                    update(sf::Time);
+    virtual void                    lockedUpdate(sf::Time);
+    virtual void                    unlockedUpdate();
     virtual void                    handleInput();
     virtual void                    display();
 

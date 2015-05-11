@@ -18,7 +18,7 @@
 #include "Entity/State/AdventurerStates.hpp"
 #include "SceneNode/SpriteNode.hpp"
 
-const sf::Time World::mComboTime = sf::seconds(1.f);
+//const sf::Time World::mComboTime = sf::seconds(1.f);
 
 World::World(GameState& gameState
              , const Controller& controller
@@ -27,36 +27,106 @@ World::World(GameState& gameState
              , int worldDim
              , int numEnemy
              , sf::Time levelTime)
-: mWorldX(worldDim)
-, mWorldY(worldDim)
-, mExitRadius(controller.getParams().ExitRadius)
+: mViewSize(640, 480)
+, mPhysicsWorldX(worldDim)
+, mPhysicsWorldY(worldDim)
+, mPhysicsWorldScale(mViewSize.x / mPhysicsWorldX)
+, mVelocityIter(6)
+, mPositionIter(2)
+, mTimeStep(1.f / 60.f)
 , mLevelBlockSize(controller.getParams().LevelBlockSize)
-, mNumEnemy(numEnemy)
 , mWaypointRadius(controller.getParams().WaypointRadius)
 , mScrollSpeed(controller.getParams().ScrollSpeed)
 , mGameState(gameState)
 , mWindow(window)
 , mWorldView(mWindow.getDefaultView())
-, mWorldBounds(sf::Vector2i(0, 0), sf::Vector2i(mWorldX, mWorldY))
+, mWorldBounds(sf::Vector2i(0, 0), sf::Vector2i(mPhysicsWorldX, mPhysicsWorldY))
 , mFocusPoint(mWorldBounds.width / 2.f, mWorldBounds.height / 2.f)
-//, mEnemyHerded(0)
-, mTimeLeft(levelTime)
-, mTimeTaken(sf::Time::Zero)
-
+, mPhysicsEngine(b2Vec2(0.f, 0.f))
 , mHUD(this
        , controller.getFont(Controller::Fonts::Sansation)
        , getViewBounds()
        , username)
-, mExitPos(mWorldBounds.width / 2.f, 0.f)
 , mCurrentAdventurer(nullptr)
 , mCurrentAdventurerIndex(0)
 {
-    mLevel = std::unique_ptr<Level>(new Level(mLevelBlockSize
+    mLevel = std::unique_ptr<Level>(new Level(40.f
                                             , controller.getParams().ExitWidth
-                                            , mWorldBounds));
+                                            , sf::IntRect(0.f, 0.f, mPhysicsWorldX, mPhysicsWorldY)));
 
     initialiseStatesAndStats();
     buildScene(controller);
+}
+
+b2Body* World::generatePhysicsBody(sf::Vector2f pos,
+                         sf::Vector2f size,
+                         b2BodyType type = b2_staticBody)
+{
+   b2BodyDef bodyDef;
+   bodyDef.type = type;
+   bodyDef.linearDamping = 4.f;
+   bodyDef.angularDamping = 4.f;
+   bodyDef.position.Set(pos.x, pos.y);
+
+   b2Body* body = mPhysicsEngine.CreateBody(&bodyDef);
+//   b2Body* body = nullptr;
+
+   b2PolygonShape box;
+   box.SetAsBox(size.x / 2.f, size.y / 2.f);
+
+//   PhysicsBody::PhyBody phyBody = nullptr;
+
+   if(type == b2_staticBody)
+   {
+      body->CreateFixture(&box, 0.f);
+   }
+   else
+   {
+      b2FixtureDef fixtureDef;
+      fixtureDef.shape = &box;
+      fixtureDef.density = 1.f;
+      fixtureDef.friction = 0.3f;
+
+      body->CreateFixture(&fixtureDef);
+   }
+
+   return body;
+}
+
+b2Body* World::generatePhysicsBody(sf::Vector2f pos,
+                      float radius,
+                      b2BodyType type = b2_staticBody)
+{
+   b2BodyDef bodyDef;
+   bodyDef.type = type;
+   bodyDef.linearDamping = 1.f;
+   bodyDef.angularDamping = 1.f;
+   bodyDef.position.Set(pos.x, pos.y);
+
+   b2Body* body = mPhysicsEngine.CreateBody(&bodyDef);
+//   b2Body* body = nullptr;
+
+   b2CircleShape circle;
+   circle.m_p.Set(0.f, 0.f);
+   circle.m_radius = radius;
+
+//   PhysicsBody::PhyBody phyBody = nullptr;
+
+   if(type == b2_staticBody)
+   {
+      body->CreateFixture(&circle, 0.f);
+   }
+   else
+   {
+      b2FixtureDef fixtureDef;
+      fixtureDef.shape = &circle;
+      fixtureDef.density = 1.f;
+      fixtureDef.friction = 0.3f;
+
+      body->CreateFixture(&fixtureDef);
+   }
+
+   return body;
 }
 
 void World::initialiseStatesAndStats()
@@ -107,78 +177,80 @@ void World::buildScene(const Controller& controller)
 void World::generateAgents(const Controller& controller)
 {
     // Initialise characters and add to scene graph
-    for(int i = 0; i < 1; i++)
-    {
-        float inc = i * 40.f;
+   for(int i = 0; i < 1; i++)
+   {
+      float inc = i * 40.f;
 
-        std::unique_ptr<Adventurer> adventurerNode(new Adventurer(mWindow
-                                                                  , mLevel.get()
-                                                                  , controller.getTexture(Controller::Textures::Adventurer)
-                                                                  , controller.getFont(Controller::Fonts::Sansation)
-                                                                  , sf::Vector2f((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc)
-                                                                  , mEntityStats.at(World::Stats::AdventurerStats)
-                                                                  , controller.getParams()
-                                                                  , mAdventurerStates.at(Adventurer::States::LookOut).get()
-                                                                  , mAdventurerStates.at(Adventurer::States::Relax).get()
-                                                                  , mAdventurerStates
-                                                                  , Adventurer::States::Relax
-                                                                  , rangedClamped(0.75f, 1.25f)));
+      sf::Vector2f pos((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc);
+      float size = controller.getTexture(Controller::Textures::Adventurer).getSize().x;
 
-        // Save pointer to character for enemy initialisation
-        Adventurer* adventurerPtr = adventurerNode.get();
-        mAdventurers.push_back(adventurerPtr);
+      b2Body* body = generatePhysicsBody(pos,
+                                         size,
+                                         b2BodyType::b2_dynamicBody);
 
-        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(adventurerNode));
-    }
+      std::unique_ptr<Adventurer> adventurerNode(new Adventurer(mWindow
+                                                               , mLevel.get()
+                                                               , controller.getTexture(Controller::Textures::Adventurer)
+                                                               , controller.getFont(Controller::Fonts::Sansation)
+                                                               , pos
+                                                               , mEntityStats.at(World::Stats::AdventurerStats)
+                                                               , controller.getParams()
+                                                               , mAdventurerStates.at(Adventurer::States::LookOut).get()
+                                                               , mAdventurerStates.at(Adventurer::States::Relax).get()
+                                                               , mAdventurerStates
+                                                               , Adventurer::States::Relax
+                                                               , mPhysicsWorldScale
+                                                               , body));
+
+   // Save pointer to character for enemy initialisation
+      Adventurer* adventurerPtr = adventurerNode.get();
+      mAdventurers.push_back(adventurerPtr);
+
+      mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(adventurerNode));
+   }
 
     mCurrentAdventurer = mAdventurers.at(0);
     mCurrentAdventurer->setIsSelected(true);
 
     // Initialise enemy and add to scene graph
-//    for(int i = 0 ; i < mNumEnemy; i++)
     for(int i = 0 ; i < 10; i++)
     {
-        // Find square for enemy to start in
-        LevelBlock* levelBlock;
-        sf::Vector2i index;
-        sf::Vector2f pos;
+      // Find square for enemy to start in
+      LevelBlock* levelBlock;
+      sf::Vector2i index;
+      sf::Vector2f pos;
 
-//        do
-//        {
-////            sf::Vector2f pos(rangedClamped(mLevelBlockSize, mWorldBounds.width - mLevelBlockSize)
-////                             , rangedClamped(mLevelBlockSize, mWorldBounds.width - mLevelBlockSize));
-//
-//            index = sf::Vector2i(rangedClamped(1, 10)
-//                                 , rangedClamped(1, 10));
-//
-//            levelBlock = mLevel.getBlock(index);
-//
-//        } while(levelBlock->getType() == LevelBlock::Type::ObstacleBlock);
+      int maxX = mLevel->getLevelX();
 
-        int maxX = mLevel->getLevelX();
+      index = sf::Vector2i(rangedClamped(1, maxX - 2)
+                           , rangedClamped(1, maxX - 2));
 
-        index = sf::Vector2i(rangedClamped(1, maxX - 2)
-                             , rangedClamped(1, maxX - 2));
+      levelBlock = mLevel->getBlock(index);
 
-        levelBlock = mLevel->getBlock(index);
+      pos = levelBlock->getCenter();
 
-        pos = levelBlock->getCenter();
+      float size = controller.getTexture(Controller::Textures::Enemy).getSize().x;
 
-        std::unique_ptr<Enemy> enemyNode(new Enemy(mLevel.get()
-                                                    , controller.getTexture(Controller::Textures::Enemy)
-                                                    , controller.getFont(Controller::Fonts::Sansation)
-                                                    , pos
-                                                    , mEntityStats.at(World::Stats::EnemyStats)
-                                                    , controller.getParams()
-                                                    , mEnemyStates.at(Enemy::States::LookOut).get()
-                                                    , mEnemyStates.at(Enemy::States::Relax).get()
-                                                    , mEnemyStates
-                                                    , Enemy::States::Relax
-                                                    , rangedClamped(0.75f, 1.25f)));
+      b2Body* body = generatePhysicsBody(pos,
+                                         size,
+                                         b2BodyType::b2_dynamicBody);
+
+      std::unique_ptr<Enemy> enemyNode(new Enemy(mLevel.get()
+                                              , controller.getTexture(Controller::Textures::Enemy)
+                                              , controller.getFont(Controller::Fonts::Sansation)
+                                              , pos
+                                              , mEntityStats.at(World::Stats::EnemyStats)
+                                              , controller.getParams()
+                                              , mEnemyStates.at(Enemy::States::LookOut).get()
+                                              , mEnemyStates.at(Enemy::States::Relax).get()
+                                              , mEnemyStates
+                                              , Enemy::States::Relax
+                                              , mPhysicsWorldScale
+                                              , body));
 
 //        enemyNode->setMovingTarget(mAdventurers.at(0));
-        mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(enemyNode));
-    }
+//      mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(enemyNode));
+   }
 }
 
 void World::handleRealTimeInput()
@@ -187,7 +259,7 @@ void World::handleRealTimeInput()
    float speed = 5.f;
 
    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)
-    || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+   || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
    {
       adventurerMovement.x -= speed;
    }
@@ -199,18 +271,19 @@ void World::handleRealTimeInput()
    }
 
    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)
-    || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+   || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
    {
       adventurerMovement.y -= speed;
    }
 
    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)
-    || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+   || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
    {
       adventurerMovement.y += speed;
    }
 
-   mCurrentAdventurer->setVelocity(adventurerMovement);
+   if(mCurrentAdventurer)
+      mCurrentAdventurer->setVelocity(adventurerMovement);
 }
 
 void World::adjustView()
@@ -268,8 +341,6 @@ void World::cycleAdventurer()
 
    mCurrentAdventurer = mAdventurers.at(mCurrentAdventurerIndex);
    mCurrentAdventurer->setIsSelected(true);
-
-
 }
 
 void World::update(sf::Time dt)
@@ -288,6 +359,11 @@ void World::update(sf::Time dt)
 //        mGameState.gameComplete(mEnemyHerded);
 }
 
+void World::updatePhysicsEngine()
+{
+   mPhysicsEngine.Step(mTimeStep, mVelocityIter, mPositionIter);
+}
+
 void World::handleInput()
 {
     sf::Event event;
@@ -303,7 +379,7 @@ void World::handleInput()
             else if(event.key.code == sf::Keyboard::Tab)
             {
                cycleAdventurer();
-//                  mFocusPoint = mCurrentAdventurer->getWorldPosition();
+               mFocusPoint = mCurrentAdventurer->getWorldPosition();
             }
         }
         else if(event.type == sf::Event::MouseButtonPressed)
@@ -360,25 +436,4 @@ const sf::FloatRect World::getViewBounds() const
 {
    return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
 }
-
-//std::vector<LevelBlock*> World::getBlockTypeInRange(const MovingEntity* entity
-//                                                    , LevelBlock::Type blockType
-//                                                    , float radius = 0.f) const
-//{
-//    return mLevel->getBlockTypeInRange(entity
-//                                           , radius
-//                                           , blockType);
-//}
-//
-//LevelBlock* World::insertEntityIntoLevel(MovingEntity* entity) const
-//{
-//    return mLevel->insertEntityIntoLevel(entity);
-//}
-//
-//std::vector<MovingEntity*> World::getEntitiesInRange(const MovingEntity* entity
-//                                                     , float neighbourhoodRadius) const
-//{
-//    return mLevel->getEntitiesInRange(entity
-//                                     , neighbourhoodRadius);
-//}
 

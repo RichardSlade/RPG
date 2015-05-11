@@ -94,7 +94,7 @@ sf::Vector2f SteeringBehaviour::rest()
 
 sf::Vector2f SteeringBehaviour::face()
 {
-   sf::Vector2f steeringForce, hostheading = mHost->getHeading();
+   sf::Vector2f steeringForce;//, hostheading = mHost->getHeading();
 
    steeringForce = mHost->getCurrentTarget()->getWorldPosition() - mHost->getWorldPosition();
 

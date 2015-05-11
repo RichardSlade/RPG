@@ -14,9 +14,12 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window.hpp>
 
+#include <Box2D/Box2D.h>
+
 #include "Entity/Entity.hpp"
 #include "Entity/Path.hpp"
 #include "Entity/State/StateMachine.hpp"
+//#include "Physics/DynamicPhysicsBody.hpp"
 
 class Enemy;
 
@@ -43,11 +46,13 @@ public:
 
 private:
     const sf::RenderWindow&        mWindow;
-    StateContainer&                 mStates;
-    StateMachine<Adventurer>         mStateMachine;
+    StateContainer&                mStates;
+    StateMachine<Adventurer>       mStateMachine;
+
+    b2Body*                        mPhysicsBody;
 
     bool                           mIsSelected;
-    bool                            mMove;
+    bool                           mMove;
 
 //    Entity*                          mCurrentTarget;
 
@@ -67,17 +72,19 @@ public:
                                               , State<Adventurer>* initState
                                               , StateContainer&
                                               , unsigned int currentState
-                                              , float = 1.f);
+                                              , float physicsWorldScale
+                                              , b2Body* body
+                                              , float scale = 1.f);
 
-   virtual                         ~Adventurer(){};
+   virtual                          ~Adventurer(){};
 
    void                             rotateToCursor();
 
-   void                            addToPath(sf::Vector2f pos)
-                                 { mSteering.addToPath(pos); }
+   void                             addToPath(sf::Vector2f pos)
+                                    { mSteering.addToPath(pos); }
 
-   void                            startNewPath(sf::Vector2f pos)
-                                 { mSteering.startNewPath(pos); }
+   void                             startNewPath(sf::Vector2f pos)
+                                    { mSteering.startNewPath(pos); }
 
    // Getters
    unsigned int                     getCurrentStateType() {return mStateMachine.getCurrentStateType(); }
@@ -85,12 +92,12 @@ public:
    bool                             isSelected(){ return mIsSelected; }
 
    // Setters
-   void                            changeState(Adventurer::States newState)
+   void                             changeState(Adventurer::States newState)
                                     { mStateMachine.changeState(mStates.at(newState).get(), newState); }
 
    void                             setIsSelected(bool status){ mIsSelected = status; }
 
-   void                          setMove() { mMove = true; }
+   void                             setMove() { mMove = true; }
 
 //   Entity*                           getCurrentTarget() {return mCurrentTarget;}
 };

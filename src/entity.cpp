@@ -11,13 +11,16 @@ Entity::Entity(Level* level
                            , EntityStats stats
                            , const Params& params
                            , Type type
-                           , float panicDist
+                           , float physicsWorldScale
+                           , b2Body* body
                            , float scale)
 //: mLevel(world)
 : Killable(stats.health)
 , Intelligent(stats)
 , MeleeFighter(stats)
+, mPhysicsWorldScale(physicsWorldScale)
 , mLevel(level)
+, mPhysicsBody(body)
 , mMass(stats.mass)
 , mHealth(stats.health)
 , mWalkMaxSpeed(stats.walkMaxSpeed)
@@ -25,7 +28,6 @@ Entity::Entity(Level* level
 , mMaxForce(stats.maxForce)
 , mMaxTurnRate(stats.maxTurnRate)
 , mMaxSpeed(mWalkMaxSpeed)
-//, mPanicDistance(PanicDista)
 , mEntityType(type)
 , mCurrentBlock(nullptr)
 , mSprite(texture)
@@ -64,6 +66,18 @@ void Entity::updateCurrent(sf::Time dt)
    // Check if entity is dead and needs to be removed
    if(isDead())
       mToRemove = true;
+
+   float currentRotation = mPhysicsBody->GetAngle();
+   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+
+   setRotation((180 / SteeringBehaviour::mPI) * currentRotation);
+
+   truncateVec(mVelocity, mMaxSpeed);
+   mPhysicsBody->SetLinearVelocity(b2Vec2(mVelocity.x,
+                                          mVelocity.y));
+
+   setPosition(meterToPixel(mPhysicsBody->GetPosition(), mPhysicsWorldScale));
+
 
    sf::Color currentTextColor = mText.getColor();
    currentTextColor.a -= 1;
@@ -104,37 +118,38 @@ void Entity::drawCurrent(sf::RenderTarget& target
 
 void Entity::updateMovement(sf::Time dt)
 {
+   // Velocity
    sf::Vector2f steering = mSteering.calculate(dt);
    sf::Vector2f acceleration = steering / mMass;
 
-   mVelocity *= 0.99f;
-   mVelocity += (acceleration * 2.f) * dt.asSeconds();
+//   mVelocity *= 0.99f;
+//   mVelocity += (acceleration * 2.f) * dt.asSeconds();
+   mVelocity += acceleration * dt.asSeconds();
 //   mVelocity = acceleration * dt.asSeconds();
 
+   // Rotation
    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
    {
      int sign = signVec(mHeading, mVelocity);
 
-     float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
+//     float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
+     float angle = dotVec(mHeading, normVec(mVelocity));
      angle *= sign;
 
      clampRotation(angle
                    , -mMaxTurnRate
                    , mMaxTurnRate);
 
-     if(angle > MINFLOAT || angle < -MINFLOAT)
-         rotate(angle * (180.f / SteeringBehaviour::mPI));
+//     if(angle > MINFLOAT || angle < -MINFLOAT)
+//         rotate(angle * (180.f / SteeringBehaviour::mPI));
+
+      if(angle > MINFLOAT || angle < -MINFLOAT)
+         mPhysicsBody->SetAngularVelocity(angle);
    }
 
-   float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
-   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+//   float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
 
-//   mVelocity /= 0.1f;
-
-   truncateVec(mVelocity, mMaxSpeed);
-   move(mVelocity);
-
-   Entity::updateCurrent(dt);
+//   move(mVelocity);
 }
 
 //void Entity::adjustPosition()

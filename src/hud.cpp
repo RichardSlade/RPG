@@ -31,12 +31,10 @@ void HUD::draw(sf::RenderTarget& target
 
 void HUD::update()
 {
-    mHUDText.at(HUD::DataType::Enemy).setString("Enemy: "
-//                                                + std::to_string(mWorld->getEnemyHerded())
-//                                                + "/"
-                                                + std::to_string(mWorld->getEnemyNum()));
+    mHUDText.at(HUD::DataType::Enemy).setString("");
 
-    int time = static_cast<int>(mWorld->getTimeLeft().asSeconds());
+//    int time = static_cast<int>(mWorld->getTimeLeft().asSeconds());
+    int time = static_cast<int>(0.f);
     int mins = time / 60;
     int secs = time % 60;
 

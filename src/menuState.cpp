@@ -133,7 +133,7 @@ MenuState::MenuType MenuState::getSelectionMenuType(int menuSelection)
     }
 }
 
-void MenuState::update(sf::Time dt)
+void MenuState::lockedUpdate(sf::Time dt)
 {
     if(mCurrentMenu != mNewMenu)
         changeMenu(mNewMenu);
@@ -178,7 +178,7 @@ void MenuState::handleInput()
 
 void MenuState::display()
 {
-    mWindow.clear(sf::Color(25, 25, 25));
+//    mWindow.clear(sf::Color(25, 25, 25));
 
     mWindow.draw(mBackground);
     mWindow.draw(mTitleText);
@@ -186,6 +186,6 @@ void MenuState::display()
     for(sf::Text& txt : mMenuText)
         mWindow.draw(txt);
 
-    mWindow.display();
+//    mWindow.display();
 }
 

@@ -111,3 +111,28 @@ bool lineIntersection2D(sf::Vector2f A
     }
 }
 
+sf::Vector2f meterToPixel(b2Vec2 meter,
+                                 float scale)
+{
+   return sf::Vector2f(meter.x / scale,
+                       meter.y / scale);
+}
+
+float meterToPixel(float meter,
+                           float scale)
+{
+   return meter / scale;
+}
+
+//sf::Vector2f pixelToMeter(b2Vec2 meter,
+//                                 float scale))
+//{
+//   return sf::Vector2f(meter.x * scale,
+//                       meter.y * scale);
+//}
+//
+//float pixelToMeter(float meter,
+//                           float scale))
+//{
+//   return meter * mPhysicsWorldScale;
+//}

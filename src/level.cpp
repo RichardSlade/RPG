@@ -38,7 +38,7 @@ void Level::defineWallData()
     sf::Vector2f pointA, pointB, norm;
     Wall::PointPair points;
 
-    int exitBorder = (mExitWidth - 1) / 2;
+//    int exitBorder = (mExitWidth - 1) / 2;
 
     // Left wall
     pointA = sf::Vector2f(mBlockSize, 0.f);
@@ -355,7 +355,7 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
         angleToRotate = -90.f;
     }
 
-    int exitBorder = (mExitWidth - 1) / 2;
+//    int exitBorder = (mExitWidth - 1) / 2;
 
 //    for(col = exitIndex - exitBorder; col < exitIndex + exitBorder; col ++)
 //    {

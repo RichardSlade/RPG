@@ -5,6 +5,8 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+#include <Box2D/Box2D.h>
+
 #include "App/Params.hpp"
 #include "App/Utility.hpp"
 #include "World/Level.hpp"
@@ -32,7 +34,11 @@ public:
 //    const float                 mPanicDistance;
 
 protected:
+   const float                   mPhysicsWorldScale;
+
     Level*                      mLevel;
+
+    b2Body*                     mPhysicsBody;
 
     const float                 mMass;
     const float                 mHealth;
@@ -40,7 +46,6 @@ protected:
     const float                 mRunMaxSpeed;
     const float                 mMaxForce;
     const float                 mMaxTurnRate;
-
 
     float                       mMaxSpeed;
     Type                        mEntityType;
@@ -56,9 +61,9 @@ protected:
 
     SteeringBehaviour           mSteering;
 //    sf::Vector2f                mTargetPos;
-    Entity*                      mCurrentTarget;
+    Entity*                     mCurrentTarget;
     sf::Text                    mText;
-    sf::Text                     mHPText;
+    sf::Text                    mHPText;
 
 
     virtual void                updateCurrent(sf::Time);
@@ -78,7 +83,8 @@ public:
                                        , EntityStats
                                        , const Params&
                                        , Type type
-                                       , float
+                                       , float physicsWorldScale
+                                       , b2Body* body
                                        , float = 1.f);
 
     virtual                     ~Entity(){};

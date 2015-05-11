@@ -6,29 +6,29 @@
 #include "World/World.hpp"
 #include "Entity/Enemy.hpp"
 
-Enemy::Enemy(//World* world
-			Level* level
-		  , const sf::Texture& texture
-		  , const sf::Font& font
-		  , sf::Vector2f startPos
-		  , EntityStats stats
-		  , const Params& params
-		  , State<Enemy>* globalState
-		  , State<Enemy>* initState
-		  , StateContainer& states
-		  , unsigned int currentState
-		  , float scale)
-: Entity(//world
-         level
+Enemy::Enemy(Level* level
+, const sf::Texture& texture
+, const sf::Font& font
+, sf::Vector2f pos
+, EntityStats stats
+, const Params& params
+, State<Enemy>* globalState
+, State<Enemy>* initState
+, StateContainer& states
+, unsigned int currentState
+, float physicsWorldScale
+, b2Body* body
+, float scale)
+: Entity(level
          , texture
          , font
-         , startPos
+         , pos
          , stats
          , params
          , Entity::Type::Enemy
-         , params.EnemyPanicDistance
+         , physicsWorldScale
+         , body
          , scale)
-
 , mSightRange(params.EnemySightRange)
 , mAngleOfVision(params.EnemyAngleOfVision)
 //, mPanicDistance(params.EnemyPanicDistance)
@@ -42,9 +42,10 @@ Enemy::Enemy(//World* world
 
 void Enemy::updateCurrent(sf::Time dt)
 {
-    mStateMachine.update();
+   mStateMachine.update();
 
-    Entity::updateCurrent(dt);
+   Entity::updateMovement(dt);
+   Entity::updateCurrent(dt);
 
 //    mCurrentBlock->deleteEntity(this);
 //    mCurrentBlock = mLevel->insertEntityIntoLevel(this);

@@ -4,6 +4,7 @@
 #include <limits>
 #include <string>
 
+#include <Box2D/Box2D.h>
 #include <SFML/System/Vector2.hpp>
 
 const float MAXFLOAT = (std::numeric_limits<float>::max)();
@@ -40,5 +41,12 @@ bool lineIntersection2D(sf::Vector2f
                         , sf::Vector2f
                         , float&
                         , sf::Vector2f&);
+
+sf::Vector2f meterToPixel(b2Vec2 meter, float scale);
+float meterToPixel(float meter, float scale);
+
+//sf::Vector2f pixelToMeter(sf::Vector2f meter);
+//float pixelToMeter(float meter);
+
 
 #endif // UTILITY_HPP

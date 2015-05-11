@@ -23,7 +23,7 @@ GameState::GameState(Controller& cntrl
 , mWorld(new World(*this
                    , cntrl
                    , window
-                   , username
+                   , "Debug"
                    , mWorldDim
                    , mNumEnemy
                    , mLevelTime))
@@ -56,7 +56,7 @@ void GameState::restartWorld()
     mNewScreen = GameState::Screen::Game;
 }
 
-void GameState::update(sf::Time dt)
+void GameState::lockedUpdate(sf::Time dt)
 {
     if(mNewScreen != mCurrentScreen)
         mCurrentScreen = mNewScreen;
@@ -78,15 +78,25 @@ void GameState::update(sf::Time dt)
     }
 }
 
+void GameState::unlockedUpdate()
+{
+   if(mCurrentScreen == GameState::Screen::Game
+      && mWorld)
+      mWorld->updatePhysicsEngine();
+}
+
 void GameState::handleInput()
 {
-    if(mCurrentScreen == GameState::Screen::Game
+   if(mCurrentScreen == GameState::Screen::Game
        && mWorld)
-    {
-        if(!mPausedScreen.isPaused())
-            mWorld->handleInput();
-        else
-            mPausedScreen.handleInput();
+   {
+      if(!mPausedScreen.isPaused())
+      {
+         if(mWorld)
+               mWorld->handleInput();
+      }
+      else
+         mPausedScreen.handleInput();
     }
     else if(mCurrentScreen == GameState::Screen::LevelComplete)
         mLevelCompleteScreen.handleInput();
@@ -96,8 +106,6 @@ void GameState::handleInput()
 
 void GameState::display()
 {
-    mWindow.clear();
-
     if(mWorld)
         mWorld->display();
 
@@ -110,8 +118,6 @@ void GameState::display()
         mWindow.draw(mLevelCompleteScreen);
     else if(mCurrentScreen == GameState::Screen::GameComplete)
         mWindow.draw(mGameCompleteScreen);
-
-    mWindow.display();
 }
 
 void GameState::pause()
@@ -134,17 +140,17 @@ void GameState::gameComplete(int sheepFromLastLevel)
 
 void GameState::nextLevel()
 {
-    const float blockSize = mController.getParams().LevelBlockSize;
+//    const float blockSize = mController.getParams().LevelBlockSize;
 
-    mWorldDim += blockSize * 4;
-    mNumEnemy += 10;
-    mLevelTime -= mWorld->getTimeTaken();
-    mLevelTime += sf::seconds(mLevelTimeMin * 60.f);
+//    mWorldDim += blockSize * 4;
+//    mNumEnemy += 10;
+//    mLevelTime -= mWorld->getTimeTaken();
+//    mLevelTime += sf::seconds(mLevelTimeMin * 60.f);
 
 //    mTotalEnemyHerded += mWorld->getEnemyHerded();
 
-    if(mWorldDim > mWorldDimMax)
-        mWorldDim = mWorldDimMax;
+//    if(mWorldDim > mWorldDimMax)
+//        mWorldDim = mWorldDimMax;
 
     restartWorld();
 }

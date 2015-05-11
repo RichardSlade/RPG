@@ -22,7 +22,8 @@ public:
 
     virtual             ~AppState(){};
 
-    virtual void        update(sf::Time) = 0;
+    virtual void        lockedUpdate(sf::Time) = 0;
+    virtual void        unlockedUpdate() = 0;
     virtual void        handleInput() = 0;
     virtual void        display() = 0;
 };

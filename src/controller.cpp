@@ -161,11 +161,16 @@ void Controller::run()
         if(mCountDown < sf::Time::Zero)
         {
             mCountDown = mFPS;
-            mCurrentAppState->update(mFPS);
+            mCurrentAppState->lockedUpdate(mFPS);
         }
 
+      mCurrentAppState->unlockedUpdate();
+
         mCurrentAppState->handleInput();
+
+        mWindow.clear();
         mCurrentAppState->display();
+        mWindow.display();
 
         if(mChangeState)
             changeAppState();

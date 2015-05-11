@@ -34,6 +34,12 @@ public:
                                                 , sf::FloatRect
                                                 , std::string = "");
 
+
+                                             HUD()
+                                             {
+
+                                             };
+
     virtual                                 ~HUD(){};
 
     void                                    update();
