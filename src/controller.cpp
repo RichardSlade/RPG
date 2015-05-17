@@ -73,6 +73,8 @@ void Controller::loadMedia()
    std::vector<Controller::upTexture>::iterator texIter = mTextures.begin();
    std::vector<std::string>::iterator fileNameIter;
 
+   unsigned int index = 0;
+
     for(fileNameIter = fileNames.begin();
          fileNameIter != fileNames.end();
          fileNameIter++)
@@ -84,14 +86,21 @@ void Controller::loadMedia()
 
 //      Controller::upTexture upTex(new sf::Texture(t));
 
+      if(index == Controller::Textures::Ground)
+         t.setRepeated(true);
+
       (*texIter).reset(new sf::Texture(t));
       texIter++;
+
+      index ++;
 
 //      mTextures.at(index) =
     }
 
 //   texIter ++;
-   mTextures.at(Controller::Textures::GameBackground).reset(new sf::Texture(createBackgroundTexture()));
+//   sf::Texture tex = mTe;
+//   tex.setRepeated(true);
+//   mTextures.at(Controller::Textures::GameBackground).reset(new sf::Texture(tex));
 
    // Fonts
    for(unsigned int i = 0; i < Fonts::NumFonts; i++)
@@ -124,7 +133,7 @@ void Controller::loadMedia()
 */
 const sf::Texture Controller::createBackgroundTexture()
 {
-   const sf::Texture& Tex = getTexture(Textures::GameBackground);
+   const sf::Texture& Tex = getTexture(Textures::Ground);
    const sf::Vector2u TexSize = Tex.getSize();
 
    const unsigned int Multiplier = 10;
@@ -135,7 +144,7 @@ const sf::Texture Controller::createBackgroundTexture()
    backgroundTex.create(BackgroundTexSizeX
                               , BackgroundTexSizeY);
    backgroundTex.clear();
-   backgroundTex.setRepeated(true);
+//   backgroundTex.setRepeated(true);
 
    sf::Vector2f spritePos;
 
@@ -162,6 +171,7 @@ const sf::Texture Controller::createBackgroundTexture()
       spritePos.y += TexSize.y;
    }
 
+//   backgroundTex.getTexture().setRepeated(true);
    return backgroundTex.getTexture();
 }
 

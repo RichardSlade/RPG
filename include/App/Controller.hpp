@@ -43,7 +43,7 @@ public:
         Wall,
         Corner,
         Exit,
-        GameBackground,
+        Ground,
         NumTextures
     };
 

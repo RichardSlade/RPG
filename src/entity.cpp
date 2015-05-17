@@ -41,11 +41,11 @@ Entity::Entity(Level* level
    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
    mRadius = std::max(bounds.width, bounds.height);
 
-   sf::Transformable::setPosition(startPos);
+   sf::Transformable::setPosition(meterToPixel(startPos));
 
-   float theta = randomClamped() * (2.f * PI);
-   rotate(theta * (180 / PI));
-   mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
+//   float theta = randomClamped() * (2.f * PI);
+//   rotate(theta * (180 / PI));
+//   mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
 
    bounds = mText.getLocalBounds();
    mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);

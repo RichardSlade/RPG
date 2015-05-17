@@ -10,7 +10,7 @@ GameState::GameState(Controller& cntrl
 : mWorldDimMax(cntrl.getParams().WorldDimMax)
 , mNumEnemyMax(cntrl.getParams().NumEnemyMax)
 , mLevelTimeMin(cntrl.getParams().LevelTimeMin)
-, mResetWorldDim(cntrl.getParams().WorldDimMin)
+, mResetWorldDim(cntrl.getParams().WorldDimMax)
 , mResetNumEnemy(cntrl.getParams().NumEnemyMin)
 , mResetLevelTime(cntrl.getParams().LevelTimeMax)
 , mController(cntrl)
@@ -40,7 +40,6 @@ GameState::GameState(Controller& cntrl
 , mNewScreen(mCurrentScreen)
 , mPaused(false)
 {
-   std::cout << "GameState constructor" << std::endl;
 }
 
 void GameState::restartWorld()

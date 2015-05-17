@@ -44,7 +44,7 @@ World::World(GameState& gameState
 , mGameState(gameState)
 , mWindow(window)
 , mWorldView(mWindow.getDefaultView())
-, mWorldRect(sf::Vector2f(mWorldBounds.width, mWorldBounds.height))
+//, mWorldRect(sf::Vector2f(mWorldBounds.width, mWorldBounds.height))
 , mFocusPoint(0.f, 0.f)
 , mPhysicsEngine(b2Vec2(0.f, 0.f))
 , mHUD(this
@@ -54,12 +54,8 @@ World::World(GameState& gameState
 , mCurrentAdventurer(nullptr)
 , mCurrentAdventurerIndex(0)
 {
-   std::cout << "World constructor 1" << std::endl;
-
     mLevel = std::unique_ptr<Level>(new Level(controller.getParams().LevelBlockSize
                                             , mWorldBounds));
-
-   std::cout << "World constructor 2" << std::endl;
 
     initialiseStatesAndStats();
     buildScene(controller);
@@ -169,8 +165,12 @@ void World::buildScene(const Controller& controller)
 //    sf::Vector2f bckgrndSpritePos(mWorldBounds.width / 2.f
 //                                  , mWorldBounds.height / 2.f);
 
-    std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(controller.getTexture(Controller::Textures::GameBackground),
-                                                                sf::IntRect(mWorldBounds)));
+   sf::IntRect backgroundSpriteBounds = sf::IntRect(sf::Vector2i(0, 0),
+                                                    sf::Vector2i(meterToPixel(mWorldBounds.width),
+                                                                 meterToPixel(mWorldBounds.height)));
+
+    std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(controller.getTexture(Controller::Textures::Ground),
+                                                                backgroundSpriteBounds));
 
 //    mBackground = backgroundSprite.get();
     mSceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(backgroundSprite));
@@ -185,9 +185,11 @@ void World::generateAgents(const Controller& controller)
     // Initialise characters and add to scene graph
    for(int i = 0; i < 1; i++)
    {
-//      float inc = i * 40.f;
+      float inc = i * 40.f;
 
 //      sf::Vector2f pos((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc);
+//      sf::Vector2f pos(mWorldBounds.width / 2.f, mWorldBounds.height / 2.f);
+//      sf::Vector2f pos(10, 10);
       sf::Vector2f pos;
 //      float size = controller.getTexture(Controller::Textures::Adventurer).getSize().x;
 
@@ -456,7 +458,7 @@ void World::display()
    mWorldView.setCenter(mFocusPoint);
    mWindow.setView(mWorldView);
 
-   mWindow.draw(mWorldRect);
+//   mWindow.draw(mWorldRect);
    mWindow.draw(mSceneGraph);
 
    mHUD.setHUDPosition(getViewBounds());

@@ -60,7 +60,7 @@ private:
    GameState&                                   mGameState;
    sf::RenderWindow&                            mWindow;
    sf::View                                     mWorldView;
-   sf::RectangleShape                           mWorldRect;
+//   sf::RectangleShape                           mWorldRect;
    sf::Vector2f                                 mFocusPoint;
 
    b2World                                      mPhysicsEngine;

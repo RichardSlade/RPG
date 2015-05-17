@@ -16,7 +16,7 @@ MenuState::MenuState(Controller& cntrl
                , mViewCenter.y + 64)
 , mController(cntrl)
 , mWindow(window)
-, mBackground(cntrl.getTexture(Controller::Textures::GameBackground)
+, mBackground(cntrl.getTexture(Controller::Textures::Ground)
                     , mWindow.getViewport(mView))
 , mTitleText("RPG"
              , mController.getFont(Controller::Fonts::Sansation)

@@ -62,6 +62,9 @@ void Adventurer::updateCurrent(sf::Time dt)
       float angle = std::atan2(toCursor.x, -toCursor.y);
       sf::Vector2f pos = getWorldPosition() + (mVelocity * dt.asSeconds());
 
+      std::cout << "Player Pos: " << getWorldPosition().x << "," << getWorldPosition().y << std::endl;
+      std::cout << "Player Pixel Pos: " << meterToPixel(getWorldPosition().x) << "," << meterToPixel(getWorldPosition().y) << std::endl;
+
       mPhysicsBody->SetTransform(convertVec(pos), angle);
    }
 
