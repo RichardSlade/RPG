@@ -5,13 +5,13 @@
 
 #include "App/Utility.hpp"
 #include "App/Params.hpp"
-#include "World/Wall.hpp"
-#include "World/LevelBlock.hpp"
+#include "World/WallBlock.hpp"
+//#include "World/LevelBlock.hpp"
 #include "Entity/Entity.hpp"
 #include "Entity/SteeringBehaviour.hpp"
-#include "Entity/Entity.hpp"
+//#include "Entity/Entity.hpp"
 
-const float SteeringBehaviour::mPI = 3.14159265358979;
+//const float SteeringBehaviour::PI = 3.14159265358979;
 
 SteeringBehaviour::SteeringBehaviour(Entity* host
                                      , const Params& params)
@@ -35,7 +35,7 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
 , mAlignRadius(params.AlignRadius)
 , mCohesionRadius(params.CohesionRadius)
 , mHost(host)
-, mTheta(mHost->getRotation() * (mPI / 180.f))
+, mTheta(mHost->getRotation() * (PI / 180.f))
 , mWanderTarget(std::sin(mTheta) * mWanderRadius, -std::cos(mTheta) * mWanderRadius)
 {
    for(bool& b : mBehaviourFlags)
@@ -73,14 +73,14 @@ void SteeringBehaviour::createFeelers()
 {
     mFeelers.clear();
 
-    mFeelers.push_back(sf::Vector2f(std::sin(-45.f * (mPI / 180.f)) * mFeelerLength
-                                      , -std::cos(-45.f *(mPI / 180.f)) * mFeelerLength));
+    mFeelers.push_back(sf::Vector2f(std::sin(-45.f * (PI / 180.f)) * mFeelerLength
+                                      , -std::cos(-45.f *(PI / 180.f)) * mFeelerLength));
 
     mFeelers.push_back(sf::Vector2f(0.f
                                       , -mFeelerLength));
 
-    mFeelers.push_back(sf::Vector2f(std::sin(45.f * (mPI / 180.f)) * mFeelerLength
-                                      , -std::cos(45.f *(mPI / 180.f)) * mFeelerLength));
+    mFeelers.push_back(sf::Vector2f(std::sin(45.f * (PI / 180.f)) * mFeelerLength
+                                      , -std::cos(45.f *(PI / 180.f)) * mFeelerLength));
 }
 
 sf::Vector2f SteeringBehaviour::rest()
@@ -296,27 +296,36 @@ sf::Vector2f SteeringBehaviour::wallAvoidance()
 
         for(LevelBlock* block : wallBlocks)
         {
-            Wall* wall = dynamic_cast<Wall*>(block->getScenery());
+//            Wall* wall = dynamic_cast<Wall*>(block->getScenery());
 
+
+
+            WallBlock* wall = dynamic_cast<WallBlock*>(block);
             assert(wall);
 
-            Wall::WallData wallData = wall->getSceneryData();
+//            Wall::WallData wallData = wall->getSceneryData();
+            std::vector<WallBlock::Edge> wallData = wall->getData();
 
-            if(lineIntersection2D(mHost->getWorldPosition()
-                                  , mHost->getWorldTransform() * mFeelers.at(flr)
-                                  , wallData.first.first
-                                  , wallData.first.second
-                                  , distToThisIntersection
-                                  , point))
+            for(std::vector<WallBlock::Edge>::iterator iter = wallData.begin();
+                iter != wallData.end();
+                iter++)
             {
+               if(lineIntersection2D(mHost->getWorldPosition()
+                                     , mHost->getWorldTransform() * mFeelers.at(flr)
+                                     , iter->at(WallBlock::EdgeData::PointA)
+                                     , iter->at(WallBlock::EdgeData::PointB)
+                                     , distToThisIntersection
+                                     , point))
+               {
 
-                if(distToThisIntersection < distToClosestIntersection)
-                {
-                    distToClosestIntersection = distToThisIntersection;
-                    closestWall = index;
-                    closestPoint = point;
-                    closestNorm = wallData.second;
-                }
+                   if(distToThisIntersection < distToClosestIntersection)
+                   {
+                       distToClosestIntersection = distToThisIntersection;
+                       closestWall = index;
+                       closestPoint = point;
+                       closestNorm = iter->at(WallBlock::EdgeData::Normal);
+                   }
+               }
             }
 
             index ++;

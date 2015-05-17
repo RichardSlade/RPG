@@ -41,13 +41,17 @@ public:
 
 private:
    const sf::Vector2f                           mViewSize;
-   const float                                  mPhysicsWorldX;
-   const float                                  mPhysicsWorldY;
-   const float                                  mPhysicsWorldScale;
+   const sf::FloatRect                            mWorldBounds;
+
+//   const float                                  mPhysicsWorldDim;
+//   const float                                  mPhysicsWorldY;
+//   const float                                  mPixelPerMeter;
+//   const float                                  mPhysicsWorldScale;
+
    const int32                                  mVelocityIter;
    const int32                                  mPositionIter;
    const float32                                mTimeStep;
-   const int                                    mLevelBlockSize;
+//   const int                                    mLevelBlockSize;
 
    const float                                  mWaypointRadius;
    const float                                  mScrollSpeed;
@@ -55,7 +59,7 @@ private:
    GameState&                                   mGameState;
    sf::RenderWindow&                            mWindow;
    sf::View                                     mWorldView;
-   sf::IntRect                                  mWorldBounds;
+
    sf::Vector2f                                 mFocusPoint;
 
    b2World                                      mPhysicsEngine;
@@ -99,6 +103,8 @@ private:
 
     void                                        cycleAdventurer();
 
+   void	                                       adaptPlayerVelocity();
+
 public:
                                                 World(GameState&
                                                       , const Controller&
@@ -116,7 +122,9 @@ public:
     // Getters
    const sf::FloatRect                          getViewBounds() const;
 
-    const sf::IntRect                           getWorldBounds() const { return mWorldBounds; }
+
+
+    const sf::FloatRect                          getWorldBounds() const { return mWorldBounds; }
 };
 
 #endif // WORLD_HPP

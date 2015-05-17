@@ -28,20 +28,23 @@ World::World(GameState& gameState
              , int numEnemy
              , sf::Time levelTime)
 : mViewSize(640, 480)
-, mPhysicsWorldX(worldDim)
-, mPhysicsWorldY(worldDim)
-, mPhysicsWorldScale(mViewSize.x / mPhysicsWorldX)
+, mWorldBounds(sf::Vector2f(0, 0),
+               sf::Vector2f(worldDim, worldDim))
+//, mPhysicsWorldDim(worldDim)
+//, mPhysicsWorldX(worldDim)
+//, mPhysicsWorldY(worldDim)
+//, mPixelPerMeter(40.f)
+//, mPhysicsWorldScale(1.f / PixelPerMeter)
 , mVelocityIter(6)
 , mPositionIter(2)
 , mTimeStep(1.f / 60.f)
-, mLevelBlockSize(controller.getParams().LevelBlockSize)
+//, mLevelBlockSize(controller.getParams().LevelBlockSize)
 , mWaypointRadius(controller.getParams().WaypointRadius)
 , mScrollSpeed(controller.getParams().ScrollSpeed)
 , mGameState(gameState)
 , mWindow(window)
 , mWorldView(mWindow.getDefaultView())
-, mWorldBounds(sf::Vector2i(0, 0), sf::Vector2i(mPhysicsWorldX, mPhysicsWorldY))
-, mFocusPoint(mWorldBounds.width / 2.f, mWorldBounds.height / 2.f)
+, mFocusPoint(0.f, 0.f)
 , mPhysicsEngine(b2Vec2(0.f, 0.f))
 , mHUD(this
        , controller.getFont(Controller::Fonts::Sansation)
@@ -50,9 +53,12 @@ World::World(GameState& gameState
 , mCurrentAdventurer(nullptr)
 , mCurrentAdventurerIndex(0)
 {
-    mLevel = std::unique_ptr<Level>(new Level(40.f
-                                            , controller.getParams().ExitWidth
-                                            , sf::IntRect(0.f, 0.f, mPhysicsWorldX, mPhysicsWorldY)));
+   std::cout << "World constructor 1" << std::endl;
+
+    mLevel = std::unique_ptr<Level>(new Level(controller.getParams().LevelBlockSize
+                                            , mWorldBounds));
+
+   std::cout << "World constructor 2" << std::endl;
 
     initialiseStatesAndStats();
     buildScene(controller);
@@ -164,7 +170,7 @@ void World::buildScene(const Controller& controller)
 
     std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(controller.getTexture(Controller::Textures::GameBackground)
                                                                  , bckgrndSpritePos
-                                                                 , true));
+                                                                 , false));
 
     mBackground = backgroundSprite.get();
     mSceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(backgroundSprite));
@@ -182,10 +188,10 @@ void World::generateAgents(const Controller& controller)
       float inc = i * 40.f;
 
       sf::Vector2f pos((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc);
-      float size = controller.getTexture(Controller::Textures::Adventurer).getSize().x;
+//      float size = controller.getTexture(Controller::Textures::Adventurer).getSize().x;
 
       b2Body* body = generatePhysicsBody(pos,
-                                         size,
+                                         1.f,
                                          b2BodyType::b2_dynamicBody);
 
       std::unique_ptr<Adventurer> adventurerNode(new Adventurer(mWindow
@@ -199,7 +205,6 @@ void World::generateAgents(const Controller& controller)
                                                                , mAdventurerStates.at(Adventurer::States::Relax).get()
                                                                , mAdventurerStates
                                                                , Adventurer::States::Relax
-                                                               , mPhysicsWorldScale
                                                                , body));
 
    // Save pointer to character for enemy initialisation
@@ -213,7 +218,7 @@ void World::generateAgents(const Controller& controller)
     mCurrentAdventurer->setIsSelected(true);
 
     // Initialise enemy and add to scene graph
-    for(int i = 0 ; i < 10; i++)
+    for(int i = 0 ; i < 0; i++)
     {
       // Find square for enemy to start in
       LevelBlock* levelBlock;
@@ -229,10 +234,10 @@ void World::generateAgents(const Controller& controller)
 
       pos = levelBlock->getCenter();
 
-      float size = controller.getTexture(Controller::Textures::Enemy).getSize().x;
+//      float size = controller.getTexture(Controller::Textures::Enemy).getSize().x;
 
       b2Body* body = generatePhysicsBody(pos,
-                                         size,
+                                         1.f,
                                          b2BodyType::b2_dynamicBody);
 
       std::unique_ptr<Enemy> enemyNode(new Enemy(mLevel.get()
@@ -245,7 +250,6 @@ void World::generateAgents(const Controller& controller)
                                               , mEnemyStates.at(Enemy::States::Relax).get()
                                               , mEnemyStates
                                               , Enemy::States::Relax
-                                              , mPhysicsWorldScale
                                               , body));
 
 //        enemyNode->setMovingTarget(mAdventurers.at(0));
@@ -255,35 +259,49 @@ void World::generateAgents(const Controller& controller)
 
 void World::handleRealTimeInput()
 {
-   sf::Vector2f adventurerMovement;
-   float speed = 5.f;
+//   sf::Vector2f adventurerMovement = mCurrentAdventurer->getVelocity() / 2.f;
+   sf::Vector2f movement;// = mCurrentAdventurer->getVelocity() / 2.f;
+   float speed = 4.f;
 
    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)
    || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
    {
-      adventurerMovement.x -= speed;
+      movement.x -= speed;
    }
 
    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)
    || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
    {
-      adventurerMovement.x += speed;
+      movement.x += speed;
    }
 
    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)
    || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
    {
-      adventurerMovement.y -= speed;
+      movement.y -= speed;
    }
 
    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)
    || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
    {
-      adventurerMovement.y += speed;
+      movement.y += speed;
    }
 
-   if(mCurrentAdventurer)
-      mCurrentAdventurer->setVelocity(adventurerMovement);
+//   if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+//   {
+//      mFocusPoint += movement;
+//   }
+//   else
+//   {
+      if(mCurrentAdventurer)
+      {
+         mCurrentAdventurer->setVelocity(movement);
+//         mCurrentAdventurer->setVelocity(sf::Vector2f(1.f, 2.f));
+         adaptPlayerVelocity();
+//         mFocusPoint =
+   //      mFocusPoint = meterToPixel(mCurrentAdventurer->getWorldPosition());
+      }
+//   }
 }
 
 void World::adjustView()
@@ -343,6 +361,15 @@ void World::cycleAdventurer()
    mCurrentAdventurer->setIsSelected(true);
 }
 
+void World::adaptPlayerVelocity()
+{
+	sf::Vector2f velocity = mCurrentAdventurer->getVelocity();
+
+	// If moving diagonally, reduce velocity (to have always same velocity)
+	if (velocity.x != 0.f && velocity.y != 0.f)
+		mCurrentAdventurer->setVelocity(velocity / std::sqrt(2.f));
+}
+
 void World::update(sf::Time dt)
 {
     mSceneGraph.removeDeletedNodes();
@@ -379,7 +406,7 @@ void World::handleInput()
             else if(event.key.code == sf::Keyboard::Tab)
             {
                cycleAdventurer();
-               mFocusPoint = mCurrentAdventurer->getWorldPosition();
+               mFocusPoint = meterToPixel(mCurrentAdventurer->getWorldPosition());
             }
         }
         else if(event.type == sf::Event::MouseButtonPressed)
@@ -394,11 +421,11 @@ void World::handleInput()
 
             if(event.mouseButton.button == sf::Mouse::Left)
             {
-                mousePosF.x = std::min(mousePosF.x, static_cast<float>(mWorldBounds.width - (mLevelBlockSize + mWaypointRadius)));
-                mousePosF.x = std::max(mousePosF.x, static_cast<float>(mLevelBlockSize + mWaypointRadius));
+                mousePosF.x = std::min(mousePosF.x, mWorldBounds.width);
+                mousePosF.x = std::max(mousePosF.x, 0.f);
 
-                mousePosF.y = std::min(mousePosF.y, static_cast<float>(mWorldBounds.height - (mLevelBlockSize + mWaypointRadius)));
-                mousePosF.y = std::max(mousePosF.y, static_cast<float>(mLevelBlockSize + mWaypointRadius));
+                mousePosF.y = std::min(mousePosF.y, mWorldBounds.height);
+                mousePosF.y = std::max(mousePosF.y, 0.f);
 
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
                 {
@@ -421,7 +448,8 @@ void World::display()
 {
 //    adjustView();
 
-   mFocusPoint = mCurrentAdventurer->getWorldPosition();
+   if(mCurrentAdventurer)
+      mFocusPoint = mCurrentAdventurer->Transformable::getPosition();
 
    mWorldView.setCenter(mFocusPoint);
    mWindow.setView(mWorldView);
@@ -436,4 +464,3 @@ const sf::FloatRect World::getViewBounds() const
 {
    return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
 }
-

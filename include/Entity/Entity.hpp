@@ -34,8 +34,6 @@ public:
 //    const float                 mPanicDistance;
 
 protected:
-   const float                   mPhysicsWorldScale;
-
     Level*                      mLevel;
 
     b2Body*                     mPhysicsBody;
@@ -70,7 +68,7 @@ protected:
     virtual void                drawCurrent(sf::RenderTarget& target
                                            , sf::RenderStates states) const;
 
-   void                         updateMovement(sf::Time);
+   void                         updatePhysicsBody(sf::Time);
 
     void                        adjustPosition();
     void                        ensureZeroOverlap();
@@ -83,7 +81,6 @@ public:
                                        , EntityStats
                                        , const Params&
                                        , Type type
-                                       , float physicsWorldScale
                                        , b2Body* body
                                        , float = 1.f);
 
@@ -95,97 +92,100 @@ public:
 
     std::vector<LevelBlock*>    getBlockTypeInRange(LevelBlock::Type, float) const;
 
-    std::vector<LevelBlock*>    getLevelExit();
+//    std::vector<LevelBlock*>    getLevelExit();
 
-    sf::Vector2f                getVelocity() const
-                                { return mVelocity; }
+   sf::Transform			         getWorldTransform() const;
+   sf::Vector2f			         getWorldPosition() const;
 
-    sf::Vector2f                getHeading() const
-                                { return mHeading; }
+   sf::Vector2f                  getVelocity() const
+                                 { return mVelocity; }
 
-    float                       getSpeed() const
-                                { return magVec(mVelocity); }
+   sf::Vector2f                  getHeading() const
+                                 { return mHeading; }
 
-    float                       getMass() const
-                                { return mMass; }
+   float                         getSpeed() const
+                                 { return magVec(mVelocity); }
 
-    float                       getMaxSpeed() const
-                                { return mMaxSpeed; }
+   float                         getMass() const
+                                 { return mMass; }
 
-    float                       getMaxWalkSpeed()
-                                { return mWalkMaxSpeed; }
+   float                         getMaxSpeed() const
+                                 { return mMaxSpeed; }
 
-    float                       getMaxRunSpeed()
-                                { return mRunMaxSpeed; }
+   float                         getMaxWalkSpeed()
+                                 { return mWalkMaxSpeed; }
 
-    float                       getMaxForce() const
-                                { return mMaxForce; }
+   float                       getMaxRunSpeed()
+                          { return mRunMaxSpeed; }
 
-    float                       getMaxTurnRate() const
-                                { return mMaxTurnRate; }
+   float                       getMaxForce() const
+                          { return mMaxForce; }
 
-    bool                        checkSteeringBehaviour(SteeringBehaviour::Behaviour type) const
-                                { return mSteering.checkBehaviour(type); }
+   float                       getMaxTurnRate() const
+                          { return mMaxTurnRate; }
 
-    float                       getRadius() const
-                                { return mRadius; }
+   bool                        checkSteeringBehaviour(SteeringBehaviour::Behaviour type) const
+                          { return mSteering.checkBehaviour(type); }
 
-    float                       getSpriteWidth() const
-                                { return mSprite.getLocalBounds().width; }
+   float                       getRadius() const
+                          { return mRadius; }
 
-//    sf::Vector2f                getTargetPos() const
-//                                { return mTargetPos; }
+   float                       getSpriteWidth() const
+                          { return mSprite.getLocalBounds().width; }
 
-    const Entity*                getCurrentTarget() const
-                                 { return mCurrentTarget; }
+   //    sf::Vector2f                getTargetPos() const
+   //                                { return mTargetPos; }
 
-    LevelBlock*                 getLevelBlock(sf::Vector2i);
+   const Entity*                getCurrentTarget() const
+                           { return mCurrentTarget; }
 
-    LevelBlock*                 getLevelBlock()
-                                { return mCurrentBlock; }
+   LevelBlock*                 getLevelBlock(sf::Vector2i);
 
-    Entity::Type                 getEntityType()
-                                { return mEntityType; }
+   LevelBlock*                 getLevelBlock()
+                          { return mCurrentBlock; }
 
-    // Setters
+   Entity::Type                 getEntityType()
+                          { return mEntityType; }
+
+   // Setters
    void                       setVelocity(sf::Vector2f newVel)
-                              { mVelocity = newVel; }
+                        { mVelocity = newVel; }
 
    void                       resetVelocity()
-                              { mVelocity = sf::Vector2f(); }
+                        { mVelocity = sf::Vector2f(); }
 
    void                       changeVelocity(sf::Vector2f newVec)
-                              { mVelocity += newVec; }
+                        { mVelocity += newVec; }
 
    void                       setCurrentTarget(Entity* target)
-                             { mCurrentTarget = target; }
+                       { mCurrentTarget = target; }
 
    void                       setMaxSpeed(float speed)
-                             { mMaxSpeed = speed; }
+                       { mMaxSpeed = speed; }
 
    void                       setSteeringTypes(std::vector<SteeringBehaviour::Behaviour> newBehaviours)
-                             { mSteering.setNewBehaviours(newBehaviours); }
+                       { mSteering.setNewBehaviours(newBehaviours); }
 
    void                       setSteeringTypes(SteeringBehaviour::Behaviour newBehaviour)
-                             { mSteering.setNewBehaviours(newBehaviour); }
+                       { mSteering.setNewBehaviours(newBehaviour); }
 
    void                       changeColour(sf::Color colour)
-                             { mSprite.setColor(colour); }
+                       { mSprite.setColor(colour); }
 
    void                       setText(std::string msg)
-                             {
-                                 mText.setString(msg);
-                                 mText.setColor(sf::Color(255, 255, 255, 255));
-                             }
+                       {
+                           mText.setString(msg);
+                           mText.setColor(sf::Color(255, 255, 255, 255));
+                       }
 
    void                       setHPText(std::string msg)
-                              {
-                                 mHPText.setString(msg);
-                                 mHPText.setColor(sf::Color(255, 255, 255, 255));
-                              }
+                        {
+                           mHPText.setString(msg);
+                           mHPText.setColor(sf::Color(255, 255, 255, 255));
+                        }
 
-//    void                        setTargetPos(sf::Vector2f pos)
-//                                { mTargetPos = pos; }
+   //    void                        setTargetPos(sf::Vector2f pos)
+   //                                { mTargetPos = pos; }
 };
 
 #endif // MOVINGENTITY_HPP

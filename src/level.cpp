@@ -10,14 +10,14 @@
 #include "Entity/Entity.hpp"
 
 Level::Level(int blockSize
-             , int exitWidth
-             , sf::IntRect worldBounds)
-: mExitWidth(exitWidth)
-, mWorldBounds(worldBounds)
+//             , int exitWidth
+             , sf::FloatRect worldBounds)
+//: mExitWidth(exitWidth)
+: mWorldBounds(worldBounds)
 , mBlockSize(blockSize)
 , mLevelX(mWorldBounds.width / mBlockSize)
 , mLevelY(mWorldBounds.height / mBlockSize)
-, mMidX(mLevelX / 2)
+//, mMidX(mLevelX / 2)
 {
     // Initialise level array to correct size
     for(int y = 0; y < mLevelY; y++)
@@ -30,64 +30,137 @@ Level::Level(int blockSize
         }
     }
 
-    defineWallData();
+   std::cout << "Level constructor - Level X : " << mLevelX <<std::endl;
+   std::cout << "Level constructor - Level Y : " << mLevelY <<std::endl;
+
+//    defineWallData();
 }
 
-void Level::defineWallData()
+void Level::createWallBlock(int row, int column)
 {
-    sf::Vector2f pointA, pointB, norm;
-    Wall::PointPair points;
+   enum Faces{North, South, East, West, NumFaces};
 
-//    int exitBorder = (mExitWidth - 1) / 2;
+   LevelBlock* currentBlock = getBlock(column, row);
+   std::vector<WallBlock::Edge> edges;
 
-    // Left wall
-    pointA = sf::Vector2f(mBlockSize, 0.f);
-    pointB = sf::Vector2f(mBlockSize, mWorldBounds.height);
-    points = Wall::PointPair(pointA, pointB);
-    norm = sf::Vector2f(1.f, 0.f);
+   sf::Vector2f pos = currentBlock->getCorner();
 
-    mBoundaryWallData.at(Wall::WallType::LeftWall) = Wall::WallData(points, norm);
+   sf::Vector2f pointA, pointB, normal;
 
-    // Right wall
-    pointA = sf::Vector2f(mWorldBounds.width - mBlockSize, 0.f);
-    pointB = sf::Vector2f(mWorldBounds.width - mBlockSize, mWorldBounds.height);
-    points = Wall::PointPair(pointA, pointB);
-    norm = sf::Vector2f(-1.f, 0.f);
+   for(unsigned int i = 0; i < Faces::NumFaces; i++)
+   {
+      switch(i)
+      {
+      case Faces::North:
+      {
+         pointA = pos;
+         pointB = sf::Vector2f(pointA.x + mBlockSize, pointA.y);
+         normal = normVec(pointB.x / 2.f, pointB.y - 1.f);
+         break;
+      }
+      case Faces::South:
+      {
+         pointA = sf::Vector2f(pos.x, pos.y + mBlockSize);
+         pointB = sf::Vector2f(pointA.x + mBlockSize, pointA.y);
+         normal = normVec(pointB.x / 2.f, pointB.y + 1.f);
+         break;
+      }
+      case Faces::East:
+      {
+         pointA = pos;
+         pointB = sf::Vector2f(pointA.x, pointB.y + mBlockSize);
+         normal = normVec(pointB.x - 1.f, pointB.y / 2.f);
+         break;
+      }
+      case Faces::West:
+      {
+         pointA = sf::Vector2f(pos.x + mBlockSize, pos.y);
+         pointB = sf::Vector2f(pointA.x, pointA.y + mBlockSize);
+         normal = normVec(pointB.x + 1.f, pointB.y / 2.f);
+         break;
+      }
+      default: break;
+      }
 
-    mBoundaryWallData.at(Wall::WallType::RightWall) = Wall::WallData(points, norm);
+      WallBlock::Edge edge;
 
-    // Top wall
-    pointA = sf::Vector2f(0.f, mBlockSize);
-    pointB = sf::Vector2f(mWorldBounds.width, mBlockSize);
-    points = Wall::PointPair(pointA, pointB);
-    norm = sf::Vector2f(0.f, 1.f);
+      edge.at(WallBlock::EdgeData::PointA) = pointA;
+      edge.at(WallBlock::EdgeData::PointB) = pointB;
+      edge.at(WallBlock::EdgeData::Normal) = normal;
 
-    mBoundaryWallData.at(Wall::WallType::TopWall) = Wall::WallData(points, norm);
+      edges.push_back(edge);
+   }
 
-//    // Top wall left
-//    pointA = sf::Vector2f(0.f, mBlockSize);
-//    pointB = sf::Vector2f(mBlockSize * (mMidX - exitBorder), mBlockSize);
+//   LevelBlock::BlockPtr wall(new WallBlock(LevelBlock::Type::WallBlock
+//                                          , currentBlock->getCorner()
+//                                          , sf::Vector2i(column, row)
+//                                          , mBlockSize
+//                                          , edges));
+
+//   mLevelArray.at(row).at(column).reset(std::move(wall));
+   mLevelArray.at(row).at(column).reset(new WallBlock(LevelBlock::Type::WallBlock
+                                          , currentBlock->getCorner()
+                                          , sf::Vector2i(column, row)
+                                          , mBlockSize
+                                          , edges));
+
+}
+
+//void Level::defineWallData()
+//{
+//    sf::Vector2f pointA, pointB, norm;
+//    Wall::PointPair points;
+//
+////    int exitBorder = (mExitWidth - 1) / 2;
+//
+//    // Left wall
+//    pointA = sf::Vector2f(mBlockSize, 0.f);
+//    pointB = sf::Vector2f(mBlockSize, mWorldBounds.height);
 //    points = Wall::PointPair(pointA, pointB);
-//    norm = sf::Vector2f(0.f, 1.f);
+//    norm = sf::Vector2f(1.f, 0.f);
 //
-//    mBoundaryWallData.at(Wall::WallType::TopLeftWall) = Wall::WallData(points, norm);
+//    mBoundaryWallData.at(Wall::WallType::LeftWall) = Wall::WallData(points, norm);
 //
-//     // Top wall right
-//    pointA = sf::Vector2f(mBlockSize * (mMidX + exitBorder), mBlockSize);
+//    // Right wall
+//    pointA = sf::Vector2f(mWorldBounds.width - mBlockSize, 0.f);
+//    pointB = sf::Vector2f(mWorldBounds.width - mBlockSize, mWorldBounds.height);
+//    points = Wall::PointPair(pointA, pointB);
+//    norm = sf::Vector2f(-1.f, 0.f);
+//
+//    mBoundaryWallData.at(Wall::WallType::RightWall) = Wall::WallData(points, norm);
+//
+//    // Top wall
+//    pointA = sf::Vector2f(0.f, mBlockSize);
 //    pointB = sf::Vector2f(mWorldBounds.width, mBlockSize);
 //    points = Wall::PointPair(pointA, pointB);
 //    norm = sf::Vector2f(0.f, 1.f);
 //
-//    mBoundaryWallData.at(Wall::WallType::TopRightWall) = Wall::WallData(points, norm);
-
-    // Bottom wall
-    pointA = sf::Vector2f(0.f, mWorldBounds.height - mBlockSize);
-    pointB = sf::Vector2f(mWorldBounds.width, mWorldBounds.height - mBlockSize);
-    points = Wall::PointPair(pointA, pointB);
-    norm = sf::Vector2f(0.f, -1.f);
-
-    mBoundaryWallData.at(Wall::WallType::BottomWall) = Wall::WallData(points, norm);
-}
+//    mBoundaryWallData.at(Wall::WallType::TopWall) = Wall::WallData(points, norm);
+//
+////    // Top wall left
+////    pointA = sf::Vector2f(0.f, mBlockSize);
+////    pointB = sf::Vector2f(mBlockSize * (mMidX - exitBorder), mBlockSize);
+////    points = Wall::PointPair(pointA, pointB);
+////    norm = sf::Vector2f(0.f, 1.f);
+////
+////    mBoundaryWallData.at(Wall::WallType::TopLeftWall) = Wall::WallData(points, norm);
+////
+////     // Top wall right
+////    pointA = sf::Vector2f(mBlockSize * (mMidX + exitBorder), mBlockSize);
+////    pointB = sf::Vector2f(mWorldBounds.width, mBlockSize);
+////    points = Wall::PointPair(pointA, pointB);
+////    norm = sf::Vector2f(0.f, 1.f);
+////
+////    mBoundaryWallData.at(Wall::WallType::TopRightWall) = Wall::WallData(points, norm);
+//
+//    // Bottom wall
+//    pointA = sf::Vector2f(0.f, mWorldBounds.height - mBlockSize);
+//    pointB = sf::Vector2f(mWorldBounds.width, mWorldBounds.height - mBlockSize);
+//    points = Wall::PointPair(pointA, pointB);
+//    norm = sf::Vector2f(0.f, -1.f);
+//
+//    mBoundaryWallData.at(Wall::WallType::BottomWall) = Wall::WallData(points, norm);
+//}
 
 sf::Vector2i Level::worldCordsToIndex(sf::Vector2f pos) const
 {
@@ -132,7 +205,8 @@ std::vector<LevelBlock*> Level::getInRangeBlocks(const Entity* entity
     {
         for(x = leftStart; x <= right; x++)
         {
-            LevelBlock* curBlock = mLevelArray.at(y).at(x);
+//            LevelBlock* curBlock = mLevelArray.at(y).at(x).get();
+            LevelBlock* curBlock = getBlock(sf::Vector2i(x, y));
 
             float expandedRadius = curBlock->getRadius() + radius;
             sf::Vector2f toBlock = entity->getWorldPosition() - curBlock->getCenter();
@@ -200,12 +274,12 @@ std::vector<Entity*> Level::getEntitiesInRange(const Entity* entity
 void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLayers
                           , const Controller& controller)
 {
-    int levelX = 0;
-    int levelY = 0;
+    int posX = 0;
+    int posY = 0;
     sf::Vector2f blockPos;
 
-    float radius = std::sqrt((mBlockSize * mBlockSize)
-                             + (mBlockSize * mBlockSize)) / 2.f;
+//    float radius = std::sqrt((mBlockSize * mBlockSize)
+//                             + (mBlockSize * mBlockSize)) / 2.f;
     int row, col;
 
     // Initialise level blocks as grass
@@ -213,50 +287,50 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
     {
         for(col = 0; col < mLevelX; col++)
         {
-            blockPos = sf::Vector2f(levelX, levelY);
-            LevelBlock::BlockPtr levelBlock = LevelBlock::BlockPtr(new LevelBlock(controller.getTexture(Controller::Textures::Grass)
-                                                                                  , blockPos
+            blockPos = sf::Vector2f(posX, posY);
+            LevelBlock::BlockPtr levelBlock = LevelBlock::BlockPtr(new LevelBlock(LevelBlock::Type::GrassBlock
+                                                                                 , blockPos
                                                                                   , sf::Vector2i(col, row)
-                                                                                  , mBlockSize
-                                                                                  , radius));
+                                                                                  , mBlockSize));
+                                                                                  //, radius));
 
 
 
-            levelBlock->setType(LevelBlock::Type::GrassBlock);
+//            levelBlock->setType(LevelBlock::Type::GrassBlock);
 
-            mLevelArray.at(row).at(col) = levelBlock.get();
-            sceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(levelBlock));
+//            mLevelArray.at(row).at(col) = levelBlock.get();
+            mLevelArray.at(row).at(col) = std::move(levelBlock);
+//            sceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(levelBlock));
 
-            levelX += mBlockSize;
+            posX += mBlockSize;
         }
 
-        levelX = 0;
-        levelY += mBlockSize;
+        posX = 0;
+        posY += mBlockSize;
     }
 
+
     // Fill in top wall and bottom walls
-    Wall::WallData wallData = mBoundaryWallData.at(Wall::WallType::TopWall);
-    float angleToRotate = 90.f;
+//    Wall::WallData wallData = mBoundaryWallData.at(Wall::WallType::TopWall);
+//    float angleToRotate = 90.f;
 
     for(row = 0; row < mLevelY; row += mLevelY - 1)
     {
         for(col = 0; col < mLevelX; col++)
         {
-            LevelBlock* levelBlock = mLevelArray.at(row).at(col);
-            levelBlock->setType(LevelBlock::Type::WallBlock);
+            createWallBlock(row, col);
 
-            Wall::WallPtr wall(new Wall(levelBlock
-                                   , controller.getTexture(Controller::Textures::Wall)
-                                   , wallData.first.first
-                                   , wallData.first.second
-                                   , wallData.second));
 
-            wall->rotateSprite(angleToRotate);
-            levelBlock->addScenery(std::move(wall));
+//            LevelBlock::BlockPtr oldBlock = std::move(mLevelArray.at(row).at(col));
+//            oldBlock = nullptr;
+
+//            mLevelArray.at(row).at(col) = std::move(wall);
+//            wall->rotateSprite(angleToRotate);
+//            levelBlock->addScenery(std::move(wall));
         }
 
-        wallData = mBoundaryWallData.at(Wall::WallType::BottomWall);
-        angleToRotate = -90.f;
+//        wallData = mBoundaryWallData.at(Wall::WallType::BottomWall);
+//        angleToRotate = -90.f;
 
     }
 
@@ -305,55 +379,57 @@ void Level::generateLevel(std::array<SceneNode*, SceneNode::Layers::Num> sceneLa
 //    }
 
     // Fill in left and right walls
-    wallData = mBoundaryWallData.at(Wall::WallType::LeftWall);
-    angleToRotate = 0.f;
+//    wallData = mBoundaryWallData.at(Wall::WallType::LeftWall);
+//    angleToRotate = 0.f;
 
     for(col = 0; col < mLevelX; col += mLevelX - 1)
     {
         for(row = 0; row < mLevelY; row++)
         {
-            LevelBlock* levelBlock = mLevelArray.at(row).at(col);
-            levelBlock->setType(LevelBlock::Type::WallBlock);
+           createWallBlock(row, col);
 
-            Wall::WallPtr wall(new Wall(levelBlock
-                                   , controller.getTexture(Controller::Textures::Wall)
-                                   , wallData.first.first
-                                   , wallData.first.second
-                                   , wallData.second));
-
-            wall->rotateSprite(angleToRotate);
-            levelBlock->addScenery(std::move(wall));
+//            LevelBlock* levelBlock = getBlock(col, row);
+//            levelBlock->setType(LevelBlock::Type::WallBlock);
+//
+//            Wall::WallPtr wall(new Wall(levelBlock
+//                                   , controller.getTexture(Controller::Textures::Wall)
+//                                   , wallData.first.first
+//                                   , wallData.first.second
+//                                   , wallData.second));
+//
+//            wall->rotateSprite(angleToRotate);
+//            levelBlock->addScenery(std::move(wall));
         }
 
-        wallData = mBoundaryWallData.at(Wall::WallType::RightWall);
-        angleToRotate = 180.f;
+//        wallData = mBoundaryWallData.at(Wall::WallType::RightWall);
+//        angleToRotate = 180.f;
     }
 
     // Add corners
-    angleToRotate = 0.f;
-    bool firstLoop = false;
-
-    for(int row = 0; row < mLevelY; row += mLevelY - 1)
-    {
-        for(int col = 0; col < mLevelY; col += mLevelX - 1)
-        {
-            LevelBlock* levelBlock = mLevelArray.at(row).at(col);
-            Scenery::SceneryPtr corner(new Scenery(levelBlock
-                                                   , controller.getTexture(Controller::Textures::Corner)));
-
-            corner->rotateSprite(angleToRotate);
-            levelBlock->addScenery(std::move(corner));
-            levelBlock->setType(LevelBlock::Type::CornerBlock);
-
-            if(!firstLoop)
-                angleToRotate += 90.f;
-            else
-                angleToRotate -= 90.f;
-        }
-
-        firstLoop = true;
-        angleToRotate = -90.f;
-    }
+//    angleToRotate = 0.f;
+//    bool firstLoop = false;
+//
+//    for(int row = 0; row < mLevelY; row += mLevelY - 1)
+//    {
+//        for(int col = 0; col < mLevelY; col += mLevelX - 1)
+//        {
+//            LevelBlock* levelBlock = getBlock(col, row);
+//            Scenery::SceneryPtr corner(new Scenery(levelBlock
+//                                                   , controller.getTexture(Controller::Textures::Corner)));
+//
+//            corner->rotateSprite(angleToRotate);
+////            levelBlock->addScenery(std::move(corner));
+//            levelBlock->setType(LevelBlock::Type::CornerBlock);
+//
+//            if(!firstLoop)
+//                angleToRotate += 90.f;
+//            else
+//                angleToRotate -= 90.f;
+//        }
+//
+//        firstLoop = true;
+//        angleToRotate = -90.f;
+//    }
 
 //    int exitBorder = (mExitWidth - 1) / 2;
 
@@ -375,14 +451,14 @@ LevelBlock* Level::insertEntityIntoLevel(Entity* entity) const
     return mLevelArray.at(index.y).at(index.x)->insertEntity(entity);
 }
 
-void Level::resetColours()
-{
-    for(int i = 0; i < mLevelY - 1; i++)
-    {
-        for(int j = 0; j < mLevelX - 1; j++)
-        {
-            mLevelArray.at(i).at(j)->resetColour();
-        }
-    }
-}
+//void Level::resetColours()
+//{
+//    for(int i = 0; i < mLevelY - 1; i++)
+//    {
+//        for(int j = 0; j < mLevelX - 1; j++)
+//        {
+//            mLevelArray.at(i).at(j)->resetColour();
+//        }
+//    }
+//}
 

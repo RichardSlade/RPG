@@ -11,14 +11,12 @@ Entity::Entity(Level* level
                            , EntityStats stats
                            , const Params& params
                            , Type type
-                           , float physicsWorldScale
                            , b2Body* body
                            , float scale)
 //: mLevel(world)
 : Killable(stats.health)
 , Intelligent(stats)
 , MeleeFighter(stats)
-, mPhysicsWorldScale(physicsWorldScale)
 , mLevel(level)
 , mPhysicsBody(body)
 , mMass(stats.mass)
@@ -45,8 +43,8 @@ Entity::Entity(Level* level
 
    setPosition(startPos);
 
-   float theta = randomClamped() * (2.f * SteeringBehaviour::mPI);
-   rotate(theta * (180 / SteeringBehaviour::mPI));
+   float theta = randomClamped() * (2.f * PI);
+   rotate(theta * (180 / PI));
    mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));
 
    bounds = mText.getLocalBounds();
@@ -67,17 +65,16 @@ void Entity::updateCurrent(sf::Time dt)
    if(isDead())
       mToRemove = true;
 
-   float currentRotation = mPhysicsBody->GetAngle();
-   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+//   float currentRotation = mPhysicsBody->GetAngle();
+//   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+//
+//   sf::Transformable::setRotation((180 / PI) * currentRotation);
 
-   setRotation((180 / SteeringBehaviour::mPI) * currentRotation);
-
-   truncateVec(mVelocity, mMaxSpeed);
-   mPhysicsBody->SetLinearVelocity(b2Vec2(mVelocity.x,
-                                          mVelocity.y));
-
-   setPosition(meterToPixel(mPhysicsBody->GetPosition(), mPhysicsWorldScale));
-
+//   truncateVec(mVelocity, mMaxSpeed);
+//   mPhysicsBody->SetLinearVelocity(b2Vec2(mVelocity.x,
+//                                          mVelocity.y));
+//
+//   sf::Transformable::setPosition(meterToPixel(getWorldPosition()));
 
    sf::Color currentTextColor = mText.getColor();
    currentTextColor.a -= 1;
@@ -116,7 +113,7 @@ void Entity::drawCurrent(sf::RenderTarget& target
    target.draw(mHPText, states);
 }
 
-void Entity::updateMovement(sf::Time dt)
+void Entity::updatePhysicsBody(sf::Time dt)
 {
    // Velocity
    sf::Vector2f steering = mSteering.calculate(dt);
@@ -126,6 +123,12 @@ void Entity::updateMovement(sf::Time dt)
 //   mVelocity += (acceleration * 2.f) * dt.asSeconds();
    mVelocity += acceleration * dt.asSeconds();
 //   mVelocity = acceleration * dt.asSeconds();
+
+   truncateVec(mVelocity, mMaxSpeed);
+   mPhysicsBody->SetLinearVelocity(b2Vec2(mVelocity.x,
+                                          mVelocity.y));
+
+   sf::Transformable::setPosition(meterToPixel(getWorldPosition()));
 
    // Rotation
    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
@@ -141,15 +144,16 @@ void Entity::updateMovement(sf::Time dt)
                    , mMaxTurnRate);
 
 //     if(angle > MINFLOAT || angle < -MINFLOAT)
-//         rotate(angle * (180.f / SteeringBehaviour::mPI));
+//         rotate(angle * (180.f / PI));
 
       if(angle > MINFLOAT || angle < -MINFLOAT)
          mPhysicsBody->SetAngularVelocity(angle);
    }
 
-//   float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
+   float currentRotation = mPhysicsBody->GetAngle();
+   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
 
-//   move(mVelocity);
+   sf::Transformable::setRotation((180 / PI) * currentRotation);
 }
 
 //void Entity::adjustPosition()
@@ -206,7 +210,23 @@ LevelBlock* Entity::getLevelBlock(sf::Vector2i index)
     return mLevel->getBlock(index);
 }
 
-std::vector<LevelBlock*> Entity::getLevelExit()
+//std::vector<LevelBlock*> Entity::getLevelExit()
+//{
+//    return mLevel->getLevelExit();
+//}
+
+sf::Transform Entity::getWorldTransform() const
 {
-    return mLevel->getLevelExit();
+   b2Transform b2dTrans = mPhysicsBody->GetTransform();
+   b2Vec2 pos = b2dTrans.p;
+
+   sf::Transform sfTrans;
+   sfTrans.rotate(b2dTrans.q.GetAngle()).translate(pos.x, pos.y);
+
+   return sfTrans;
+}
+
+sf::Vector2f Entity::getWorldPosition() const
+{
+    return convertVec(mPhysicsBody->GetPosition());
 }

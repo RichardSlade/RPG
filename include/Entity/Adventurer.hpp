@@ -72,13 +72,12 @@ public:
                                               , State<Adventurer>* initState
                                               , StateContainer&
                                               , unsigned int currentState
-                                              , float physicsWorldScale
                                               , b2Body* body
                                               , float scale = 1.f);
 
    virtual                          ~Adventurer(){};
 
-   void                             rotateToCursor();
+//   void                             rotateToCursor();
 
    void                             addToPath(sf::Vector2f pos)
                                     { mSteering.addToPath(pos); }

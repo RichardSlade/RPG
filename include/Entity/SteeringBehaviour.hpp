@@ -50,7 +50,7 @@ public:
         NumFlr
     };
 
-     static const float                     mPI;
+//     static const float                     mPI;
 
 private:
      const float                            mWanderRadius;

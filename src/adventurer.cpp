@@ -21,7 +21,6 @@ Adventurer::Adventurer(const sf::RenderWindow& window
                      , State<Adventurer>* initState
                      , StateContainer& states
                      , unsigned int currentState
-                     , float physicsWorldScale
                      , b2Body* body
                      , float scale)
 : Entity(level
@@ -31,7 +30,6 @@ Adventurer::Adventurer(const sf::RenderWindow& window
          , stats
          , params
          , Entity::Type::Adventurer
-         , physicsWorldScale
          , body
          , scale)
 , mWindow(window)
@@ -53,11 +51,29 @@ void Adventurer::updateCurrent(sf::Time dt)
    if(!mIsSelected)
    {
       mStateMachine.update();
-      Entity::updateMovement(dt);
+      Entity::updatePhysicsBody(dt);
    }
    else
    {
-      rotateToCursor();
+
+      sf::Vector2i mousePos = sf::Mouse::getPosition(mWindow);
+      sf::Vector2f convertedMousePos = pixelToMeter(mWindow.mapPixelToCoords(mousePos));
+
+      sf::Vector2f toCursor = convertedMousePos - getWorldPosition();
+
+      float angle = std::atan2(toCursor.x, -toCursor.y);
+
+      sf::Transformable::setRotation(radianToDegree(angle));
+      float currentRotation = mPhysicsBody->GetAngle();
+      mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+
+      sf::Transformable::move(mVelocity);
+
+      sf::Vector2f p = pixelToMeter(sf::Transformable::getPosition());
+      b2Vec2 pos(p.x, p.y);
+
+      mPhysicsBody->SetTransform(pos, currentRotation);
+
 //      mPhysicsBody->SetRota
 
 //      mPhysicsBody->SetLinearVelocity(b2Vec2(mVelocity.x, mVelocity.y));
@@ -87,7 +103,7 @@ void Adventurer::updateCurrent(sf::Time dt)
 
    Entity::updateCurrent(dt);
 
-   ensureZeroOverlap();
+//   ensureZeroOverlap();
 }
 
 /*
@@ -104,22 +120,14 @@ void Adventurer::drawCurrent(sf::RenderTarget& target
      target.draw(circle);
 }
 
-void Adventurer::rotateToCursor()
-{
-//   sf::Vector2i mousepos = sf::Mouse::getPosition(mWindow);
+//void Adventurer::rotateToCursor()
+//{
 //   sf::Vector2i mousePos = sf::Mouse::getPosition(mWindow);
-//   sf::Vector2f converted = mWindow.mapPixelToCoords(mousepos);
-   sf::Vector2i mousePos = sf::Mouse::getPosition(mWindow);
-   sf::Vector2f converted = mWindow.mapPixelToCoords(mousePos);
-
-   sf::Vector2f toCursor = converted - getWorldPosition();
-
-   float rotation = std::atan2(toCursor.x, -toCursor.y);
-
-//   setRotation(rotation * (180.f / SteeringBehaviour::mPI));
-   mPhysicsBody->SetAngularVelocity(rotation);
-
-//   float currentRotation = getRotation() * (SteeringBehaviour::mPI / 180.f);
-//   float currentRotation = mPhysicsBody->GetAngle();
-//   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
-}
+//   sf::Vector2f convertedMousePos = pixelToMeter(mWindow.mapPixelToCoords(mousePos));
+//
+//   sf::Vector2f toCursor = convertedMousePos - getWorldPosition();
+//
+//   float angle = std::atan2(toCursor.x, -toCursor.y);
+//
+//   mPhysicsBody->SetTransform(mPhysicsBody->GetPosition(), angle);
+//}

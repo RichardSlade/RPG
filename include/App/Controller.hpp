@@ -20,6 +20,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/System/NonCopyable.hpp>
@@ -60,8 +61,13 @@ private:
 
     sf::RenderWindow                mWindow;
     sf::Clock                       mClock;
-    sf::Time                        mCountDown;
+//    sf::Time                        mCountDown;
+//    sf::Time                        mTimeSinceLastUpdate;
     sf::Vector2f                    mResetViewCenter;
+
+    sf::Text                        mStatisticsText;
+    sf::Time				            mStatisticsUpdateTime;
+   std::size_t				            mStatisticsNumFrames;
 
     sf::RenderTexture               mBackgroundTexture;
     std::vector<sf::Texture>        mTextures;
@@ -77,6 +83,8 @@ private:
     void                            loadMedia();
     const sf::Texture&              createBackgroundTexture();
     void                            changeAppState();
+
+   void	                          updateStatistics(sf::Time dt);
 
 public:
                                     Controller();

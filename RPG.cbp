@@ -71,7 +71,7 @@
 		<Unit filename="include/World/Level.hpp" />
 		<Unit filename="include/World/LevelBlock.hpp" />
 		<Unit filename="include/World/Scenery.hpp" />
-		<Unit filename="include/World/Wall.hpp" />
+		<Unit filename="include/World/WallBlock.hpp" />
 		<Unit filename="include/World/World.hpp" />
 		<Unit filename="src/adventurer.cpp" />
 		<Unit filename="src/adventurerStates.cpp" />
@@ -83,7 +83,6 @@
 		<Unit filename="src/gameState.cpp" />
 		<Unit filename="src/hud.cpp" />
 		<Unit filename="src/level.cpp" />
-		<Unit filename="src/levelBlock.cpp" />
 		<Unit filename="src/levelCompleteScreen.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/meleeFighter.cpp" />
@@ -94,7 +93,6 @@
 		<Unit filename="src/spriteNode.cpp" />
 		<Unit filename="src/steeringBehaviour.cpp" />
 		<Unit filename="src/utility.cpp" />
-		<Unit filename="src/wall.cpp" />
 		<Unit filename="src/world.cpp" />
 		<Extensions>
 			<code_completion />

@@ -49,7 +49,6 @@ public:
                                       , State<Enemy>*
                                       , StateContainer&
                                       , unsigned int currentState
-                                      , float physicsWorldScale
                                       , b2Body* body
                                       , float = 1.f);
 

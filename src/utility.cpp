@@ -21,6 +21,18 @@ sf::Vector2f normVec(sf::Vector2f vec)
         return sf::Vector2f();
 }
 
+sf::Vector2f normVec(float x, float y)
+{
+   sf::Vector2f vec(x, y);
+
+   float mag = magVec(vec);
+
+   if(mag > MINFLOAT)
+     return vec / magVec(vec);
+   else
+     return sf::Vector2f();
+}
+
 void truncateVec(sf::Vector2f& vec, float maxSpeed)
 {
     float mag = magVec(vec);
@@ -111,28 +123,48 @@ bool lineIntersection2D(sf::Vector2f A
     }
 }
 
-sf::Vector2f meterToPixel(b2Vec2 meter,
-                                 float scale)
+sf::Vector2f meterToPixel(b2Vec2 meter)
 {
-   return sf::Vector2f(meter.x / scale,
-                       meter.y / scale);
+   return sf::Vector2f(meter.x * PixelPerMeter,
+                       meter.y * PixelPerMeter);
 }
 
-float meterToPixel(float meter,
-                           float scale)
+sf::Vector2f meterToPixel(sf::Vector2f meter)
 {
-   return meter / scale;
+   return meter * PixelPerMeter;
 }
 
-//sf::Vector2f pixelToMeter(b2Vec2 meter,
-//                                 float scale))
-//{
-//   return sf::Vector2f(meter.x * scale,
-//                       meter.y * scale);
-//}
-//
-//float pixelToMeter(float meter,
-//                           float scale))
-//{
-//   return meter * mPhysicsWorldScale;
-//}
+float meterToPixel(float meter)
+{
+   return meter * PixelPerMeter;
+}
+
+sf::Vector2f pixelToMeter(sf::Vector2f meter)
+{
+   return meter * PhysicsScale;
+}
+
+float pixelToMeter(float meter)
+{
+   return meter * PhysicsScale;
+}
+
+sf::Vector2f convertVec(b2Vec2 vec)
+{
+   return sf::Vector2f(vec.x, vec.y);
+}
+
+b2Vec2 convertVec(sf::Vector2f vec)
+{
+   return b2Vec2(vec.x, vec.y);
+}
+
+float degreeToRadian(float degree)
+{
+   return degree * (PI / 180.f);
+}
+
+float radianToDegree(float radian)
+{
+   return radian * (180.f / PI);
+}

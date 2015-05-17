@@ -40,7 +40,7 @@ GameState::GameState(Controller& cntrl
 , mNewScreen(mCurrentScreen)
 , mPaused(false)
 {
-
+   std::cout << "GameState constructor" << std::endl;
 }
 
 void GameState::restartWorld()
@@ -76,6 +76,8 @@ void GameState::lockedUpdate(sf::Time dt)
         case GameState::Screen::GameComplete: mGameCompleteScreen.update(dt); break;
         default: break;
     }
+
+//    handleInput();
 }
 
 void GameState::unlockedUpdate()

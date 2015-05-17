@@ -6,6 +6,7 @@
 */
 
 #include <iostream>
+#include <string>
 
 #include "App/Controller.hpp"
 #include "App/MenuState.hpp"
@@ -20,13 +21,21 @@ Controller::Controller()
 , mWindowX(mParams.WindowX)
 , mWindowY(mParams.WindowY)
 , mWindow(sf::VideoMode(mWindowX, mWindowY), "AI Steering behaviours")// sf::Style::Fullscreen)
-, mCountDown(mFPS)
+//, mCountDown(sf::Time::Zero)
+//, mTimeSinceLastUpdate(sf::Time::Zero)
+, mStatisticsText()
+, mStatisticsUpdateTime()
+, mStatisticsNumFrames(0)
 , mResetViewCenter(mWindow.getView().getCenter())
 , mAppStateType(AppState::StateType::Menu)
 , mChangeState(false)
 {
     mWindow.setPosition(sf::Vector2i(0, 0));
     loadMedia();
+
+    mStatisticsText.setFont(getFont(Controller::Fonts::Sansation));
+    mStatisticsText.setCharacterSize(16);
+    mStatisticsText.setString("0.000");
 
     // Initialise menu state
 //    mCurrentAppState = std::unique_ptr<MenuState>(new MenuState(*this,
@@ -38,7 +47,7 @@ Controller::Controller()
 };
 
 /*
-*   Load Textures and fonts from file
+*   Load Textures and fonts from files
 *   store in appropriate containers in Controller
 */
 void Controller::loadMedia()
@@ -53,6 +62,7 @@ void Controller::loadMedia()
     fileNames.push_back("media/textures/wall.png");
     fileNames.push_back("media/textures/corner.png");
     fileNames.push_back("media/textures/exit.png");
+    fileNames.push_back("media/textures/checker.png");
 
     int index = 0;
 
@@ -94,26 +104,51 @@ const sf::Texture& Controller::createBackgroundTexture()
 {
     const float WorldX = mParams.WorldDimMax;
     const float WorldY = mParams.WorldDimMax;
-    const int BlockSize = mParams.LevelBlockSize;
+//    const int BlockSize = mParams.LevelBlockSize;
 
     const float TextureX = WorldX * 2.f;
     const float TextureY = WorldY * 2.f;
 
-    mBackgroundTexture.create(TextureX
-                              , TextureY);
+//    mBackgroundTexture.create(TextureX
+//                              , TextureY);
+   sf::Vector2u size = getTexture(Textures::GameBackground).getSize();
+   unsigned int scale = 2;
+   size *= scale;
+   mBackgroundTexture.create(size.x, size.y);
+   mBackgroundTexture.clear();
+//
+//    for(float row = 0; row < TextureY * 4; row += BlockSize)
+//    {
+//        for(float col = 0; col < TextureX; col += BlockSize)
+//        {
+////            LevelBlock levelBlock(mTextures.at(Textures::Grass)
+////                                            , sf::Vector2f(col, row));
+//
+////            mBackgroundTexture.draw(levelBlock.getBackground());
+//
+//            sf::Sprite sprite(getTexture(Textures::Grass));
+//            sprite.setColor(sf::Color(row * 10.f, col * 10.f, row * col * 0.5f));
+//
+//            mBackgroundTexture.draw(sprite);
+//        }
+//    }
 
-    mBackgroundTexture.clear();
+   sf::Vector2f spritePos;
 
-    for(float row = 0; row < TextureY * 4; row += BlockSize)
-    {
-        for(float col = 0; col < TextureX; col += BlockSize)
-        {
-            LevelBlock levelBlock(mTextures.at(Textures::Grass)
-                                            , sf::Vector2f(col, row));
+   for(int row = 0; row < 2; row++)
+   {
+      for(int col = 0; col < 2; col++)
+      {
+         sf::Sprite sprite(getTexture(Textures::GameBackground));
+         sprite.setPosition(spritePos);
+         mBackgroundTexture.draw(sprite);
 
-            mBackgroundTexture.draw(levelBlock.getBackground());
-        }
-    }
+         spritePos.x += getTexture(Textures::GameBackground).getSize().x;
+      }
+      spritePos.x = 0.f;
+      spritePos.y += getTexture(Textures::GameBackground).getSize().y;
+   }
+
 
     return mBackgroundTexture.getTexture();
 }
@@ -149,32 +184,62 @@ void Controller::changeAppState()
     mChangeState = false;
 }
 
+void Controller::updateStatistics(sf::Time dt)
+{
+	mStatisticsUpdateTime += dt;
+	mStatisticsNumFrames += 1;
+
+	if (mStatisticsUpdateTime >= sf::seconds(1.0f))
+	{
+		mStatisticsText.setString(
+			"Frames / Second = " + std::to_string(mStatisticsNumFrames) + "\n" +
+			"Time / Update = " + std::to_string(mStatisticsUpdateTime.asMicroseconds() / mStatisticsNumFrames) + "us");
+
+		mStatisticsUpdateTime -= sf::seconds(1.0f);
+		mStatisticsNumFrames = 0;
+	}
+}
+
 /*
 *   Application main loop
 */
 void Controller::run()
 {
-    while(mWindow.isOpen())
-    {
-        mCountDown -= mClock.restart();
+   sf::Time timeSinceLastUpdate = sf::Time::Zero;
 
-        if(mCountDown < sf::Time::Zero)
-        {
-            mCountDown = mFPS;
-            mCurrentAppState->lockedUpdate(mFPS);
-        }
+   while(mWindow.isOpen())
+   {
+   //        mCountDown -= mClock.restart();
+      sf::Time dt = mClock.restart();
+      timeSinceLastUpdate += dt;
+
+      while(timeSinceLastUpdate > mFPS)
+      {
+         timeSinceLastUpdate -= mFPS;
+
+         mCurrentAppState->handleInput();
+         mCurrentAppState->lockedUpdate(mFPS);
+//         mCountDown = mFPS;
+
+      }
+
+      updateStatistics(dt);
 
       mCurrentAppState->unlockedUpdate();
 
-        mCurrentAppState->handleInput();
+      mWindow.clear();
+      mCurrentAppState->display();
 
-        mWindow.clear();
-        mCurrentAppState->display();
-        mWindow.display();
+      sf::View view = mWindow.getView();
+      mStatisticsText.setPosition(view.getCenter().x - (view.getSize().x / 2),
+                                 view.getCenter().y - (view.getSize().y / 2));
+      mWindow.draw(mStatisticsText);
 
-        if(mChangeState)
-            changeAppState();
-    }
+      mWindow.display();
+
+      if(mChangeState)
+         changeAppState();
+   }
 }
 
 /*

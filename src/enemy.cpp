@@ -16,7 +16,6 @@ Enemy::Enemy(Level* level
 , State<Enemy>* initState
 , StateContainer& states
 , unsigned int currentState
-, float physicsWorldScale
 , b2Body* body
 , float scale)
 : Entity(level
@@ -26,7 +25,6 @@ Enemy::Enemy(Level* level
          , stats
          , params
          , Entity::Type::Enemy
-         , physicsWorldScale
          , body
          , scale)
 , mSightRange(params.EnemySightRange)
@@ -44,7 +42,7 @@ void Enemy::updateCurrent(sf::Time dt)
 {
    mStateMachine.update();
 
-   Entity::updateMovement(dt);
+   Entity::updatePhysicsBody(dt);
    Entity::updateCurrent(dt);
 
 //    mCurrentBlock->deleteEntity(this);
