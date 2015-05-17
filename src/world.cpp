@@ -169,10 +169,8 @@ void World::buildScene(const Controller& controller)
 //    sf::Vector2f bckgrndSpritePos(mWorldBounds.width / 2.f
 //                                  , mWorldBounds.height / 2.f);
 
-    std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(controller.getTexture(Controller::Textures::GameBackground)
-//                                                                 , bckgrndSpritePos
-                                                                , sf::Vector2f()
-                                                                 , false));
+    std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(controller.getTexture(Controller::Textures::GameBackground),
+                                                                sf::IntRect(mWorldBounds)));
 
 //    mBackground = backgroundSprite.get();
     mSceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(backgroundSprite));
@@ -187,7 +185,7 @@ void World::generateAgents(const Controller& controller)
     // Initialise characters and add to scene graph
    for(int i = 0; i < 1; i++)
    {
-      float inc = i * 40.f;
+//      float inc = i * 40.f;
 
 //      sf::Vector2f pos((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc);
       sf::Vector2f pos;

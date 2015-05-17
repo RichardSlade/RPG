@@ -19,7 +19,6 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
@@ -31,6 +30,9 @@
 class Controller : sf::NonCopyable
 {
 public:
+   typedef std::unique_ptr<sf::Texture> upTexture;
+   typedef std::unique_ptr<sf::Font> upFont;
+
     static const sf::Time           mFPS;
 
     enum Textures
@@ -69,9 +71,9 @@ private:
     sf::Time				            mStatisticsUpdateTime;
    std::size_t				            mStatisticsNumFrames;
 
-    sf::RenderTexture               mBackgroundTexture;
-    std::vector<sf::Texture>        mTextures;
-    std::vector<sf::Font>           mFonts;
+//    sf::RenderTexture               mBackgroundTexture;
+    std::vector<Controller::upTexture>        mTextures;
+    std::vector<Controller::upFont>           mFonts;
 
     AppState::StateType             mAppStateType;
     std::unique_ptr<AppState>       mCurrentAppState;
@@ -81,7 +83,7 @@ private:
 
 
     void                            loadMedia();
-    const sf::Texture&              createBackgroundTexture();
+    const sf::Texture     createBackgroundTexture();
     void                            changeAppState();
 
    void	                          updateStatistics(sf::Time dt);
@@ -93,10 +95,10 @@ public:
 
     // Getters
     const sf::Texture&              getTexture(Textures type) const
-                                    { return mTextures.at(type); }
+                                    { return *mTextures.at(type).get(); }
 
     const sf::Font&                 getFont(Controller::Fonts type) const
-                                    { return mFonts.at(type); }
+                                    { return *mFonts.at(type).get(); }
 
     const Params&                   getParams() const
                                     { return mParams; }

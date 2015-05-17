@@ -7,6 +7,9 @@
 
 #include <iostream>
 #include <string>
+#include <cassert>
+
+#include <SFML/Graphics/RenderTexture.hpp>
 
 #include "App/Controller.hpp"
 #include "App/MenuState.hpp"
@@ -23,10 +26,10 @@ Controller::Controller()
 , mWindow(sf::VideoMode(mWindowX, mWindowY), "AI Steering behaviours")// sf::Style::Fullscreen)
 //, mCountDown(sf::Time::Zero)
 //, mTimeSinceLastUpdate(sf::Time::Zero)
+, mResetViewCenter(mWindow.getView().getCenter())
 , mStatisticsText()
 , mStatisticsUpdateTime()
 , mStatisticsNumFrames(0)
-, mResetViewCenter(mWindow.getView().getCenter())
 , mAppStateType(AppState::StateType::Menu)
 , mChangeState(false)
 {
@@ -53,7 +56,7 @@ Controller::Controller()
 void Controller::loadMedia()
 {
     for(unsigned int i = 0; i < Textures::NumTextures; i++)
-        mTextures.push_back(sf::Texture());
+        mTextures.push_back(Controller::upTexture());
 
     std::vector<std::string> fileNames;
     fileNames.push_back("media/textures/adventurer.png");
@@ -62,23 +65,39 @@ void Controller::loadMedia()
     fileNames.push_back("media/textures/wall.png");
     fileNames.push_back("media/textures/corner.png");
     fileNames.push_back("media/textures/exit.png");
-    fileNames.push_back("media/textures/checkerMeter.png");
+//    fileNames.push_back("media/textures/checkerMeter.png");
+    fileNames.push_back("media/textures/brickFloorLarge.png");
 
-    int index = 0;
+   assert(mTextures.size() >= fileNames.size());
 
-    for(std::string s : fileNames)
+   std::vector<Controller::upTexture>::iterator texIter = mTextures.begin();
+   std::vector<std::string>::iterator fileNameIter;
+
+    for(fileNameIter = fileNames.begin();
+         fileNameIter != fileNames.end();
+         fileNameIter++)
     {
-        sf::Texture t;
+      sf::Texture t;
 
-        if(!t.loadFromFile(s))
-            throw std::runtime_error("Failed to load file: " + s);
+      if(!t.loadFromFile(*fileNameIter))
+         throw std::runtime_error("Failed to load file: " + *fileNameIter);
 
-        mTextures.at(index) = t;
+//      Controller::upTexture upTex(new sf::Texture(t));
 
-        index ++;
+      (*texIter).reset(new sf::Texture(t));
+      texIter++;
+
+//      mTextures.at(index) =
     }
 
-    mTextures.at(Textures::GameBackground) = createBackgroundTexture();
+//   texIter ++;
+   mTextures.at(Controller::Textures::GameBackground).reset(new sf::Texture(createBackgroundTexture()));
+
+   // Fonts
+   for(unsigned int i = 0; i < Fonts::NumFonts; i++)
+      mFonts.push_back(Controller::upFont());
+
+   std::vector<Controller::upFont>::iterator fontIter = mFonts.begin();
 
     fileNames.clear();
 
@@ -86,45 +105,64 @@ void Controller::loadMedia()
 //    fileNames.push_back("media/fonts/AlphaSmoke.TTF");
 //    fileNames.push_back("media/fonts/KingthingsSheepishly.ttf");
 
-     for(std::string s : fileNames)
+     for(fileNameIter = fileNames.begin();
+         fileNameIter != fileNames.end();
+         fileNameIter++)
     {
         sf::Font f;
 
-        if(!f.loadFromFile(s))
-            throw std::runtime_error("Failed to load file: " + s);
+        if(!f.loadFromFile(*fileNameIter))
+            throw std::runtime_error("Failed to load file: " + (*fileNameIter));
 
-        mFonts.push_back(f);
+        (*fontIter).reset(new sf::Font(f));
+        fontIter++;
     }
 }
 
 /*
 *   Create tiled background from sf::Textures
 */
-const sf::Texture& Controller::createBackgroundTexture()
+const sf::Texture Controller::createBackgroundTexture()
 {
-    mBackgroundTexture.create(mParams.WorldDimMax
-                              , mParams.WorldDimMax);
-   mBackgroundTexture.clear();
+   const sf::Texture& Tex = getTexture(Textures::GameBackground);
+   const sf::Vector2u TexSize = Tex.getSize();
+
+   const unsigned int Multiplier = 10;
+   const unsigned int BackgroundTexSizeX = TexSize.x * Multiplier;
+   const unsigned int BackgroundTexSizeY = TexSize.y * Multiplier;
+
+   sf::RenderTexture backgroundTex;
+   backgroundTex.create(BackgroundTexSizeX
+                              , BackgroundTexSizeY);
+   backgroundTex.clear();
+   backgroundTex.setRepeated(true);
 
    sf::Vector2f spritePos;
-   const sf::Texture& texture = getTexture(Textures::Grass);
-   sf::Sprite sprite(texture);
 
-   for(int row = 0; row < 1000; row ++)
+//   const sf::Texture& texture = getTexture(Textures::Grass);
+
+//   sf::Sprite sprite(texture, sf::IntRect(sf::Vector2i(0, 0),
+//                                          sf::Vector2i(texture.getSize())));
+//
+//   mBackgroundTexture.draw(sprite);
+
+   sf::Sprite sprite(Tex);
+
+   for(unsigned int row = 0; row < Multiplier; row ++)
    {
-      for(int col = 0; col < 1000; col++)
+      for(unsigned int col = 0; col < Multiplier; col++)
       {
          sprite.setPosition(spritePos);
          sprite.setColor(sf::Color(150, 125, 200));
-         mBackgroundTexture.draw(sprite);
+         backgroundTex.draw(sprite);
 
-         spritePos.x += texture.getSize().x;
+         spritePos.x += TexSize.x;
       }
       spritePos.x = 0.f;
-      spritePos.y += texture.getSize().y;
+      spritePos.y += TexSize.y;
    }
 
-    return mBackgroundTexture.getTexture();
+   return backgroundTex.getTexture();
 }
 
 /*
