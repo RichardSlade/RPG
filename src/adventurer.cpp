@@ -55,55 +55,17 @@ void Adventurer::updateCurrent(sf::Time dt)
    }
    else
    {
-
       sf::Vector2i mousePos = sf::Mouse::getPosition(mWindow);
       sf::Vector2f convertedMousePos = pixelToMeter(mWindow.mapPixelToCoords(mousePos));
-
       sf::Vector2f toCursor = convertedMousePos - getWorldPosition();
 
       float angle = std::atan2(toCursor.x, -toCursor.y);
+      sf::Vector2f pos = getWorldPosition() + (mVelocity * dt.asSeconds());
 
-      sf::Transformable::setRotation(radianToDegree(angle));
-      float currentRotation = mPhysicsBody->GetAngle();
-      mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
-
-      sf::Transformable::move(mVelocity);
-
-      sf::Vector2f p = pixelToMeter(sf::Transformable::getPosition());
-      b2Vec2 pos(p.x, p.y);
-
-      mPhysicsBody->SetTransform(pos, currentRotation);
-
-//      mPhysicsBody->SetRota
-
-//      mPhysicsBody->SetLinearVelocity(b2Vec2(mVelocity.x, mVelocity.y));
-//
-//      setPosition(meterToPixel(mPhysicsBody->GetPosition()));
-
-//      move(mVelocity);
-
-//      std::vector<LevelBlock*> wallsInRange = getBlockTypeInRange(LevelBlock::Type::WallBlock
-//                                                                  , mRadius);
-//      float expandedRadius = mRadius;
-
-//      for(unsigned int wall = 0; wall < wallsInRange.size(); wall++)
-//      {
-//         sf::Vector2f toWall = getWorldPosition() - wallsInRange.at(wall)->getCenter();
-//         float mag = magVec(toWall);
-//
-//         if(mag < expandedRadius)
-//         {
-//            move(-mVelocity);
-//            break;
-//         }
-//      }
-
-//      mVelocity = sf::Vector2f();
+      mPhysicsBody->SetTransform(convertVec(pos), angle);
    }
 
    Entity::updateCurrent(dt);
-
-//   ensureZeroOverlap();
 }
 
 /*

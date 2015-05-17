@@ -44,6 +44,7 @@ World::World(GameState& gameState
 , mGameState(gameState)
 , mWindow(window)
 , mWorldView(mWindow.getDefaultView())
+, mWorldRect(sf::Vector2f(mWorldBounds.width, mWorldBounds.height))
 , mFocusPoint(0.f, 0.f)
 , mPhysicsEngine(b2Vec2(0.f, 0.f))
 , mHUD(this
@@ -165,14 +166,15 @@ void World::buildScene(const Controller& controller)
 		mSceneGraph.addChild(std::move(layer));
 	}
 
-    sf::Vector2f bckgrndSpritePos(mWorldBounds.width / 2.f
-                                  , mWorldBounds.height / 2.f);
+//    sf::Vector2f bckgrndSpritePos(mWorldBounds.width / 2.f
+//                                  , mWorldBounds.height / 2.f);
 
     std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(controller.getTexture(Controller::Textures::GameBackground)
-                                                                 , bckgrndSpritePos
+//                                                                 , bckgrndSpritePos
+                                                                , sf::Vector2f()
                                                                  , false));
 
-    mBackground = backgroundSprite.get();
+//    mBackground = backgroundSprite.get();
     mSceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(backgroundSprite));
 
     mLevel->generateLevel(mSceneLayers, controller);
@@ -187,7 +189,8 @@ void World::generateAgents(const Controller& controller)
    {
       float inc = i * 40.f;
 
-      sf::Vector2f pos((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc);
+//      sf::Vector2f pos((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc);
+      sf::Vector2f pos;
 //      float size = controller.getTexture(Controller::Textures::Adventurer).getSize().x;
 
       b2Body* body = generatePhysicsBody(pos,
@@ -208,8 +211,8 @@ void World::generateAgents(const Controller& controller)
                                                                , body));
 
    // Save pointer to character for enemy initialisation
-      Adventurer* adventurerPtr = adventurerNode.get();
-      mAdventurers.push_back(adventurerPtr);
+//      Adventurer* adventurerPtr = adventurerNode.get();
+      mAdventurers.push_back(adventurerNode.get());
 
       mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(adventurerNode));
    }
@@ -449,11 +452,13 @@ void World::display()
 //    adjustView();
 
    if(mCurrentAdventurer)
-      mFocusPoint = mCurrentAdventurer->Transformable::getPosition();
+      mFocusPoint = meterToPixel(mCurrentAdventurer->getWorldPosition());
+//      mFocusPoint = mCurrentAdventurer->Transformable::getPosition();
 
    mWorldView.setCenter(mFocusPoint);
    mWindow.setView(mWorldView);
 
+   mWindow.draw(mWorldRect);
    mWindow.draw(mSceneGraph);
 
    mHUD.setHUDPosition(getViewBounds());

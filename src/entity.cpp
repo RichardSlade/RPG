@@ -41,7 +41,7 @@ Entity::Entity(Level* level
    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
    mRadius = std::max(bounds.width, bounds.height);
 
-   setPosition(startPos);
+   sf::Transformable::setPosition(startPos);
 
    float theta = randomClamped() * (2.f * PI);
    rotate(theta * (180 / PI));
@@ -65,30 +65,16 @@ void Entity::updateCurrent(sf::Time dt)
    if(isDead())
       mToRemove = true;
 
-//   float currentRotation = mPhysicsBody->GetAngle();
-//   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
-//
-//   sf::Transformable::setRotation((180 / PI) * currentRotation);
+   sf::Transformable::setPosition(meterToPixel(getWorldPosition()));
 
-//   truncateVec(mVelocity, mMaxSpeed);
-//   mPhysicsBody->SetLinearVelocity(b2Vec2(mVelocity.x,
-//                                          mVelocity.y));
-//
-//   sf::Transformable::setPosition(meterToPixel(getWorldPosition()));
+   float currentRotation = mPhysicsBody->GetAngle();
+   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+
+   sf::Transformable::setRotation(radianToDegree(currentRotation));
 
    sf::Color currentTextColor = mText.getColor();
    currentTextColor.a -= 1;
-
    mText.setColor(currentTextColor);
-
-   //    adjustPosition();
-
-//   sf::FloatRect bounds = mText.getLocalBounds();
-//   mText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-
-//   sf::Vector2f textPos = getWorldPosition();
-//   textPos.y -= 20.f;
-//   mText.setPosition(textPos);
 
    MeleeFighter::update(dt);
 
@@ -128,7 +114,7 @@ void Entity::updatePhysicsBody(sf::Time dt)
    mPhysicsBody->SetLinearVelocity(b2Vec2(mVelocity.x,
                                           mVelocity.y));
 
-   sf::Transformable::setPosition(meterToPixel(getWorldPosition()));
+
 
    // Rotation
    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
@@ -150,10 +136,10 @@ void Entity::updatePhysicsBody(sf::Time dt)
          mPhysicsBody->SetAngularVelocity(angle);
    }
 
-   float currentRotation = mPhysicsBody->GetAngle();
-   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
-
-   sf::Transformable::setRotation((180 / PI) * currentRotation);
+//   float currentRotation = mPhysicsBody->GetAngle();
+//   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
+//
+//   sf::Transformable::setRotation((180 / PI) * currentRotation);
 }
 
 //void Entity::adjustPosition()

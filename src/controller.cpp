@@ -62,7 +62,7 @@ void Controller::loadMedia()
     fileNames.push_back("media/textures/wall.png");
     fileNames.push_back("media/textures/corner.png");
     fileNames.push_back("media/textures/exit.png");
-    fileNames.push_back("media/textures/checker.png");
+    fileNames.push_back("media/textures/checkerMeter.png");
 
     int index = 0;
 
@@ -102,53 +102,27 @@ void Controller::loadMedia()
 */
 const sf::Texture& Controller::createBackgroundTexture()
 {
-    const float WorldX = mParams.WorldDimMax;
-    const float WorldY = mParams.WorldDimMax;
-//    const int BlockSize = mParams.LevelBlockSize;
-
-    const float TextureX = WorldX * 2.f;
-    const float TextureY = WorldY * 2.f;
-
-//    mBackgroundTexture.create(TextureX
-//                              , TextureY);
-   sf::Vector2u size = getTexture(Textures::GameBackground).getSize();
-   unsigned int scale = 2;
-   size *= scale;
-   mBackgroundTexture.create(size.x, size.y);
+    mBackgroundTexture.create(mParams.WorldDimMax
+                              , mParams.WorldDimMax);
    mBackgroundTexture.clear();
-//
-//    for(float row = 0; row < TextureY * 4; row += BlockSize)
-//    {
-//        for(float col = 0; col < TextureX; col += BlockSize)
-//        {
-////            LevelBlock levelBlock(mTextures.at(Textures::Grass)
-////                                            , sf::Vector2f(col, row));
-//
-////            mBackgroundTexture.draw(levelBlock.getBackground());
-//
-//            sf::Sprite sprite(getTexture(Textures::Grass));
-//            sprite.setColor(sf::Color(row * 10.f, col * 10.f, row * col * 0.5f));
-//
-//            mBackgroundTexture.draw(sprite);
-//        }
-//    }
 
    sf::Vector2f spritePos;
+   const sf::Texture& texture = getTexture(Textures::Grass);
+   sf::Sprite sprite(texture);
 
-   for(int row = 0; row < 2; row++)
+   for(int row = 0; row < 1000; row ++)
    {
-      for(int col = 0; col < 2; col++)
+      for(int col = 0; col < 1000; col++)
       {
-         sf::Sprite sprite(getTexture(Textures::GameBackground));
          sprite.setPosition(spritePos);
+         sprite.setColor(sf::Color(150, 125, 200));
          mBackgroundTexture.draw(sprite);
 
-         spritePos.x += getTexture(Textures::GameBackground).getSize().x;
+         spritePos.x += texture.getSize().x;
       }
       spritePos.x = 0.f;
-      spritePos.y += getTexture(Textures::GameBackground).getSize().y;
+      spritePos.y += texture.getSize().y;
    }
-
 
     return mBackgroundTexture.getTexture();
 }

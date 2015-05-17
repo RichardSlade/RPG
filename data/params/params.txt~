@@ -1,6 +1,6 @@
 WindowX 1024
 WindowY 640
-LevelBlockSize 4
+LevelBlockSize 2
 WorldDimMin 100
 WorldDimMax 100
 NumSheepMin 50

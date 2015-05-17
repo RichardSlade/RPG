@@ -44,18 +44,6 @@ void Enemy::updateCurrent(sf::Time dt)
 
    Entity::updatePhysicsBody(dt);
    Entity::updateCurrent(dt);
-
-//    mCurrentBlock->deleteEntity(this);
-//    mCurrentBlock = mLevel->insertEntityIntoLevel(this);
-
-//    if(mCurrentBlock->getType() == LevelBlock::Type::ExitBlock)
-//    {
-//        mToRemove = true;
-////        mMovingTarget = nullptr;
-//        mCurrentBlock->deleteEntity(this);
-//
-////        mLevel->incEnemyHerded();
-//    }
 }
 
 void Enemy::drawCurrent(sf::RenderTarget& target

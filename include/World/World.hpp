@@ -43,6 +43,7 @@ private:
    const sf::Vector2f                           mViewSize;
    const sf::FloatRect                            mWorldBounds;
 
+
 //   const float                                  mPhysicsWorldDim;
 //   const float                                  mPhysicsWorldY;
 //   const float                                  mPixelPerMeter;
@@ -59,7 +60,7 @@ private:
    GameState&                                   mGameState;
    sf::RenderWindow&                            mWindow;
    sf::View                                     mWorldView;
-
+   sf::RectangleShape                           mWorldRect;
    sf::Vector2f                                 mFocusPoint;
 
    b2World                                      mPhysicsEngine;
