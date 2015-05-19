@@ -47,8 +47,8 @@ public:
     SceneNode::upScNode                     deleteChild(const SceneNode&);
     void                                    removeDeletedNodes();
 
-//    sf::Transform			                     getWorldTransform() const;
-//    sf::Vector2f			                     getWorldPosition() const;
+    sf::Transform			                     getWorldTransform() const;
+    sf::Vector2f			                     getWorldPosition() const;
 
     // Getters
     bool                                    getToRemove() const

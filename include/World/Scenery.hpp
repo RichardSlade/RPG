@@ -8,23 +8,30 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
-#include "SceneNode/SceneNode.hpp"
+//#include "SceneNode/SceneNode.hpp"
+#include "SceneNode/SpriteNode.hpp"
+#include "Physics/PhysicsBody.hpp"
+
 
 class LevelBlock;
 
-class Scenery
+class Scenery : public SpriteNode, public PhysicsBody
 {
 public:
     typedef std::unique_ptr<Scenery> SceneryPtr;
 
 protected:
-    const LevelBlock*           mHostBlock;
+//    const LevelBlock*           mHostBlock;
     sf::Sprite                  mSprite;
 
 public:
-                                Scenery(LevelBlock* host
-                                        , const sf::Texture& texture)
-                                : mHostBlock(host)
+                                Scenery(const sf::Texture& texture,
+                                        b2Body* body,
+                                        b2BodyType bodyType)
+                                : SpriteNode(texture)
+                                , PhysicsBody(body,
+                                              bodyType)
+//                                , mHostBlock(host)
                                 , mSprite(texture)
                                 {
                                     sf::FloatRect bounds = mSprite.getLocalBounds();
@@ -42,10 +49,7 @@ public:
                                 { return mSprite; }
 
     // Setters
-    void                        rotateSprite(float angle)
-                                {
-                                    mSprite.rotate(angle);
-                                }
+    void                        rotateSprite(float angle) {mSprite.rotate(angle);}
 };
 
 #endif // SCENERY_HPP

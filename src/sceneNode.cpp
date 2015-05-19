@@ -75,18 +75,18 @@ void SceneNode::removeDeletedNodes()
                , std::mem_fn(&SceneNode::removeDeletedNodes));
 }
 
-//sf::Transform SceneNode::getWorldTransform() const
-//{
-//
-//    sf::Transform trans = sf::Transform::Identity;
-//
-//    for(const SceneNode* node = this; node != nullptr; node = node->mParent)
-//        trans = node->getTransform() * trans;
-//
-//    return trans;
-//}
-//
-//sf::Vector2f SceneNode::getWorldPosition() const
-//{
-//    return getWorldTransform() * sf::Vector2f();
-//}
+sf::Transform SceneNode::getWorldTransform() const
+{
+
+    sf::Transform trans = sf::Transform::Identity;
+
+    for(const SceneNode* node = this; node != nullptr; node = node->mParent)
+        trans = node->getTransform() * trans;
+
+    return trans;
+}
+
+sf::Vector2f SceneNode::getWorldPosition() const
+{
+    return getWorldTransform() * sf::Vector2f();
+}

@@ -57,15 +57,15 @@ void Adventurer::updateCurrent(sf::Time dt)
    {
       sf::Vector2i mousePos = sf::Mouse::getPosition(mWindow);
       sf::Vector2f convertedMousePos = pixelToMeter(mWindow.mapPixelToCoords(mousePos));
-      sf::Vector2f toCursor = convertedMousePos - getWorldPosition();
+      sf::Vector2f toCursor = convertedMousePos - PhysicsBody::getWorldPosition();
 
       float angle = std::atan2(toCursor.x, -toCursor.y);
       sf::Vector2f pos = getWorldPosition() + (mVelocity * dt.asSeconds());
 
-      std::cout << "Player Pos: " << getWorldPosition().x << "," << getWorldPosition().y << std::endl;
-      std::cout << "Player Pixel Pos: " << meterToPixel(getWorldPosition().x) << "," << meterToPixel(getWorldPosition().y) << std::endl;
+      std::cout << "Player Pos: " << PhysicsBody::getWorldPosition().x << "," << PhysicsBody::getWorldPosition().y << std::endl;
+      std::cout << "Player Pixel Pos: " << meterToPixel(PhysicsBody::getWorldPosition().x) << "," << meterToPixel(PhysicsBody::getWorldPosition().y) << std::endl;
 
-      mPhysicsBody->SetTransform(convertVec(pos), angle);
+      mBody->SetTransform(convertVec(pos), angle);
    }
 
    Entity::updateCurrent(dt);

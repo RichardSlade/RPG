@@ -11,6 +11,7 @@
 #include "App/Utility.hpp"
 #include "World/Level.hpp"
 #include "SceneNode/SceneNode.hpp"
+#include "Physics/PhysicsBody.hpp"
 #include "Entity/SteeringBehaviour.hpp"
 //#include "LevelBlock.hpp"
 #include "Entity/EntityStats.hpp"
@@ -21,7 +22,7 @@
 
 //class World;
 
-class Entity : public SceneNode, public Killable, public Intelligent, public MeleeFighter
+class Entity : public SceneNode, public Killable, public Intelligent, public MeleeFighter, public PhysicsBody
 {
 public:
     enum Type
@@ -36,7 +37,7 @@ public:
 protected:
     Level*                      mLevel;
 
-    b2Body*                     mPhysicsBody;
+//    b2Body*                     mPhysicsBody;
 
     const float                 mMass;
     const float                 mHealth;
@@ -87,15 +88,15 @@ public:
     virtual                     ~Entity(){};
 
     // Getters
-    std::vector<Entity*>         getNeighbours(float radius
-                                                , unsigned int type) const;
+    std::vector<Entity*>        getNeighbours(float radius
+                                             , unsigned int type) const;
 
     std::vector<LevelBlock*>    getBlockTypeInRange(LevelBlock::Type, float) const;
 
 //    std::vector<LevelBlock*>    getLevelExit();
 
-   sf::Transform			         getWorldTransform() const;
-   sf::Vector2f			         getWorldPosition() const;
+   sf::Transform			         getWorldTransform() const {PhysicsBody::getWorldTransform();};
+   sf::Vector2f			         getWorldPosition() const {PhysicsBody::getWorldPosition();};
 
    sf::Vector2f                  getVelocity() const
                                  { return mVelocity; }
@@ -115,74 +116,74 @@ public:
    float                         getMaxWalkSpeed()
                                  { return mWalkMaxSpeed; }
 
-   float                       getMaxRunSpeed()
-                          { return mRunMaxSpeed; }
+   float                         getMaxRunSpeed()
+                                 { return mRunMaxSpeed; }
 
-   float                       getMaxForce() const
-                          { return mMaxForce; }
+   float                         getMaxForce() const
+                                 { return mMaxForce; }
 
-   float                       getMaxTurnRate() const
-                          { return mMaxTurnRate; }
+   float                         getMaxTurnRate() const
+                                 { return mMaxTurnRate; }
 
-   bool                        checkSteeringBehaviour(SteeringBehaviour::Behaviour type) const
-                          { return mSteering.checkBehaviour(type); }
+   bool                          checkSteeringBehaviour(SteeringBehaviour::Behaviour type) const
+                                 { return mSteering.checkBehaviour(type); }
 
-   float                       getRadius() const
-                          { return mRadius; }
+   float                         getRadius() const
+                                 { return mRadius; }
 
-   float                       getSpriteWidth() const
-                          { return mSprite.getLocalBounds().width; }
+   float                         getSpriteWidth() const
+                                 { return mSprite.getLocalBounds().width; }
 
    //    sf::Vector2f                getTargetPos() const
    //                                { return mTargetPos; }
 
    const Entity*                getCurrentTarget() const
-                           { return mCurrentTarget; }
+                              { return mCurrentTarget; }
 
    LevelBlock*                 getLevelBlock(sf::Vector2i);
 
    LevelBlock*                 getLevelBlock()
-                          { return mCurrentBlock; }
+                              { return mCurrentBlock; }
 
    Entity::Type                 getEntityType()
-                          { return mEntityType; }
+                              { return mEntityType; }
 
    // Setters
    void                       setVelocity(sf::Vector2f newVel)
-                        { mVelocity = newVel; }
+                              { mVelocity = newVel; }
 
    void                       resetVelocity()
-                        { mVelocity = sf::Vector2f(); }
+                              { mVelocity = sf::Vector2f(); }
 
    void                       changeVelocity(sf::Vector2f newVec)
-                        { mVelocity += newVec; }
+                              { mVelocity += newVec; }
 
    void                       setCurrentTarget(Entity* target)
-                       { mCurrentTarget = target; }
+                              { mCurrentTarget = target; }
 
    void                       setMaxSpeed(float speed)
-                       { mMaxSpeed = speed; }
+                              { mMaxSpeed = speed; }
 
    void                       setSteeringTypes(std::vector<SteeringBehaviour::Behaviour> newBehaviours)
-                       { mSteering.setNewBehaviours(newBehaviours); }
+                              { mSteering.setNewBehaviours(newBehaviours); }
 
    void                       setSteeringTypes(SteeringBehaviour::Behaviour newBehaviour)
-                       { mSteering.setNewBehaviours(newBehaviour); }
+                              { mSteering.setNewBehaviours(newBehaviour); }
 
    void                       changeColour(sf::Color colour)
-                       { mSprite.setColor(colour); }
+                              { mSprite.setColor(colour); }
 
    void                       setText(std::string msg)
-                       {
-                           mText.setString(msg);
-                           mText.setColor(sf::Color(255, 255, 255, 255));
-                       }
+                              {
+                                 mText.setString(msg);
+                                 mText.setColor(sf::Color(255, 255, 255, 255));
+                              }
 
    void                       setHPText(std::string msg)
-                        {
-                           mHPText.setString(msg);
-                           mHPText.setColor(sf::Color(255, 255, 255, 255));
-                        }
+                              {
+                                 mHPText.setString(msg);
+                                 mHPText.setColor(sf::Color(255, 255, 255, 255));
+                              }
 
    //    void                        setTargetPos(sf::Vector2f pos)
    //                                { mTargetPos = pos; }

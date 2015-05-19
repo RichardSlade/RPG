@@ -5,20 +5,21 @@
 #include "World/LevelBlock.hpp"
 
 Entity::Entity(Level* level
-                           , const sf::Texture& texture
-                           , const sf::Font& font
-                           , sf::Vector2f startPos
-                           , EntityStats stats
-                           , const Params& params
-                           , Type type
-                           , b2Body* body
-                           , float scale)
-//: mLevel(world)
-: Killable(stats.health)
+               , const sf::Texture& texture
+               , const sf::Font& font
+               , sf::Vector2f startPos
+               , EntityStats stats
+               , const Params& params
+               , Type type
+               , b2Body* body
+               , float scale)
+: PhysicsBody(body,
+              b2BodyType::b2_dynamicBody)
+, Killable(stats.health)
 , Intelligent(stats)
 , MeleeFighter(stats)
 , mLevel(level)
-, mPhysicsBody(body)
+//, mPhysicsBody(body)
 , mMass(stats.mass)
 , mHealth(stats.health)
 , mWalkMaxSpeed(stats.walkMaxSpeed)
@@ -67,7 +68,7 @@ void Entity::updateCurrent(sf::Time dt)
 
    sf::Transformable::setPosition(meterToPixel(getWorldPosition()));
 
-   float currentRotation = mPhysicsBody->GetAngle();
+   float currentRotation = mBody->GetAngle();
    mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
 
    sf::Transformable::setRotation(radianToDegree(currentRotation));
@@ -111,10 +112,8 @@ void Entity::updatePhysicsBody(sf::Time dt)
 //   mVelocity = acceleration * dt.asSeconds();
 
    truncateVec(mVelocity, mMaxSpeed);
-   mPhysicsBody->SetLinearVelocity(b2Vec2(mVelocity.x,
+   mBody->SetLinearVelocity(b2Vec2(mVelocity.x,
                                           mVelocity.y));
-
-
 
    // Rotation
    if(std::fabs(magVec(mVelocity)) > MINFLOAT)
@@ -133,7 +132,7 @@ void Entity::updatePhysicsBody(sf::Time dt)
 //         rotate(angle * (180.f / PI));
 
       if(angle > MINFLOAT || angle < -MINFLOAT)
-         mPhysicsBody->SetAngularVelocity(angle);
+         mBody->SetAngularVelocity(angle);
    }
 
 //   float currentRotation = mPhysicsBody->GetAngle();
@@ -201,18 +200,18 @@ LevelBlock* Entity::getLevelBlock(sf::Vector2i index)
 //    return mLevel->getLevelExit();
 //}
 
-sf::Transform Entity::getWorldTransform() const
-{
-   b2Transform b2dTrans = mPhysicsBody->GetTransform();
-   b2Vec2 pos = b2dTrans.p;
-
-   sf::Transform sfTrans;
-   sfTrans.rotate(b2dTrans.q.GetAngle()).translate(pos.x, pos.y);
-
-   return sfTrans;
-}
-
-sf::Vector2f Entity::getWorldPosition() const
-{
-    return convertVec(mPhysicsBody->GetPosition());
-}
+//sf::Transform Entity::getWorldTransform() const
+//{
+//   b2Transform b2dTrans = mPhysicsBody->GetTransform();
+//   b2Vec2 pos = b2dTrans.p;
+//
+//   sf::Transform sfTrans;
+//   sfTrans.rotate(b2dTrans.q.GetAngle()).translate(pos.x, pos.y);
+//
+//   return sfTrans;
+//}
+//
+//sf::Vector2f Entity::getWorldPosition() const
+//{
+//    return convertVec(mPhysicsBody->GetPosition());
+//}

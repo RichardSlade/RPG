@@ -66,6 +66,7 @@
 		<Unit filename="include/Entity/State/State.hpp" />
 		<Unit filename="include/Entity/State/StateMachine.hpp" />
 		<Unit filename="include/Entity/SteeringBehaviour.hpp" />
+		<Unit filename="include/Physics/PhysicsBody.hpp" />
 		<Unit filename="include/SceneNode/SceneNode.hpp" />
 		<Unit filename="include/SceneNode/SpriteNode.hpp" />
 		<Unit filename="include/World/Level.hpp" />
@@ -87,6 +88,7 @@
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/meleeFighter.cpp" />
 		<Unit filename="src/menuState.cpp" />
+		<Unit filename="src/node.cpp" />
 		<Unit filename="src/path.cpp" />
 		<Unit filename="src/pausedScreen.cpp" />
 		<Unit filename="src/sceneNode.cpp" />
