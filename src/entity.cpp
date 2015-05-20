@@ -44,6 +44,8 @@ Entity::Entity(Level* level
 
    sf::Transformable::setPosition(meterToPixel(startPos));
 
+   mBodyBounds = mSprite.getLocalBounds();
+
 //   float theta = randomClamped() * (2.f * PI);
 //   rotate(theta * (180 / PI));
 //   mHeading = sf::Vector2f(std::sin(theta), -std::cos(theta));

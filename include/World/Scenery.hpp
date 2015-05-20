@@ -22,22 +22,25 @@ public:
 
 protected:
 //    const LevelBlock*           mHostBlock;
-    sf::Sprite                  mSprite;
+//    sf::Sprite                  mSprite;
 
 public:
                                 Scenery(const sf::Texture& texture,
                                         b2Body* body,
                                         b2BodyType bodyType)
-                                : SpriteNode(texture)
+                                : SpriteNode(texture,
+                                             pos)
                                 , PhysicsBody(body,
                                               bodyType)
 //                                , mHostBlock(host)
-                                , mSprite(texture)
+//                                , mSprite(texture)
                                 {
                                     sf::FloatRect bounds = mSprite.getLocalBounds();
                                     mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 
                                     mSprite.move(20.f, 20.f);
+
+                                    mBodyBounds = mSprite.getLocalBounds();
                                 };
 
     virtual                     ~Scenery(){};
@@ -45,11 +48,11 @@ public:
     // Getters
     virtual void                getSceneryData() const {};
 
-    const sf::Sprite&           getSprite()
-                                { return mSprite; }
+//    const sf::Sprite&           getSprite()
+//                                { return mSprite; }
 
     // Setters
-    void                        rotateSprite(float angle) {mSprite.rotate(angle);}
+//    void                        rotateSprite(float angle) {mSprite.rotate(angle);}
 };
 
 #endif // SCENERY_HPP

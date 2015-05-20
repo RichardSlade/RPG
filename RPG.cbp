@@ -88,7 +88,6 @@
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/meleeFighter.cpp" />
 		<Unit filename="src/menuState.cpp" />
-		<Unit filename="src/node.cpp" />
 		<Unit filename="src/path.cpp" />
 		<Unit filename="src/pausedScreen.cpp" />
 		<Unit filename="src/sceneNode.cpp" />

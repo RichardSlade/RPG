@@ -98,61 +98,45 @@ public:
    sf::Transform			         getWorldTransform() const {PhysicsBody::getWorldTransform();};
    sf::Vector2f			         getWorldPosition() const {PhysicsBody::getWorldPosition();};
 
-   sf::Vector2f                  getVelocity() const
-                                 { return mVelocity; }
+   sf::Vector2f                  getVelocity() const { return mVelocity; }
 
-   sf::Vector2f                  getHeading() const
-                                 { return mHeading; }
+   sf::Vector2f                  getHeading() const { return mHeading; }
 
-   float                         getSpeed() const
-                                 { return magVec(mVelocity); }
+   float                         getSpeed() const { return magVec(mVelocity); }
 
-   float                         getMass() const
-                                 { return mMass; }
+   float                         getMass() const { return mMass; }
 
-   float                         getMaxSpeed() const
-                                 { return mMaxSpeed; }
+   float                         getMaxSpeed() const { return mMaxSpeed; }
 
-   float                         getMaxWalkSpeed()
-                                 { return mWalkMaxSpeed; }
+   float                         getMaxWalkSpeed() { return mWalkMaxSpeed; }
 
-   float                         getMaxRunSpeed()
-                                 { return mRunMaxSpeed; }
+   float                         getMaxRunSpeed() { return mRunMaxSpeed; }
 
-   float                         getMaxForce() const
-                                 { return mMaxForce; }
+   float                         getMaxForce() const { return mMaxForce; }
 
-   float                         getMaxTurnRate() const
-                                 { return mMaxTurnRate; }
+   float                         getMaxTurnRate() const { return mMaxTurnRate; }
 
-   bool                          checkSteeringBehaviour(SteeringBehaviour::Behaviour type) const
-                                 { return mSteering.checkBehaviour(type); }
+   bool                          checkSteeringBehaviour(SteeringBehaviour::Behaviour type) const { return mSteering.checkBehaviour(type); }
 
-   float                         getRadius() const
-                                 { return mRadius; }
+   float                         getRadius() const { return mRadius; }
 
-   float                         getSpriteWidth() const
-                                 { return mSprite.getLocalBounds().width; }
+   float                         getSpriteWidth() const { return mSprite.getLocalBounds().width; }
 
    //    sf::Vector2f                getTargetPos() const
    //                                { return mTargetPos; }
 
-   const Entity*                getCurrentTarget() const
-                              { return mCurrentTarget; }
+   const Entity*                 getCurrentTarget() const { return mCurrentTarget; }
 
-   LevelBlock*                 getLevelBlock(sf::Vector2i);
+   LevelBlock*                   getLevelBlock(sf::Vector2i);
 
-   LevelBlock*                 getLevelBlock()
-                              { return mCurrentBlock; }
+   LevelBlock*                   getLevelBlock() { return mCurrentBlock; }
 
-   Entity::Type                 getEntityType()
-                              { return mEntityType; }
+   Entity::Type                  getEntityType(){ return mEntityType; }
 
    // Setters
-   void                       setVelocity(sf::Vector2f newVel)
-                              { mVelocity = newVel; }
+   void                          setVelocity(sf::Vector2f newVel){ mVelocity = newVel; }
 
-   void                       resetVelocity()
+   void                          resetVelocity()
                               { mVelocity = sf::Vector2f(); }
 
    void                       changeVelocity(sf::Vector2f newVec)

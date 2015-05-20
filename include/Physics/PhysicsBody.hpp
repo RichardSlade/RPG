@@ -12,6 +12,8 @@ protected:
    b2Body*                 mBody;
    b2BodyType              mBodyType;
 
+   sf::FloatRect           mBodyBounds;
+
 public:
                            PhysicsBody(b2Body* body,
                                        b2BodyType type)
@@ -21,6 +23,7 @@ public:
 
    // Getters
 //   const b2Body*           getBody() const {return mBody;}
+   sf::FloatRect           getBodyBounds() {return mBodyBounds;}
 
    sf::Transform           getWorldTransform() const
                            {
