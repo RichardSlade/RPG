@@ -43,7 +43,9 @@ public:
         Wall,
         Corner,
         Exit,
-        Ground,
+        Brick,
+        Stone,
+//        Ground,
         NumTextures
     };
 

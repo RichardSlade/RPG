@@ -18,7 +18,7 @@ class LevelBlock;
 class Scenery : public SpriteNode, public PhysicsBody
 {
 public:
-    typedef std::unique_ptr<Scenery> SceneryPtr;
+    typedef std::unique_ptr<Scenery> upScenery;
 
 protected:
 //    const LevelBlock*           mHostBlock;
@@ -27,10 +27,12 @@ protected:
 public:
                                 Scenery(const sf::Texture& texture,
                                         sf::Vector2f pos,
+                                        sf::IntRect size,
                                         b2Body* body,
                                         b2BodyType bodyType)
                                 : SpriteNode(texture,
-                                             pos)
+                                             pos,
+                                             size)
                                 , PhysicsBody(body,
                                               bodyType)
 //                                , mHostBlock(host)
@@ -47,7 +49,7 @@ public:
     virtual                     ~Scenery(){};
 
     // Getters
-    virtual void                getSceneryData() const {};
+//    virtual void                getSceneryData() const {};
 
 //    const sf::Sprite&           getSprite()
 //                                { return mSprite; }

@@ -131,6 +131,7 @@ b2Body* World::generatePhysicsBody(sf::Vector2f pos,
       fixtureDef.density = 1.f;
       fixtureDef.friction = 0.3f;
 
+//      body->SetBullet(true);
       body->CreateFixture(&fixtureDef);
    }
 
@@ -174,12 +175,60 @@ void World::buildScene(const Controller& controller)
                                                     sf::Vector2i(meterToPixel(mWorldBounds.width),
                                                                  meterToPixel(mWorldBounds.height)));
 
-    std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(controller.getTexture(Controller::Textures::Ground),
+    std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(controller.getTexture(Controller::Textures::Brick),
                                                                 backgroundSpriteBounds));
 
 //    mBackground = backgroundSprite.get();
-    mSceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(backgroundSprite));
+  mSceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(backgroundSprite));
 
+  // Build level walls
+  sf::Vector2f pos(mWorldBounds.width / 2.f, 0.f);
+  sf::Vector2f size(mWorldBounds.width, 1.f);
+
+  for(int i =  0; i < 4; i++)
+  {
+    sf::Vector2f pixelPos(meterToPixel(pos));
+    sf::Vector2f pixelSize(meterToPixel(size));
+
+    sf::IntRect spriteSize(sf::Vector2i(pos - (pixelSize / 2.f)),
+                           sf::Vector2i(pixelSize));
+
+    mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(Scenery::upScenery(new Scenery(controller.getTexture(Controller::Textures::Stone),
+                                                                                            meterToPixel(pos),
+                                                                                            spriteSize,
+                                                                                            generatePhysicsBody(pos, size),
+                                                                                            b2BodyType::b2_staticBody)));
+
+    switch(i)
+    {
+      case 0: pos.y = mWorldBounds.height; break;
+      case 1:
+      {
+        pos = sf::Vector2f(0.f, mWorldBounds.height / 2.f);
+        size = sf::Vector2f(1.f, mWorldBounds.height);
+        break;
+      }
+      case 2: pos.x = mWorldBounds.width; break;
+      default: break;
+    }
+  }
+
+//  for(int i = 0; i < 4; i++)
+//  {
+//    if(i == 2)
+//    {
+//      pos.x -= size.x;
+//      size = sf::Vector2f(size.y, size.x);
+//      pos.y += size.y;
+//    }
+//
+//    mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(Scenery::upScenery(new Scenery(controller.getTexture(Controller::Textures::Stone),
+//                                                                                            meterToPixel(pos),
+//                                                                                            generatePhysicsBody(pos, size),
+//                                                                                            b2BodyType::b2_staticBody)));
+//
+//     pos.x += size.x;
+//  }
 //    mLevel->generateLevel(mSceneLayers, controller);
 
     generateAgents(controller);
@@ -190,12 +239,12 @@ void World::generateAgents(const Controller& controller)
     // Initialise characters and add to scene graph
    for(int i = 0; i < 1; i++)
    {
-      float inc = i * 40.f;
+//      float inc = i * 40.f;
 
 //      sf::Vector2f pos((mWorldBounds.width / 2.f) + inc, (mWorldBounds.height / 2.f) + inc);
 //      sf::Vector2f pos(mWorldBounds.width / 2.f, mWorldBounds.height / 2.f);
 //      sf::Vector2f pos(10, 10);
-      sf::Vector2f pos;
+      sf::Vector2f pos(mWorldBounds.width / 2.f, mWorldBounds.height / 4.f);
 //      float size = controller.getTexture(Controller::Textures::Adventurer).getSize().x;
 
       b2Body* body = generatePhysicsBody(pos,
@@ -229,7 +278,7 @@ void World::generateAgents(const Controller& controller)
     for(int i = 0 ; i < 0; i++)
     {
       // Find square for enemy to start in
-      LevelBlock* levelBlock;
+//      LevelBlock* levelBlock;
       sf::Vector2i index;
       sf::Vector2f pos;
 

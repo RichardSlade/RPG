@@ -66,7 +66,8 @@ void Controller::loadMedia()
     fileNames.push_back("media/textures/corner.png");
     fileNames.push_back("media/textures/exit.png");
 //    fileNames.push_back("media/textures/checkerMeter.png");
-    fileNames.push_back("media/textures/brickFloorLarge.png");
+    fileNames.push_back("media/textures/brickLarge.png");
+    fileNames.push_back("media/textures/stoneLarge.png");
 
    assert(mTextures.size() >= fileNames.size());
 
@@ -86,7 +87,8 @@ void Controller::loadMedia()
 
 //      Controller::upTexture upTex(new sf::Texture(t));
 
-      if(index == Controller::Textures::Ground)
+      if(index == Controller::Textures::Brick
+        || index == Controller::Textures::Stone)
          t.setRepeated(true);
 
       (*texIter).reset(new sf::Texture(t));
@@ -133,7 +135,7 @@ void Controller::loadMedia()
 */
 const sf::Texture Controller::createBackgroundTexture()
 {
-   const sf::Texture& Tex = getTexture(Textures::Ground);
+   const sf::Texture& Tex = getTexture(Textures::Brick);
    const sf::Vector2u TexSize = Tex.getSize();
 
    const unsigned int Multiplier = 10;
@@ -242,7 +244,6 @@ void Controller::run()
          mCurrentAppState->handleInput();
          mCurrentAppState->lockedUpdate(mFPS);
 //         mCountDown = mFPS;
-
       }
 
       updateStatistics(dt);

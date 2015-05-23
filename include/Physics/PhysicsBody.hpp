@@ -41,6 +41,8 @@ public:
    sf::Vector2f            getWorldPosition() const {return convertVec(mBody->GetPosition());}
    float                   getAngle() const {return mBody->GetAngle(); }
 
+
+
    // Setters
 //   void                    moveBody(sf::Vector2f vel) {mBody->SetLinearVelocity(convertVec(vec));}
 //   void                    rotateBody(float angle) {mBody->SetAngularVelocity(angle);}
