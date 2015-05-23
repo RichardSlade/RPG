@@ -26,6 +26,7 @@ protected:
 
 public:
                                 Scenery(const sf::Texture& texture,
+                                        sf::Vector2f pos,
                                         b2Body* body,
                                         b2BodyType bodyType)
                                 : SpriteNode(texture,
@@ -35,11 +36,11 @@ public:
 //                                , mHostBlock(host)
 //                                , mSprite(texture)
                                 {
-                                    sf::FloatRect bounds = mSprite.getLocalBounds();
-                                    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-
-                                    mSprite.move(20.f, 20.f);
-
+//                                    sf::FloatRect bounds = mSprite.getLocalBounds();
+//                                    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+//
+//                                    mSprite.move(20.f, 20.f);
+//
                                     mBodyBounds = mSprite.getLocalBounds();
                                 };
 

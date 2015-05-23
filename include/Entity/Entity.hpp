@@ -1,6 +1,8 @@
 #ifndef MOVINGENTITY_HPP
 #define MOVINGENTITY_HPP
 
+#include <list>
+
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -20,9 +22,9 @@
 #include "Entity/Attribute/MeleeFighter.hpp"
 //#include "MovingTarget.hpp"
 
-//class World;
+class QuadTree;
 
-class Entity : public SceneNode, public Killable, public Intelligent, public MeleeFighter, public PhysicsBody
+class Entity : public SceneNode, public PhysicsBody, public Killable, public Intelligent, public MeleeFighter
 {
 public:
     enum Type
@@ -35,7 +37,9 @@ public:
 //    const float                 mPanicDistance;
 
 protected:
-    Level*                      mLevel;
+//    Level*                      mLevel;
+    QuadTree*                   mQuadTree;
+
 
 //    b2Body*                     mPhysicsBody;
 
@@ -75,7 +79,8 @@ protected:
     void                        ensureZeroOverlap();
 
 public:
-                                Entity(Level*
+                                Entity(QuadTree*
+//                                      Level*
                                        , const sf::Texture&
                                        , const sf::Font&
                                        , sf::Vector2f
@@ -88,15 +93,15 @@ public:
     virtual                     ~Entity(){};
 
     // Getters
-    std::vector<Entity*>        getNeighbours(float radius
-                                             , unsigned int type) const;
+    std::list<Entity*>          getNeighbours(std::list<Entity*>& returnList,
+                                              Entity::Type type) const;
 
     std::vector<LevelBlock*>    getBlockTypeInRange(LevelBlock::Type, float) const;
 
 //    std::vector<LevelBlock*>    getLevelExit();
 
-   sf::Transform			         getWorldTransform() const {PhysicsBody::getWorldTransform();};
-   sf::Vector2f			         getWorldPosition() const {PhysicsBody::getWorldPosition();};
+   sf::Transform			           getWorldTransform() const {return PhysicsBody::getWorldTransform();};
+   sf::Vector2f			              getWorldPosition() const {return PhysicsBody::getWorldPosition();};
 
    sf::Vector2f                  getVelocity() const { return mVelocity; }
 

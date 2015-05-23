@@ -11,7 +11,7 @@
 
 class SpriteNode : public SceneNode
 {
-private:
+protected:
     sf::Sprite                mSprite;
 
     virtual void              drawCurrent(sf::RenderTarget&, sf::RenderStates) const;

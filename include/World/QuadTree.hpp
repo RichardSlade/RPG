@@ -2,51 +2,65 @@
 #define QUADTREE_HPP
 
 #include <memory>
+#include <list>
 
-#include "World/Scenery.hpp"
-#include "Entity/Entity.hpp"
+#include <SFML/Graphics/Rect.hpp>
+
+//#include "World/Scenery.hpp"
+//#include "Entity/Entity.hpp"
+
+class Scenery;
+class Entity;
+class PhysicsBody;
 
 class QuadTree
 {
 public:
-   enum ObjectType
-   {
-      SceneryObjects,
-      EntityObjects,
-      AllObjects
-   };
+  typedef std::unique_ptr<QuadTree> upQuadTree;
+
+  enum ObjectType
+  {
+    SceneryObjects,
+    EntityObjects,
+    AllObjects
+  };
 
 private:
-   typedef std::unique_ptr<QuadTree> upQuadTree;
+  const int                             mMaxObjects = 10;
+  const int                             mMaxLevels = 5;
 
-   const int                  mMaxObjects = 10;
-   const int                  mMaxLevels = 5;
+  int                                   mLevel;
+  std::list<Scenery*>                   mScenery;
+  std::list<Entity*>                    mEntities;
 
-   int                        mLevel;
-   std::list<Scenery*>        mScenery;
-   std::list<Entity*>         mEntities;
+  sf::FloatRect                         mBounds;
+  std::array<QuadTree::upQuadTree, 4>   mChildren;
+//  std::array<int, 4>   mChildren;
+//  std::vector<QuadTree::upQuadTree>     mChildren;
 
-   sf::FloatRect              mBounds;
-   std::array<upQuadTree, 4>  mChildren;
-
-   void                       split();
-   void                       checkForsplit();
-   void                       distributeObjects();
-   int                        getIndex(sf::FloatRect pRect);
+  void                                  split();
+  void                                  checkForSplit();
+  void                                  distributeObjects();
+  int                                   getIndex(const PhysicsBody* body) const;
 
 
 public:
-                              QuadTree(int level,
-                                       sf::FloatRect bounds);
+                                        QuadTree(){};
 
-   void                       insert(Scenery* scenery);
-   void                       insert(Entity* entity);
+                                        QuadTree(int level,
+                                               sf::FloatRect bounds);
 
-   std::list&                 retrieve(QuadTree::ObjectType objType,
-                                       std::list& returnObjects,
-                                       PhysicsBody* body)
+  void                                  insert(Scenery* scenery);
+  void                                  insert(Entity* entity);
 
-   void                       clear();
+  std::list<Scenery*>&                  retrieveScenery(std::list<Scenery*>& returnObjects,
+                                                        const PhysicsBody* body) const;
+
+  std::list<Entity*>&                   retrieveEntities(std::list<Entity*>& returnObjects,
+                                                         const PhysicsBody* body,
+                                                         unsigned int type) const;
+
+  void                                  clear();
 };
 
 #endif // QUADTREE_HPP

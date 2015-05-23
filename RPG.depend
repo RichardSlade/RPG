@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1430735662 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurerStates.cpp
+1432397447 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurerStates.cpp
 	<cassert>
 	<iostream>
 	"App/Utility.hpp"
@@ -18,12 +18,13 @@
 
 1418677931 /media/richard/ubuntu-storage/libraries/SFML-2.2/include/SFML/System/Vector2.inl
 
-1431773932 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Enemy.hpp
+1432396557 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Enemy.hpp
 	<memory>
 	"Entity/Entity.hpp"
 	"Entity/State/StateMachine.hpp"
 
-1432073508 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Entity.hpp
+1432397048 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Entity.hpp
+	<list>
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/Text.hpp>
@@ -195,7 +196,7 @@
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Shape.hpp>
 
-1432073508 /media/richard/ubuntu-storage/projects/RPG/include/World/Scenery.hpp
+1432382250 /media/richard/ubuntu-storage/projects/RPG/include/World/Scenery.hpp
 	<memory>
 	<SFML/Graphics/Color.hpp>
 	<SFML/Graphics/Sprite.hpp>
@@ -313,7 +314,7 @@
 	<Entity/State/State.hpp>
 	<Entity/Adventurer.hpp>
 
-1431867644 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Adventurer.hpp
+1432396598 /media/richard/ubuntu-storage/projects/RPG/include/Entity/Adventurer.hpp
 	<SFML/Graphics/CircleShape.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/System/Time.hpp>
@@ -533,13 +534,13 @@
 	<SFML/Graphics/Text.hpp>
 	<SFML/System/Time.hpp>
 
-1431975984 /media/richard/ubuntu-storage/projects/RPG/include/World/World.hpp
+1432241083 /media/richard/ubuntu-storage/projects/RPG/include/World/World.hpp
 	<memory>
 	<SFML/Graphics/RenderWindow.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/Graphics/CircleShape.hpp>
 	<Box2D/Box2D.h>
-	"World/Level.hpp"
+	"World/QuadTree.hpp"
 	"SceneNode/SceneNode.hpp"
 	"Entity/Enemy.hpp"
 	"Entity/Adventurer.hpp"
@@ -554,7 +555,7 @@
 	<SFML/Graphics/Font.hpp>
 	<SFML/System/Time.hpp>
 
-1431880589 source:/media/richard/ubuntu-storage/projects/RPG/src/enemy.cpp
+1432396576 source:/media/richard/ubuntu-storage/projects/RPG/src/enemy.cpp
 	<iostream>
 	<cmath>
 	<vector>
@@ -562,7 +563,7 @@
 	"World/World.hpp"
 	"Entity/Enemy.hpp"
 
-1430735662 source:/media/richard/ubuntu-storage/projects/RPG/src/enemyStates.cpp
+1432397488 source:/media/richard/ubuntu-storage/projects/RPG/src/enemyStates.cpp
 	<cassert>
 	<iostream>
 	"App/Utility.hpp"
@@ -574,11 +575,11 @@
 1429974323 /media/richard/ubuntu-storage/projects/RPG/include/Entity/State/EnemyStates.hpp
 	"Entity/State/State.hpp"
 
-1432073508 source:/media/richard/ubuntu-storage/projects/RPG/src/entity.cpp
+1432397537 source:/media/richard/ubuntu-storage/projects/RPG/src/entity.cpp
 	<string>
 	"Entity/Entity.hpp"
 	"World/World.hpp"
-	"World/LevelBlock.hpp"
+	"World/QuadTree.hpp"
 
 1430735662 source:/media/richard/ubuntu-storage/projects/RPG/src/gameCompleteScreen.cpp
 	<SFML/Window/Event.hpp>
@@ -655,14 +656,14 @@
 1430735662 source:/media/richard/ubuntu-storage/projects/RPG/src/spriteNode.cpp
 	"SceneNode/SpriteNode.hpp"
 
-1432073508 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SpriteNode.hpp
+1432382271 /media/richard/ubuntu-storage/projects/RPG/include/SceneNode/SpriteNode.hpp
 	<vector>
 	<SFML/Graphics/Sprite.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/System/Time.hpp>
 	"SceneNode.hpp"
 
-1431807115 source:/media/richard/ubuntu-storage/projects/RPG/src/steeringBehaviour.cpp
+1432399077 source:/media/richard/ubuntu-storage/projects/RPG/src/steeringBehaviour.cpp
 	<cmath>
 	<algorithm>
 	<iostream>
@@ -808,7 +809,7 @@
 1382546500 /media/richard/ubuntu-storage/libraries/Box2D_v2.3.0/Box2D/Box2D/Dynamics/Joints/b2WheelJoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1432073508 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurer.cpp
+1432396613 source:/media/richard/ubuntu-storage/projects/RPG/src/adventurer.cpp
 	<cstdlib>
 	"Entity/Adventurer.hpp"
 	"World/World.hpp"
@@ -843,7 +844,19 @@
 1431806172 /media/richard/ubuntu-storage/projects/RPG/include/World/WallBlock.hpp
 	"World/LevelBlock.hpp"
 
-1432073508 /media/richard/ubuntu-storage/projects/RPG/include/Physics/PhysicsBody.hpp
+1432397702 /media/richard/ubuntu-storage/projects/RPG/include/Physics/PhysicsBody.hpp
 	<Box2D/Box2D.h>
 	<SFML/Graphics/Transformable.hpp>
+	"App/Utility.hpp"
+
+1432397651 /media/richard/ubuntu-storage/projects/RPG/include/World/QuadTree.hpp
+	<memory>
+	<list>
+	<SFML/Graphics/Rect.hpp>
+
+1432398982 source:/media/richard/ubuntu-storage/projects/RPG/src/quadTree.cpp
+	<cassert>
+	"World/Scenery.hpp"
+	"World/QuadTree.hpp"
+	"Entity/Entity.hpp"
 

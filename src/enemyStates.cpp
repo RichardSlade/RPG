@@ -19,16 +19,12 @@ void LookOut::execute(Enemy* host)
 {
 	if(host->getCurrentStateType() == Enemy::States::Relax)
 	{
-      std::vector<Entity*> chars;
+      std::list<Entity*> chars;
 
       bool isHealthy = host->getHealthPercentage() > 50.f ? true : false;
 
-      if(isHealthy) // Get all chars in agro distance
-         chars = host->getNeighbours(host->AgroDistance
-                                    , Entity::Type::Adventurer);
-      else // Get all chars in panic distance
-         chars = host->getNeighbours(host->PanicDistance
-                                    , Entity::Type::Adventurer);
+      host->getNeighbours(chars
+                                  , Entity::Type::Adventurer);
 
       sf::Vector2f hostPos = host->getWorldPosition();
 

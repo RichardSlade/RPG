@@ -2,9 +2,10 @@
 
 #include "Entity/Entity.hpp"
 #include "World/World.hpp"
-#include "World/LevelBlock.hpp"
+//#include "World/LevelBlock.hpp"
+#include "World/QuadTree.hpp"
 
-Entity::Entity(Level* level
+Entity::Entity(QuadTree* quadTree
                , const sf::Texture& texture
                , const sf::Font& font
                , sf::Vector2f startPos
@@ -18,7 +19,8 @@ Entity::Entity(Level* level
 , Killable(stats.health)
 , Intelligent(stats)
 , MeleeFighter(stats)
-, mLevel(level)
+//, mLevel(level)
+, mQuadTree(quadTree)
 //, mPhysicsBody(body)
 , mMass(stats.mass)
 , mHealth(stats.health)
@@ -59,7 +61,8 @@ Entity::Entity(Level* level
    mHPText.setPosition(0, 20.f);
    mHPText.setColor(sf::Color(0, 255, 0));
 
-   mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+//   mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+  mQuadTree->insert(this);
 }
 
 void Entity::updateCurrent(sf::Time dt)
@@ -90,8 +93,10 @@ void Entity::updateCurrent(sf::Time dt)
    else
       mHPText.setColor(sf::Color::Green);
 
-   mCurrentBlock->deleteEntity(this);
-   mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+//   mCurrentBlock->deleteEntity(this);
+//   mCurrentBlock = mLevel->insertEntityIntoLevel(this);
+
+  mQuadTree->insert(this);
 }
 
 void Entity::drawCurrent(sf::RenderTarget& target
@@ -159,7 +164,10 @@ void Entity::updatePhysicsBody(sf::Time dt)
 
 void Entity::ensureZeroOverlap()
 {
-    std::vector<Entity*> neighbours = getNeighbours(25.f, Entity::Type::AllTypes);
+    std::list<Entity*> neighbours;
+    getNeighbours(neighbours,
+                  Entity::Type::AllTypes);
+
     sf::Vector2f pos = getWorldPosition();
     float radius = getRadius();
 
@@ -179,22 +187,26 @@ void Entity::ensureZeroOverlap()
     }
 }
 
-std::vector<Entity*> Entity::getNeighbours(float radius
-                                          , unsigned int type) const
+std::list<Entity*> Entity::getNeighbours(std::list<Entity*>& returnList,
+                                          Entity::Type type) const
 {
-    return mLevel->getEntitiesInRange(const_cast<Entity*>(this)
-                                    , radius
-                                    , type);
+//    return mLevel->getEntitiesInRange(const_cast<Entity*>(this)
+//                                    , radius
+//                                    , type);
+
+  return mQuadTree->retrieveEntities(returnList,
+                                     this,
+                                     type);
 }
 
 std::vector<LevelBlock*> Entity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const
 {
-    return mLevel->getBlockTypeInRange(const_cast<Entity*>(this), radius, blockType);
+//    return mLevel->getBlockTypeInRange(const_cast<Entity*>(this), radius, blockType);
 }
 
 LevelBlock* Entity::getLevelBlock(sf::Vector2i index)
 {
-    return mLevel->getBlock(index);
+//    return mLevel->getBlock(index);
 }
 
 //std::vector<LevelBlock*> Entity::getLevelExit()

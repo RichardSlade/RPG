@@ -6,6 +6,8 @@
 //#include "SceneNode/SceneNode.hpp"
 #include <SFML/Graphics/Transformable.hpp>
 
+#include "App/Utility.hpp"
+
 class PhysicsBody
 {
 protected:
@@ -23,7 +25,7 @@ public:
 
    // Getters
 //   const b2Body*           getBody() const {return mBody;}
-   sf::FloatRect           getBodyBounds() {return mBodyBounds;}
+   sf::FloatRect           getBodyBounds() const {return mBodyBounds;}
 
    sf::Transform           getWorldTransform() const
                            {

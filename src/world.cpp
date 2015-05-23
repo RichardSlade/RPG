@@ -46,6 +46,8 @@ World::World(GameState& gameState
 , mWorldView(mWindow.getDefaultView())
 //, mWorldRect(sf::Vector2f(mWorldBounds.width, mWorldBounds.height))
 , mFocusPoint(0.f, 0.f)
+, mQuadTree(new QuadTree(0,
+                         mWorldBounds))
 , mPhysicsEngine(b2Vec2(0.f, 0.f))
 , mHUD(this
        , controller.getFont(Controller::Fonts::Sansation)
@@ -54,8 +56,11 @@ World::World(GameState& gameState
 , mCurrentAdventurer(nullptr)
 , mCurrentAdventurerIndex(0)
 {
-    mLevel = std::unique_ptr<Level>(new Level(controller.getParams().LevelBlockSize
-                                            , mWorldBounds));
+//    mLevel = std::unique_ptr<Level>(new Level(controller.getParams().LevelBlockSize
+//                                            , mWorldBounds));
+
+//    mLevel = std::unique_ptr<Level>(new Level(controller.getParams().LevelBlockSize
+//                                            , mWorldBounds));
 
     initialiseStatesAndStats();
     buildScene(controller);
@@ -175,7 +180,7 @@ void World::buildScene(const Controller& controller)
 //    mBackground = backgroundSprite.get();
     mSceneLayers.at(SceneNode::Layers::Background)->addChild(std::move(backgroundSprite));
 
-    mLevel->generateLevel(mSceneLayers, controller);
+//    mLevel->generateLevel(mSceneLayers, controller);
 
     generateAgents(controller);
 }
@@ -198,7 +203,7 @@ void World::generateAgents(const Controller& controller)
                                          b2BodyType::b2_dynamicBody);
 
       std::unique_ptr<Adventurer> adventurerNode(new Adventurer(mWindow
-                                                               , mLevel.get()
+                                                               , mQuadTree.get()
                                                                , controller.getTexture(Controller::Textures::Adventurer)
                                                                , controller.getFont(Controller::Fonts::Sansation)
                                                                , pos
@@ -228,14 +233,14 @@ void World::generateAgents(const Controller& controller)
       sf::Vector2i index;
       sf::Vector2f pos;
 
-      int maxX = mLevel->getLevelX();
+//      int maxX = mLevel->getLevelX();
 
-      index = sf::Vector2i(rangedClamped(1, maxX - 2)
-                           , rangedClamped(1, maxX - 2));
+//      index = sf::Vector2i(rangedClamped(1, maxX - 2)
+//                           , rangedClamped(1, maxX - 2));
 
-      levelBlock = mLevel->getBlock(index);
+//      levelBlock = mLevel->getBlock(index);
 
-      pos = levelBlock->getCenter();
+//      pos = levelBlock->getCenter();
 
 //      float size = controller.getTexture(Controller::Textures::Enemy).getSize().x;
 
@@ -243,7 +248,7 @@ void World::generateAgents(const Controller& controller)
                                          1.f,
                                          b2BodyType::b2_dynamicBody);
 
-      std::unique_ptr<Enemy> enemyNode(new Enemy(mLevel.get()
+      std::unique_ptr<Enemy> enemyNode(new Enemy(mQuadTree.get()
                                               , controller.getTexture(Controller::Textures::Enemy)
                                               , controller.getFont(Controller::Fonts::Sansation)
                                               , pos
@@ -375,6 +380,8 @@ void World::adaptPlayerVelocity()
 
 void World::update(sf::Time dt)
 {
+  mQuadTree->clear();
+
     mSceneGraph.removeDeletedNodes();
     mSceneGraph.update(dt);
 

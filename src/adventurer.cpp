@@ -11,7 +11,7 @@
 #include "World/World.hpp"
 
 Adventurer::Adventurer(const sf::RenderWindow& window
-                     , Level* level
+                     , QuadTree* quadTree
                      , const sf::Texture& texture
                      , const sf::Font& font
                      , sf::Vector2f startPos
@@ -23,8 +23,8 @@ Adventurer::Adventurer(const sf::RenderWindow& window
                      , unsigned int currentState
                      , b2Body* body
                      , float scale)
-: Entity(level
-         , texture
+: Entity(quadTree
+        , texture
          , font
          , startPos
          , stats

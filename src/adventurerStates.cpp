@@ -22,8 +22,9 @@ void LookOut::execute(Adventurer* host)
    if(host->getCurrentStateType() == Adventurer::States::Relax)
    {
       // get all close enemies
-      std::vector<Entity*> enemies = host->getNeighbours(host->AgroDistance
-                                                         , Entity::Type::Enemy);
+      std::list<Entity*> enemies;
+      host->getNeighbours(enemies,
+                          Entity::Type::Enemy);
 
       sf::Vector2f hostPos = host->getWorldPosition();
 

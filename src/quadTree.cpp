@@ -1,9 +1,11 @@
 #include <cassert>
 
+#include "World/Scenery.hpp"
 #include "World/QuadTree.hpp"
+#include "Entity/Entity.hpp"
 
 QuadTree::QuadTree(int level,
-         sf::FloatRect mBounds)
+                   sf::FloatRect mBounds)
 : mLevel(level)
 , mBounds(mBounds)
 {};
@@ -13,18 +15,41 @@ QuadTree::QuadTree(int level,
  */
 void QuadTree::split()
 {
-   int subWidth = static_cast<int>(mBounds.width() / 2);
-   int subHeight = static_cast<int>(mBounds.height() / 2);
-   int x = static_cast<int>mBounds.left();
-   int y = static_cast<int>mBounds.top();
+  int subWidth = static_cast<int>(mBounds.width / 2);
+  int subHeight = static_cast<int>(mBounds.height / 2);
+  int x = static_cast<int>(mBounds.left);
+  int y = static_cast<int>(mBounds.top);
 
-   nodes[0] = upQuadTree(new Quadtree(mLevel+1, sf::FloatRect(x + subWidth, y, subWidth, subHeight)));
-   nodes[1] = upQuadTree(new Quadtree(mLevel+1, sf::FloatRect(x, y, subWidth, subHeight)));
-   nodes[2] = upQuadTree(new Quadtree(mLevel+1, sf::FloatRect(x, y + subHeight, subWidth, subHeight)));
-   nodes[3] = upQuadTree(new Quadtree(mLevel+1, sf::FloatRect(x + subWidth, y + subHeight, subWidth, subHeight)));
+//  mChildren.at(0) = QuadTree::upQuadTree(new QuadTree());
+//
+//  upQuadTree(new Quadtree(mLevel + 1,
+//                                                       sf::FloatRect(x + subWidth, y, subWidth, subHeight)));
+//
+//     child(new Quadtree(mLevel + 1,
+//                                                       sf::FloatRect(x + subWidth, y, subWidth, subHeight)));
+
+
+//  mChildren.push_back(new QuadTree());
+
+//   mChildren.at( = new Quadtree(mLevel + 1,
+//                              sf::FloatRect(x + subWidth, y, subWidth, subHeight));
+   mChildren.at(0) = QuadTree::upQuadTree(new QuadTree(mLevel + 1,
+                                                       sf::FloatRect(x + subWidth, y, subWidth, subHeight)));
+   mChildren.at(1) = QuadTree::upQuadTree(new QuadTree(mLevel + 1,
+                                                       sf::FloatRect(x, y, subWidth, subHeight)));
+   mChildren.at(2) = QuadTree::upQuadTree(new QuadTree(mLevel + 1,
+                                                       sf::FloatRect(x, y + subHeight, subWidth, subHeight)));
+   mChildren.at(3) = QuadTree::upQuadTree(new QuadTree(mLevel + 1,
+                                                       sf::FloatRect(x + subWidth, y + subWidth, subWidth, subHeight)));
+
+//   mChildren.at(2) = QuadTree::upQuadTree(new Quadtree(mLevel + 1,
+//                                                       sf::FloatRect(x, y + subHeight, subWidth, subHeight)));
+//
+//   mChildren.at(3) = QuadTree::upQuadTree(new Quadtree(mLevel + 1,
+//                                                       sf::FloatRect(x + subWidth, y + subHeight, subWidth, subHeight)));
 }
 
-void QuadTree::checkForsplit()
+void QuadTree::checkForSplit()
 {
    int totalObjects = mScenery.size() + mEntities.size();
 
@@ -39,7 +64,7 @@ void QuadTree::checkForsplit()
 
 void QuadTree::distributeObjects()
 {
-   std::vector<Scenery*>::iterator sceneryIter;
+   std::list<Scenery*>::iterator sceneryIter;
 
    for(sceneryIter = mScenery.begin();
        sceneryIter != mScenery.end();
@@ -48,10 +73,10 @@ void QuadTree::distributeObjects()
       int index = getIndex(*sceneryIter);
 
       if(index != -1)
-         mChildren.at(index).insert(*sceneryIter);
+         mChildren.at(index)->insert(*sceneryIter);
    }
 
-   std::vector<Entity*>::iterator entityIter;
+   std::list<Entity*>::iterator entityIter;
 
    for(entityIter = mEntities.begin();
        entityIter != mEntities.end();
@@ -60,7 +85,7 @@ void QuadTree::distributeObjects()
       int index = getIndex(*entityIter);
 
       if(index != -1)
-         mChildren.at(index).insert(*entityIter);
+         mChildren.at(index)->insert(*entityIter);
    }
 }
 
@@ -69,23 +94,23 @@ void QuadTree::distributeObjects()
  * object cannot completely fit within a child node and is part
  * of the parent node
  */
-int QuadTree::getIndex(PhysicsBody* body)
+int QuadTree::getIndex(const PhysicsBody* body) const
 {
    int index = -1;
-   double verticalMidpoint = mBounds.left() + (mBounds.width() / 2);
-   double horizontalMidpoint = mBounds.top() + (mBounds.height() / 2);
+   double verticalMidpoint = mBounds.left + (mBounds.width / 2);
+   double horizontalMidpoint = mBounds.top + (mBounds.height / 2);
 
    assert(body);
 
    sf::FloatRect rect = body->getBodyBounds();
 
    // Object can completely fit within the top quadrants
-   boolean topQuadrant = (rect.top() < horizontalMidpoint && rect.top() + rect.height() < horizontalMidpoint);
+   bool topQuadrant = (rect.top < horizontalMidpoint && rect.top + rect.height < horizontalMidpoint);
    // Object can completely fit within the bottom quadrants
-   boolean bottomQuadrant = (rect.top() > horizontalMidpoint);
+   bool bottomQuadrant = (rect.top > horizontalMidpoint);
 
    // Object can completely fit within the left quadrants
-   if (rect.left() < verticalMidpoint && rect.left() + rect.width() < verticalMidpoint) {
+   if (rect.left < verticalMidpoint && rect.left + rect.width < verticalMidpoint) {
       if (topQuadrant) {
         index = 1;
       }
@@ -94,7 +119,7 @@ int QuadTree::getIndex(PhysicsBody* body)
       }
     }
     // Object can completely fit within the right quadrants
-    else if (rect.left() > verticalMidpoint) {
+    else if (rect.left > verticalMidpoint) {
      if (topQuadrant) {
        index = 0;
      }
@@ -109,7 +134,7 @@ int QuadTree::getIndex(PhysicsBody* body)
 /*
  * Insert entity in quad tree. If the node
  * exceeds the capacity, it will split and add all
- * objects to their corresponding nodes.
+ * objects to their corresponding mChildren.
  */
 void QuadTree::insert(Scenery* entity)
 {
@@ -119,29 +144,7 @@ void QuadTree::insert(Scenery* entity)
 
       if(index != -1)
       {
-         nodes.at(index).insert(entity);
-         return;
-      }
-   }
-
-   mScenery.push_back(entity);
-   checkForsplit();
-}
-
-/*
- * Insert entity in quad tree. If the node
- * exceeds the capacity, it will split and add all
- * objects to their corresponding nodes.
- */
-void QuadTree::insert(Entity* entity)
-{
-   if(mChildren.at(0))
-   {
-      int index = getIndex(entity);
-
-      if(index != -1)
-      {
-         nodes.at(index).insert(entity);
+         mChildren.at(index)->insert(entity);
          return;
       }
    }
@@ -151,43 +154,85 @@ void QuadTree::insert(Entity* entity)
 }
 
 /*
- * Return all objects that could collide with the given object
+ * Insert entity in quad tree. If the node
+ * exceeds the capacity, it will split and add all
+ * objects to their corresponding mChildren.
  */
-std::list& QuadTree::retrieve(QuadTree::ObjectType objType,
-                   std::list& returnObjects,
-                   PhysicsBody* body)
+void QuadTree::insert(Entity* entity)
+{
+   if(mChildren.at(0))
+   {
+      int index = getIndex(entity);
+
+      if(index != -1)
+      {
+         mChildren.at(index)->insert(entity);
+         return;
+      }
+   }
+
+   mEntities.push_back(entity);
+   checkForSplit();
+}
+
+/*
+ * Return all scenery that could collide with the given object
+ */
+std::list<Scenery*>& QuadTree::retrieveScenery(std::list<Scenery*>& returnObjects,
+                                               const PhysicsBody* body) const
 {
    int index = getIndex(body);
 
    if(index != -1 && mChildren.at(0))
    {
-      nodes.at(index).retrieve(returnObjects, body);
+      mChildren.at(index)->retrieveScenery(returnObjects, body);
    }
 
-   switch(type)
+  returnObjects.insert(returnObjects.end(),
+                        mScenery.begin(),
+                        mScenery.end());
+
+   return returnObjects;
+ }
+
+/*
+ * Return all entities that could collide with the given object
+ */
+std::list<Entity*>& QuadTree::retrieveEntities(std::list<Entity*>& returnObjects,
+                                              const PhysicsBody* body,
+                                              unsigned int type) const
+{
+   int index = getIndex(body);
+
+   if(index != -1 && mChildren.at(0))
    {
-      case QuadTree::ObjectType::SceneryObjects: returnObjects.insert(returnObjects.end(),
-                                                                      mScenery.begin(),
-                                                                      mScenery.end()); break;
-
-      case QuadTree::ObjectType::EntityObjects: returnObjects.insert(returnObjects.end(),
-                                                                     mEntities.begin(),
-                                                                     mEntities.end());
-                                                                     break;
-      case default:
-      {
-        returnObjects.insert(returnObjects.end(), mScenery.begin(), mScenery.end());
-        returnObjects.insert(returnObjects.end(), mEntities.begin(), mEntities.end());
-        break;
-      }
+      mChildren.at(index)->retrieveEntities(returnObjects, body, type);
    }
+
+  std::list<Entity*> entitiesOfType;
+//  std::list<Entity*>::iterator iter;
+  for(Entity* e : mEntities)
+  {
+    if(e->getEntityType() == type)
+      entitiesOfType.push_back(e);
+  }
+
+  returnObjects.insert(returnObjects.end(),
+                       entitiesOfType.begin(),
+                       entitiesOfType.end());
 
    return returnObjects;
  }
 
 void QuadTree::clear()
 {
-   mScenery.clear();
-   mEntities.clear();
-   mChildren.clear();
+  mScenery.clear();
+  mEntities.clear();
+
+  std::array<QuadTree::upQuadTree, 4>::iterator iter;
+
+  for(iter = mChildren.begin();
+    iter != mChildren.end();
+    iter ++)
+    (*iter).release();
 }

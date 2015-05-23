@@ -71,6 +71,7 @@
 		<Unit filename="include/SceneNode/SpriteNode.hpp" />
 		<Unit filename="include/World/Level.hpp" />
 		<Unit filename="include/World/LevelBlock.hpp" />
+		<Unit filename="include/World/QuadTree.hpp" />
 		<Unit filename="include/World/Scenery.hpp" />
 		<Unit filename="include/World/WallBlock.hpp" />
 		<Unit filename="include/World/World.hpp" />
@@ -90,6 +91,7 @@
 		<Unit filename="src/menuState.cpp" />
 		<Unit filename="src/path.cpp" />
 		<Unit filename="src/pausedScreen.cpp" />
+		<Unit filename="src/quadTree.cpp" />
 		<Unit filename="src/sceneNode.cpp" />
 		<Unit filename="src/spriteNode.cpp" />
 		<Unit filename="src/steeringBehaviour.cpp" />

@@ -6,7 +6,7 @@
 #include "World/World.hpp"
 #include "Entity/Enemy.hpp"
 
-Enemy::Enemy(Level* level
+Enemy::Enemy(QuadTree* quadTree
 , const sf::Texture& texture
 , const sf::Font& font
 , sf::Vector2f pos
@@ -18,7 +18,7 @@ Enemy::Enemy(Level* level
 , unsigned int currentState
 , b2Body* body
 , float scale)
-: Entity(level
+: Entity(quadTree
          , texture
          , font
          , pos

@@ -39,7 +39,7 @@ private:
                                             , sf::RenderStates) const;
 
 public:
-                                Enemy(Level*
+                                Enemy(QuadTree* quadTree
                                       , const sf::Texture&
                                       , const sf::Font&
                                       , sf::Vector2f

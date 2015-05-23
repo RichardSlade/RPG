@@ -12,7 +12,8 @@
 
 #include <Box2D/Box2D.h>
 
-#include "World/Level.hpp"
+//#include "World/Level.hpp"
+#include "World/QuadTree.hpp"
 #include "SceneNode/SceneNode.hpp"
 #include "Entity/Enemy.hpp"
 #include "Entity/Adventurer.hpp"
@@ -62,7 +63,7 @@ private:
    sf::View                                     mWorldView;
 //   sf::RectangleShape                           mWorldRect;
    sf::Vector2f                                 mFocusPoint;
-
+   QuadTree::upQuadTree                         mQuadTree;
    b2World                                      mPhysicsEngine;
 
    SceneNode                                    mSceneGraph;
@@ -72,7 +73,8 @@ private:
    sf::Time                                     mTimeLeft;
    sf::Time                                     mTimeTaken;
 
-   std::unique_ptr<Level>                       mLevel;
+//   std::unique_ptr<Level>                       mLevel;
+
    HUD                                          mHUD;
 
    std::vector<EntityStats>                     mEntityStats;

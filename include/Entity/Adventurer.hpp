@@ -62,7 +62,7 @@ private:
 
 public:
                                     Adventurer(const sf::RenderWindow& window
-                                              , Level*
+                                              , QuadTree* quadTree
                                               , const sf::Texture&
                                               , const sf::Font&
                                               , sf::Vector2f
