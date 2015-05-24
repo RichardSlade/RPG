@@ -54,7 +54,8 @@ public:
   void                                  insert(Entity* entity);
 
   std::list<Scenery*>&                  retrieveScenery(std::list<Scenery*>& returnObjects,
-                                                        const PhysicsBody* body) const;
+                                                        const PhysicsBody* body,
+                                                        unsigned int type) const;
 
   std::list<Entity*>&                   retrieveEntities(std::list<Entity*>& returnObjects,
                                                          const PhysicsBody* body,

@@ -1,6 +1,8 @@
 #ifndef PHYSICSBODY_HPP
 #define PHYSICSBODY_HPP
 
+#include <cmath>
+
 #include <Box2D/Box2D.h>
 
 //#include "SceneNode/SceneNode.hpp"
@@ -15,16 +17,24 @@ protected:
    b2BodyType              mBodyType;
 
    sf::FloatRect           mBodyBounds;
+   float                    mRadius;
 
 public:
                            PhysicsBody(b2Body* body,
-                                       b2BodyType type)
+                                       b2BodyType type,
+                                       sf::Vector2f pos,
+                                       sf::Vector2f size)
                            : mBody(body)
                            , mBodyType(type)
+                           , mBodyBounds(pos.x - (size.x / 2.f),
+                                     pos.y - (size.y / 2.f),
+                                     size.x, size.y)
+                           , mRadius(std::sqrt((size.x * size.x) + (size.y * size.y)))
                            {};
 
    // Getters
 //   const b2Body*           getBody() const {return mBody;}
+  const b2Fixture*         getFixtures() const {return mBody->GetFixtureList(); }
    sf::FloatRect           getBodyBounds() const {return mBodyBounds;}
 
    sf::Transform           getWorldTransform() const
@@ -39,9 +49,9 @@ public:
                            }
 
    sf::Vector2f            getWorldPosition() const {return convertVec(mBody->GetPosition());}
-   float                   getAngle() const {return mBody->GetAngle(); }
+   float                   getBodyRotation() const {return mBody->GetAngle(); }
 
-
+  float                    getBodyRadius() {return mRadius;}
 
    // Setters
 //   void                    moveBody(sf::Vector2f vel) {mBody->SetLinearVelocity(convertVec(vec));}

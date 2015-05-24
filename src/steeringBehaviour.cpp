@@ -5,7 +5,8 @@
 
 #include "App/Utility.hpp"
 #include "App/Params.hpp"
-#include "World/WallBlock.hpp"
+#include "World/Scenery.hpp"
+//#include "World/WallBlock.hpp"
 //#include "World/LevelBlock.hpp"
 #include "Entity/Entity.hpp"
 #include "Entity/SteeringBehaviour.hpp"
@@ -20,7 +21,8 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
 , mWanderJitter(params.WanderJitter)
 , mMinViewBoxLength(params.MinViewBoxLength)
 , mInteractionRadius(params.InteractionRadius)
-, mFeelerLength(params.FeelerLength)
+//, mFeelerLength(params.FeelerLength)
+, mFeelerLength(2.f)
 , mMinArriveDist(params.MinArriveDist)
 , mObstacleAvoidanceMultiplier(2.f)
 , mWallAvoidanceMultiplier(params.WallAvoidanceMultiplier)
@@ -35,7 +37,7 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
 , mAlignRadius(params.AlignRadius)
 , mCohesionRadius(params.CohesionRadius)
 , mHost(host)
-, mTheta(mHost->getRotation() * (PI / 180.f))
+//, mTheta(mHost->getRotation() * (PI / 180.f))
 , mWanderTarget(std::sin(mTheta) * mWanderRadius, -std::cos(mTheta) * mWanderRadius)
 {
    for(bool& b : mBehaviourFlags)
@@ -222,38 +224,44 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance()
                     + (mHost->getSpeed() / mHost->getMaxSpeed())
                     * mMinViewBoxLength;
 
-    std::vector<LevelBlock*> nearObstacles = mHost->getBlockTypeInRange(LevelBlock::Type::ObstacleBlock
-                                                                        , mHost->getRadius());
+    std::list<Scenery*> obstacles;
+    mHost->getObstacles(obstacles,
+                        Scenery::Type::Wall);
 
-    LevelBlock* closestObstacle = nullptr;
+    Scenery* closestObstacle = nullptr;
 
     float distToClosest = MAXFLOAT;
 
-    sf::Transform hostTrans = mHost->getInverseTransform();
+//    sf::Transform hostTrans = mHost->getInverseTransform();
+    sf::Transform hostTrans = mHost->getWorldTransform().getInverse();
 
-    for(LevelBlock* blck : nearObstacles)
+  std::list<Scenery*>::iterator iter;
+
+    for(iter = obstacles.begin();
+        iter != obstacles.end();
+        iter++)
     {
-        sf::Vector2f blckPos = hostTrans * blck->getCenter();
+        sf::Vector2f obsPos = hostTrans * (*iter)->getWorldPosition();
 
-        if(blckPos.y <= 0.f)
+        if(obsPos.y <= 0.f)
         {
-            float expandedRadius = blck->getRadius() + mHost->getRadius();
+            float expandedRadius = (*iter)->getBodyRadius() + mHost->getBodyRadius();
 
-            if(std::fabs(blckPos.x) < expandedRadius)
+            if(std::fabs(obsPos.x) < expandedRadius)
             {
-                    float sqrtPart = std::sqrt((expandedRadius * expandedRadius) - (blckPos.x * blckPos.x));
-                    float intersectionPoint = blckPos.y - sqrtPart;
+              float sqrtPart = std::sqrt((expandedRadius * expandedRadius) - (obsPos.x * obsPos.x));
+              float intersectionPoint = obsPos.y - sqrtPart;
 
-                    if(intersectionPoint <= 0.f)
-                    {
-                        intersectionPoint = blckPos.y + sqrtPart;
-                    }
+              if(intersectionPoint <= 0.f)
+              {
+                  intersectionPoint = obsPos.y + sqrtPart;
+              }
 
-                    if(intersectionPoint < distToClosest)
-                    {
-                        distToClosest = intersectionPoint;
-                        closestObstacle = blck;
-                    }
+              if(intersectionPoint < distToClosest)
+              {
+                  distToClosest = intersectionPoint;
+                  closestObstacle = *iter;
+              }
             }
         }
     }
@@ -262,15 +270,15 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance()
 
     if(closestObstacle)
     {
-        sf::Vector2f closestPos = hostTrans * closestObstacle->getCenter();
+        sf::Vector2f closestPos = hostTrans * closestObstacle->getWorldPosition();
 
         float multiplier = 1.f + (boxLength - closestPos.y) / boxLength;
 
-        steeringForce.x = (closestObstacle->getRadius() - closestPos.x) * multiplier;
+        steeringForce.x = (closestObstacle->getBodyRadius() - closestPos.x) * multiplier;
 
         const float brakingWeight = 0.02;
 
-        steeringForce.y = (closestObstacle->getRadius() - closestPos.y) * brakingWeight;
+        steeringForce.y = (closestObstacle->getBodyRadius() - closestPos.y) * brakingWeight;
     }
 
     sf::Vector2f worldForce = mHost->getWorldTransform() * steeringForce;
@@ -287,53 +295,86 @@ sf::Vector2f SteeringBehaviour::wallAvoidance()
 
     sf::Vector2f steeringForce, point, closestPoint, closestNorm;
 
-    std::vector<LevelBlock*> wallBlocks = mHost->getBlockTypeInRange(LevelBlock::Type::WallBlock, mFeelerLength);
+    std::list<Scenery*> walls;
+    mHost->getObstacles(walls, Scenery::Type::Wall);
+
+    float closestFraction = 1.f;
+    sf::Vector2f closestFeeler;
+    sf::Vector2f closestIntersection;
+    bool intersectionOccured;
 
     for(size_t flr = 0; flr < Feelers::NumFlr; flr++)
     {
-        int closestWall = -1;
-        int index = 0;
+//        int closestWall = -1;
+//        int index = 0;
 
-        for(LevelBlock* block : wallBlocks)
+        std::list<Scenery*>::iterator itrScenery;
+
+        for(itrScenery = walls.begin();
+            itrScenery != walls.end();
+            itrScenery++)
         {
 //            Wall* wall = dynamic_cast<Wall*>(block->getScenery());
 
 
 
-            WallBlock* wall = dynamic_cast<WallBlock*>(block);
-            assert(wall);
+//            WallBlock* wall = dynamic_cast<WallBlock*>(block);
+//            assert(wall);
 
 //            Wall::WallData wallData = wall->getSceneryData();
-            std::vector<WallBlock::Edge> wallData = wall->getData();
+//            std::vector<WallBlock::Edge> wallData = wall->getData();
 
-            for(std::vector<WallBlock::Edge>::iterator iter = wallData.begin();
-                iter != wallData.end();
-                iter++)
+            const b2Fixture* fixture = (*itrScenery)->getFixtures();
+
+            sf::Vector2f p1(mHost->getWorldPosition());
+            sf::Vector2f p2(mHost->getWorldTransform() * mFeelers.at(flr));
+
+            b2RayCastInput input;
+            input.p1 = convertVec(p1);
+            input.p2 = convertVec(p2);
+            input.maxFraction = 1.f;
+
+            b2RayCastOutput output;
+
+            if(!fixture->RayCast(&output, input, 0))
+              continue;
+            if(output.fraction < closestFraction)
             {
-               if(lineIntersection2D(mHost->getWorldPosition()
-                                     , mHost->getWorldTransform() * mFeelers.at(flr)
-                                     , iter->at(WallBlock::EdgeData::PointA)
-                                     , iter->at(WallBlock::EdgeData::PointB)
-                                     , distToThisIntersection
-                                     , point))
-               {
-
-                   if(distToThisIntersection < distToClosestIntersection)
-                   {
-                       distToClosestIntersection = distToThisIntersection;
-                       closestWall = index;
-                       closestPoint = point;
-                       closestNorm = iter->at(WallBlock::EdgeData::Normal);
-                   }
-               }
+              closestFraction = output.fraction;
+              closestFeeler = p2;
+              closestIntersection = p1 + closestFraction * (p2 - p1);
+              intersectionOccured = true;
             }
 
-            index ++;
+//            for(std::vector<WallBlock::Edge>::iterator iter = wallData.begin();
+//                iter != wallData.end();
+//                iter++)
+//            {
+//               if(lineIntersection2D(mHost->getWorldPosition()
+//                                     , mHost->getWorldTransform() * mFeelers.at(flr)
+//                                     , iter->at(WallBlock::EdgeData::PointA)
+//                                     , iter->at(WallBlock::EdgeData::PointB)
+//                                     , distToThisIntersection
+//                                     , point))
+//               {
+//
+//                   if(distToThisIntersection < distToClosestIntersection)
+//                   {
+//                       distToClosestIntersection = distToThisIntersection;
+//                       closestWall = index;
+//                       closestPoint = point;
+//                       closestNorm = iter->at(WallBlock::EdgeData::Normal);
+//                   }
+//               }
+//            }
+//
+//            index ++;
         }
 
-        if(closestWall >= 0)
+//        if(closestWall >= 0)
+        if(intersectionOccured)
         {
-            sf::Vector2f overShoot = (mHost->getWorldTransform() * mFeelers.at(flr)) - closestPoint;
+            sf::Vector2f overShoot = closestFeeler - closestIntersection;
             steeringForce = closestNorm * magVec(overShoot);
         }
     }

@@ -11,7 +11,8 @@
 
 #include "App/Params.hpp"
 #include "App/Utility.hpp"
-#include "World/Level.hpp"
+//#include "World/Level.hpp"
+#include "World/Scenery.hpp"
 #include "SceneNode/SceneNode.hpp"
 #include "Physics/PhysicsBody.hpp"
 #include "Entity/SteeringBehaviour.hpp"
@@ -23,6 +24,7 @@
 //#include "MovingTarget.hpp"
 
 class QuadTree;
+//class Scenery;
 
 class Entity : public SceneNode, public PhysicsBody, public Killable, public Intelligent, public MeleeFighter
 {
@@ -93,10 +95,13 @@ public:
     virtual                     ~Entity(){};
 
     // Getters
-    std::list<Entity*>          getNeighbours(std::list<Entity*>& returnList,
+    std::list<Entity*>&          getNeighbours(std::list<Entity*>& returnList,
                                               Entity::Type type) const;
 
-    std::vector<LevelBlock*>    getBlockTypeInRange(LevelBlock::Type, float) const;
+    std::list<Scenery*>&         getObstacles(std::list<Scenery*>& returnList,
+                                              Scenery::Type type) const;
+
+//    std::vector<LevelBlock*>    getBlockTypeInRange(LevelBlock::Type, float) const;
 
 //    std::vector<LevelBlock*>    getLevelExit();
 
@@ -132,9 +137,9 @@ public:
 
    const Entity*                 getCurrentTarget() const { return mCurrentTarget; }
 
-   LevelBlock*                   getLevelBlock(sf::Vector2i);
+//   LevelBlock*                   getLevelBlock(sf::Vector2i);
 
-   LevelBlock*                   getLevelBlock() { return mCurrentBlock; }
+//   LevelBlock*                   getLevelBlock() { return mCurrentBlock; }
 
    Entity::Type                  getEntityType(){ return mEntityType; }
 

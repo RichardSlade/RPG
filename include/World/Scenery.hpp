@@ -8,45 +8,73 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
-//#include "SceneNode/SceneNode.hpp"
-#include "SceneNode/SpriteNode.hpp"
+#include "App/Utility.hpp"
+#include "SceneNode/SceneNode.hpp"
+//#include "SceneNode/SpriteNode.hpp"
 #include "Physics/PhysicsBody.hpp"
-
 
 class LevelBlock;
 
-class Scenery : public SpriteNode, public PhysicsBody
+class Scenery : public SceneNode, public PhysicsBody
 {
 public:
     typedef std::unique_ptr<Scenery> upScenery;
 
+    enum Type
+    {
+      Wall,
+      All
+    };
+
 protected:
+  Scenery::Type                 mSceneryType;
 //    const LevelBlock*           mHostBlock;
-//    sf::Sprite                  mSprite;
+    sf::Sprite                  mSprite;
+
+    virtual void                updateCurrent(sf::Time dt)
+                                {
+                                  if(mBodyType == b2BodyType::b2_dynamicBody)
+                                  {
+                                    sf::Transformable::setPosition(meterToPixel(getWorldPosition()));
+                                    sf::Transformable::setRotation(radianToDegree(getBodyRotation()));
+                                  }
+                                }
+
+    virtual void                drawCurrent(sf::RenderTarget& target,
+                                              sf::RenderStates states) const
+                                {
+                                  target.draw(mSprite, states);
+                                }
 
 public:
                                 Scenery(const sf::Texture& texture,
                                         sf::Vector2f pos,
-                                        sf::IntRect size,
+                                        sf::IntRect spriteRect,
+                                        sf::Vector2f worldSize,
                                         b2Body* body,
-                                        b2BodyType bodyType)
-                                : SpriteNode(texture,
-                                             pos,
-                                             size)
-                                , PhysicsBody(body,
-                                              bodyType)
-//                                , mHostBlock(host)
-//                                , mSprite(texture)
+                                        b2BodyType bodyType,
+                                        Scenery::Type type)
+                                : PhysicsBody(body,
+                                              bodyType,
+                                              pos,
+                                              worldSize)
+                                , mSceneryType(type)
+                                , mSprite(texture,
+                                          spriteRect)
                                 {
-//                                    sf::FloatRect bounds = mSprite.getLocalBounds();
-//                                    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-//
-//                                    mSprite.move(20.f, 20.f);
-//
-                                    mBodyBounds = mSprite.getLocalBounds();
+                                  sf::FloatRect bounds = mSprite.getLocalBounds();
+                                  mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+
+                                  sf::Transformable::setPosition(meterToPixel(pos));
+
+//                                  mSprite.setPosition(meterToPixel(pos));
+
+//                                  mBodyBounds = mSprite.getLocalBounds();
                                 };
 
     virtual                     ~Scenery(){};
+
+    Scenery::Type               getSceneryType() {return mSceneryType;}
 
     // Getters
 //    virtual void                getSceneryData() const {};

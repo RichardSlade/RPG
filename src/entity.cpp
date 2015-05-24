@@ -4,6 +4,7 @@
 #include "World/World.hpp"
 //#include "World/LevelBlock.hpp"
 #include "World/QuadTree.hpp"
+//#include "World/Scenery.hpp"
 
 Entity::Entity(QuadTree* quadTree
                , const sf::Texture& texture
@@ -15,7 +16,9 @@ Entity::Entity(QuadTree* quadTree
                , b2Body* body
                , float scale)
 : PhysicsBody(body,
-              b2BodyType::b2_dynamicBody)
+              b2BodyType::b2_dynamicBody,
+              startPos,
+              sf::Vector2f(1.f, 1.f))
 , Killable(stats.health)
 , Intelligent(stats)
 , MeleeFighter(stats)
@@ -42,11 +45,11 @@ Entity::Entity(QuadTree* quadTree
    mSprite.scale(scale, scale);
    sf::FloatRect bounds = mSprite.getLocalBounds();
    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-   mRadius = std::max(bounds.width, bounds.height);
+//   mRadius = std::max(bounds.width, bounds.height);
 
    sf::Transformable::setPosition(meterToPixel(startPos));
 
-   mBodyBounds = mSprite.getLocalBounds();
+//   mBodyBounds = mSprite.getLocalBounds();
 
 //   float theta = randomClamped() * (2.f * PI);
 //   rotate(theta * (180 / PI));
@@ -187,7 +190,7 @@ void Entity::ensureZeroOverlap()
     }
 }
 
-std::list<Entity*> Entity::getNeighbours(std::list<Entity*>& returnList,
+std::list<Entity*>& Entity::getNeighbours(std::list<Entity*>& returnList,
                                           Entity::Type type) const
 {
 //    return mLevel->getEntitiesInRange(const_cast<Entity*>(this)
@@ -199,15 +202,23 @@ std::list<Entity*> Entity::getNeighbours(std::list<Entity*>& returnList,
                                      type);
 }
 
-std::vector<LevelBlock*> Entity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const
+std::list<Scenery*>& Entity::getObstacles(std::list<Scenery*>& returnList,
+                                          Scenery::Type type) const
 {
-//    return mLevel->getBlockTypeInRange(const_cast<Entity*>(this), radius, blockType);
+  return mQuadTree->retrieveScenery(returnList,
+                                     this,
+                                     type);
 }
 
-LevelBlock* Entity::getLevelBlock(sf::Vector2i index)
-{
-//    return mLevel->getBlock(index);
-}
+//std::vector<LevelBlock*> Entity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const
+//{
+////    return mLevel->getBlockTypeInRange(const_cast<Entity*>(this), radius, blockType);
+//}
+
+//LevelBlock* Entity::getLevelBlock(sf::Vector2i index)
+//{
+////    return mLevel->getBlock(index);
+//}
 
 //std::vector<LevelBlock*> Entity::getLevelExit()
 //{

@@ -179,18 +179,29 @@ void QuadTree::insert(Entity* entity)
  * Return all scenery that could collide with the given object
  */
 std::list<Scenery*>& QuadTree::retrieveScenery(std::list<Scenery*>& returnObjects,
-                                               const PhysicsBody* body) const
+                                               const PhysicsBody* body,
+                                               unsigned int type) const
 {
    int index = getIndex(body);
 
    if(index != -1 && mChildren.at(0))
    {
-      mChildren.at(index)->retrieveScenery(returnObjects, body);
+      mChildren.at(index)->retrieveScenery(returnObjects,
+                                           body,
+                                           type);
    }
 
+  std::list<Scenery*> sceneryOfType;
+//  std::list<Entity*>::iterator iter;
+  for(Scenery* sc : mScenery)
+  {
+    if(sc->getSceneryType() == type)
+      sceneryOfType.push_back(sc);
+  }
+
   returnObjects.insert(returnObjects.end(),
-                        mScenery.begin(),
-                        mScenery.end());
+                       sceneryOfType.begin(),
+                       sceneryOfType.end());
 
    return returnObjects;
  }

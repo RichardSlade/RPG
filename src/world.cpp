@@ -183,21 +183,23 @@ void World::buildScene(const Controller& controller)
 
   // Build level walls
   sf::Vector2f pos(mWorldBounds.width / 2.f, 0.f);
-  sf::Vector2f size(mWorldBounds.width, 1.f);
+  sf::Vector2f worldSize(mWorldBounds.width, 1.f);
 
   for(int i =  0; i < 4; i++)
   {
     sf::Vector2f pixelPos(meterToPixel(pos));
-    sf::Vector2f pixelSize(meterToPixel(size));
+    sf::Vector2f pixelSize(meterToPixel(worldSize));
 
     sf::IntRect spriteSize(sf::Vector2i(pos - (pixelSize / 2.f)),
                            sf::Vector2i(pixelSize));
 
     mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(Scenery::upScenery(new Scenery(controller.getTexture(Controller::Textures::Stone),
-                                                                                            meterToPixel(pos),
+                                                                                            pos,
                                                                                             spriteSize,
-                                                                                            generatePhysicsBody(pos, size),
-                                                                                            b2BodyType::b2_staticBody)));
+                                                                                            worldSize,
+                                                                                            generatePhysicsBody(pos, worldSize),
+                                                                                            b2BodyType::b2_staticBody,
+                                                                                            Scenery::Type::Wall)));
 
     switch(i)
     {
@@ -205,13 +207,14 @@ void World::buildScene(const Controller& controller)
       case 1:
       {
         pos = sf::Vector2f(0.f, mWorldBounds.height / 2.f);
-        size = sf::Vector2f(1.f, mWorldBounds.height);
+        worldSize = sf::Vector2f(1.f, mWorldBounds.height);
         break;
       }
       case 2: pos.x = mWorldBounds.width; break;
       default: break;
     }
   }
+
 
 //  for(int i = 0; i < 4; i++)
 //  {
