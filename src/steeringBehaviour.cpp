@@ -21,8 +21,8 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
 , mWanderJitter(params.WanderJitter)
 , mMinViewBoxLength(params.MinViewBoxLength)
 , mInteractionRadius(params.InteractionRadius)
-//, mFeelerLength(params.FeelerLength)
-, mFeelerLength(2.f)
+, mFeelerLength(params.FeelerLength)
+//, mFeelerLength(1.f)
 , mMinArriveDist(params.MinArriveDist)
 , mObstacleAvoidanceMultiplier(2.f)
 , mWallAvoidanceMultiplier(params.WallAvoidanceMultiplier)
@@ -38,8 +38,7 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
 , mCohesionRadius(params.CohesionRadius)
 , mHost(host)
 //, mTheta(mHost->getRotation() * (PI / 180.f))
-, mWanderTarget(std::sin(mTheta) * mWanderRadius, -std::cos(mTheta) * mWanderRadius)
-{
+, mWanderTarget(std::sin(mTheta) * mWanderRadius, -std::cos(mTheta) * mWanderRadius){
    for(bool& b : mBehaviourFlags)
      b = false;
 
@@ -49,8 +48,7 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
       mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
 };
 
-bool SteeringBehaviour::accumulateForce(sf::Vector2f& runningTotal, sf::Vector2f forceToAdd)
-{
+bool SteeringBehaviour::accumulateForce(sf::Vector2f& runningTotal, sf::Vector2f forceToAdd){
     float magSoFar = magVec(runningTotal);
 
     float magRemaining = mHost->getMaxForce() - magSoFar;
@@ -71,22 +69,26 @@ bool SteeringBehaviour::accumulateForce(sf::Vector2f& runningTotal, sf::Vector2f
     return true;
 }
 
-void SteeringBehaviour::createFeelers()
-{
+void SteeringBehaviour::createFeelers(){
     mFeelers.clear();
 
-    mFeelers.push_back(sf::Vector2f(std::sin(-45.f * (PI / 180.f)) * mFeelerLength
-                                      , -std::cos(-45.f *(PI / 180.f)) * mFeelerLength));
+    mFeelers.push_back(sf::Vector2f(std::sin(degreeToRadian(-90.f)) * mFeelerLength
+                                      , std::cos(degreeToRadian(-90.f)) * -mFeelerLength));
+
+    mFeelers.push_back(sf::Vector2f(std::sin(degreeToRadian(-45.f)) * mFeelerLength
+                                      , std::cos(degreeToRadian(-45.f)) * -mFeelerLength));
 
     mFeelers.push_back(sf::Vector2f(0.f
                                       , -mFeelerLength));
 
-    mFeelers.push_back(sf::Vector2f(std::sin(45.f * (PI / 180.f)) * mFeelerLength
-                                      , -std::cos(45.f *(PI / 180.f)) * mFeelerLength));
+    mFeelers.push_back(sf::Vector2f(std::sin(degreeToRadian(45.f)) * mFeelerLength
+                                      , std::cos(degreeToRadian(45.f)) * -mFeelerLength));
+
+    mFeelers.push_back(sf::Vector2f(std::sin(degreeToRadian(90.f)) * mFeelerLength
+                                      , std::cos(degreeToRadian(90.f)) * -mFeelerLength));
 }
 
-sf::Vector2f SteeringBehaviour::rest()
-{
+sf::Vector2f SteeringBehaviour::rest(){
    sf::Vector2f steeringForce, hostVel = mHost->getVelocity();
 
    steeringForce = -hostVel * 4.f;
@@ -94,8 +96,7 @@ sf::Vector2f SteeringBehaviour::rest()
    return steeringForce;
 }
 
-sf::Vector2f SteeringBehaviour::face()
-{
+sf::Vector2f SteeringBehaviour::face(){
    sf::Vector2f steeringForce;//, hostheading = mHost->getHeading();
 
    steeringForce = mHost->getCurrentTarget()->getWorldPosition() - mHost->getWorldPosition();
@@ -105,8 +106,7 @@ sf::Vector2f SteeringBehaviour::face()
    return steeringForce;
 }
 
-sf::Vector2f SteeringBehaviour::arrive(sf::Vector2f targ, Deceleration deceleration)
-{
+sf::Vector2f SteeringBehaviour::arrive(sf::Vector2f targ, Deceleration deceleration){
    sf::Vector2f toTarget = targ - mHost->getWorldPosition();
 
    float dist = magVec(toTarget);
@@ -129,15 +129,13 @@ sf::Vector2f SteeringBehaviour::arrive(sf::Vector2f targ, Deceleration decelerat
    return steeringForce;
 }
 
-sf::Vector2f SteeringBehaviour::seek(sf::Vector2f target)
-{
+sf::Vector2f SteeringBehaviour::seek(sf::Vector2f target){
     sf::Vector2f desiredVelocity = normVec(target - mHost->getWorldPosition()) * mHost->getMaxSpeed();
 
     return (desiredVelocity - mHost->getVelocity());
 }
 
-sf::Vector2f SteeringBehaviour::evade()
-{
+sf::Vector2f SteeringBehaviour::evade(){
     const Entity* pursuer = mHost->getCurrentTarget();
 
 //    const Entity* mHost = dynamic_cast<const Entity*>(mHost);
@@ -157,36 +155,49 @@ sf::Vector2f SteeringBehaviour::evade()
     return flee(pursuer->getWorldPosition() + pursuer->getVelocity() * lookAheadTime);
 }
 
-sf::Vector2f SteeringBehaviour::flee(sf::Vector2f target)
-{
+sf::Vector2f SteeringBehaviour::flee(sf::Vector2f target){
     sf::Vector2f desiredVelocity = normVec(mHost->getWorldPosition() - target) * mHost->getMaxSpeed();
 
     return (desiredVelocity - mHost->getVelocity());
 }
 
-sf::Vector2f SteeringBehaviour::wander(sf::Time dt)
-{
-    float jitterTimeSlice = mWanderJitter * dt.asSeconds();
+sf::Vector2f SteeringBehaviour::wander(sf::Time dt){
+  float jitterTimeSlice = mWanderJitter * dt.asSeconds();
 
-    float jitter1 = rangedClamped(-1.f, 1.f) * jitterTimeSlice;
-    float jitter2 = rangedClamped(-1.f, 1.f) * jitterTimeSlice;
+  float jitter1 = rangedClamped(-1.f, 1.f) * jitterTimeSlice;
+  float jitter2 = rangedClamped(-1.f, 1.f) * jitterTimeSlice;
 
-    mWanderTarget += sf::Vector2f(jitter1
-                                  , jitter2);
+  mWanderTarget += sf::Vector2f(jitter1
+                                , jitter2);
 
-    mWanderTarget = normVec(mWanderTarget);
-    mWanderTarget *= mWanderRadius;
+//   mWanderTarget += sf::Vector2f(0.f
+//                                  , 0.f);
 
-    sf::Vector2f targetLocal = mWanderTarget + sf::Vector2f(0.f, -mWanderDistance);
-    sf::Vector2f targetWorld = mHost->getWorldTransform() * targetLocal;
+  mWanderTarget = normVec(mWanderTarget);
+  mWanderTarget *= mWanderRadius;
+//  mWanderTarget.y *= -1.f;
 
-    sf::Vector2f returns(targetWorld - mHost->getWorldPosition());
 
-    return returns;
+//  sf::Vector2f targetLocal = mWanderTarget;// + sf::Vector2f(0.f, -mWanderDistance);
+  sf::Vector2f targetLocal = mWanderTarget + sf::Vector2f(0.f, -mWanderDistance);
+//  sf::Vector2f targetLocal(0.f, 0.f);// + sf::Vector2f(0.f, -mWanderDistance);
+//  sf::Vector2f targetLocal = sf::Vector2f(0.f, -mWanderDistance);
+//  sf::Vector2f targetLocal = sf::Vector2f(1.f, -1.f);
+//  sf::Vector2f targetWorld = mHost->getWorldTransform() * targetLocal;
+  sf::Vector2f targetWorld = mHost->getWorldTransform().transformPoint(targetLocal);
+
+//    sf::Vector2f returnVec(targetWorld - mHost->getWorldPosition());
+
+//  mHost->setWanderTargetPosition(sf::Vector2f(0.f, -mWanderDistance));
+//  mHost->setWanderTargetPosition(meterToPixel(targetWorld));
+//  mHost->setWanderTargetPosition(meterToPixel(targetWorld));
+  mHost->setWanderTargetPosition(meterToPixel(targetWorld));
+
+  return sf::Vector2f(targetWorld - mHost->getWorldPosition());
+//  return sf::Vector2f();
 }
 
-sf::Vector2f SteeringBehaviour::followPath()
-{
+sf::Vector2f SteeringBehaviour::followPath(){
     if(mPath.isActive())
     {
         sf::Vector2f toWaypoint = mHost->getPosition() - mPath.currentWaypoint();
@@ -218,8 +229,7 @@ sf::Vector2f SteeringBehaviour::followPath()
     }
 }
 
-sf::Vector2f SteeringBehaviour::obstacleAvoidance()
-{
+sf::Vector2f SteeringBehaviour::obstacleAvoidance(){
     float boxLength = mMinViewBoxLength
                     + (mHost->getSpeed() / mHost->getMaxSpeed())
                     * mMinViewBoxLength;
@@ -286,44 +296,25 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance()
     return worldForce - mHost->getWorldPosition();
 }
 
-sf::Vector2f SteeringBehaviour::wallAvoidance()
-{
+sf::Vector2f SteeringBehaviour::wallAvoidance(){
     createFeelers();
-
-    float distToThisIntersection = 0.f;
-    float distToClosestIntersection = MAXFLOAT;
-
     sf::Vector2f steeringForce, point, closestPoint, closestNorm;
 
     std::list<Scenery*> walls;
     mHost->getObstacles(walls, Scenery::Type::Wall);
 
+    sf::Vector2f closestFeeler, closestIntersection;
     float closestFraction = 1.f;
-    sf::Vector2f closestFeeler;
-    sf::Vector2f closestIntersection;
-    bool intersectionOccured;
+    bool intersectionOccured = false;
 
-    for(size_t flr = 0; flr < Feelers::NumFlr; flr++)
+    for(size_t flr = 0; flr < SteeringBehaviour::Feelers::NumFlr; flr++)
     {
-//        int closestWall = -1;
-//        int index = 0;
-
         std::list<Scenery*>::iterator itrScenery;
 
         for(itrScenery = walls.begin();
             itrScenery != walls.end();
             itrScenery++)
         {
-//            Wall* wall = dynamic_cast<Wall*>(block->getScenery());
-
-
-
-//            WallBlock* wall = dynamic_cast<WallBlock*>(block);
-//            assert(wall);
-
-//            Wall::WallData wallData = wall->getSceneryData();
-//            std::vector<WallBlock::Edge> wallData = wall->getData();
-
             const b2Fixture* fixture = (*itrScenery)->getFixtures();
 
             sf::Vector2f p1(mHost->getWorldPosition());
@@ -343,37 +334,15 @@ sf::Vector2f SteeringBehaviour::wallAvoidance()
               closestFraction = output.fraction;
               closestFeeler = p2;
               closestIntersection = p1 + closestFraction * (p2 - p1);
+              closestNorm = convertVec(output.normal);
               intersectionOccured = true;
             }
-
-//            for(std::vector<WallBlock::Edge>::iterator iter = wallData.begin();
-//                iter != wallData.end();
-//                iter++)
-//            {
-//               if(lineIntersection2D(mHost->getWorldPosition()
-//                                     , mHost->getWorldTransform() * mFeelers.at(flr)
-//                                     , iter->at(WallBlock::EdgeData::PointA)
-//                                     , iter->at(WallBlock::EdgeData::PointB)
-//                                     , distToThisIntersection
-//                                     , point))
-//               {
-//
-//                   if(distToThisIntersection < distToClosestIntersection)
-//                   {
-//                       distToClosestIntersection = distToThisIntersection;
-//                       closestWall = index;
-//                       closestPoint = point;
-//                       closestNorm = iter->at(WallBlock::EdgeData::Normal);
-//                   }
-//               }
-//            }
-//
-//            index ++;
         }
 
-//        if(closestWall >= 0)
         if(intersectionOccured)
         {
+          std::cout << "Intersection occured " << closestNorm.x << "," << closestNorm.y << std::endl;
+
             sf::Vector2f overShoot = closestFeeler - closestIntersection;
             steeringForce = closestNorm * magVec(overShoot);
         }
@@ -382,8 +351,7 @@ sf::Vector2f SteeringBehaviour::wallAvoidance()
     return steeringForce;
 }
 
-sf::Vector2f SteeringBehaviour::seperation()
-{
+sf::Vector2f SteeringBehaviour::seperation(){
     sf::Vector2f steeringForce;
 
     std::list<Entity*> neighbours;
@@ -399,8 +367,7 @@ sf::Vector2f SteeringBehaviour::seperation()
     return steeringForce;
 }
 
-sf::Vector2f SteeringBehaviour::alignment()
-{
+sf::Vector2f SteeringBehaviour::alignment(){
     sf::Vector2f averageHeading;
     int neighbourCount = 0;
 
@@ -426,8 +393,7 @@ sf::Vector2f SteeringBehaviour::alignment()
     return averageHeading;
 }
 
-sf::Vector2f SteeringBehaviour::cohesion()
-{
+sf::Vector2f SteeringBehaviour::cohesion(){
     sf::Vector2f steeringForce, centerOfMass;
     int neighbourCount = 0;
 
@@ -454,8 +420,7 @@ sf::Vector2f SteeringBehaviour::cohesion()
     return normVec(steeringForce);
 }
 
-sf::Vector2f SteeringBehaviour::flocking()
-{
+sf::Vector2f SteeringBehaviour::flocking(){
     sf::Vector2f steeringForce;
 
     steeringForce += alignment() * mAlignmentMultiplier;
@@ -464,8 +429,7 @@ sf::Vector2f SteeringBehaviour::flocking()
     return steeringForce;
 }
 
-sf::Vector2f SteeringBehaviour::calculate(sf::Time dt)
-{
+sf::Vector2f SteeringBehaviour::calculate(sf::Time dt){
     sf::Vector2f steeringForce;
 
     if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::WallAvoidance))
@@ -478,10 +442,10 @@ sf::Vector2f SteeringBehaviour::calculate(sf::Time dt)
 
     if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::ObstacleAvoidance))
     {
-        sf::Vector2f force = obstacleAvoidance() * mObstacleAvoidanceMultiplier;
-
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
+//        sf::Vector2f force = obstacleAvoidance() * mObstacleAvoidanceMultiplier;
+//
+//        if(!accumulateForce(steeringForce, force))
+//            return steeringForce;
     }
 
     if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Seperation))
@@ -551,8 +515,7 @@ sf::Vector2f SteeringBehaviour::calculate(sf::Time dt)
     return steeringForce;
 }
 
-void SteeringBehaviour::setNewBehaviours(std::vector<SteeringBehaviour::Behaviour> newTypes)
-{
+void SteeringBehaviour::setNewBehaviours(std::vector<SteeringBehaviour::Behaviour> newTypes){
     for(bool& b : mBehaviourFlags)
         b = false;
 
@@ -566,8 +529,7 @@ void SteeringBehaviour::setNewBehaviours(std::vector<SteeringBehaviour::Behaviou
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
 }
 
-void SteeringBehaviour::setNewBehaviours(SteeringBehaviour::Behaviour newType)
-{
+void SteeringBehaviour::setNewBehaviours(SteeringBehaviour::Behaviour newType){
     for(bool& b : mBehaviourFlags)
         b = false;
 

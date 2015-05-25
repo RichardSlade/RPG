@@ -40,7 +40,7 @@ Enemy::Enemy(QuadTree* quadTree
 
 void Enemy::updateCurrent(sf::Time dt)
 {
-   mStateMachine.update();
+//   mStateMachine.update();
 
    Entity::updatePhysicsBody(dt);
    Entity::updateCurrent(dt);

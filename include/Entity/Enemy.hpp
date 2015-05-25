@@ -34,6 +34,7 @@ private:
 
 //    Entity*                      mCurrentTarget;
 
+
     virtual void                updateCurrent(sf::Time);
     virtual void                drawCurrent(sf::RenderTarget&
                                             , sf::RenderStates) const;
@@ -74,6 +75,7 @@ public:
                                 }
 
       unsigned int                     getCurrentStateType() {return mStateMachine.getCurrentStateType(); }
+
 //
 //    void                        setTargetBlockIndex(sf::Vector2i index)
 //                                { mTargetBlockIndex = index; }

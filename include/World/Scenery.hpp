@@ -31,20 +31,11 @@ protected:
 //    const LevelBlock*           mHostBlock;
     sf::Sprite                  mSprite;
 
-    virtual void                updateCurrent(sf::Time dt)
-                                {
-                                  if(mBodyType == b2BodyType::b2_dynamicBody)
-                                  {
-                                    sf::Transformable::setPosition(meterToPixel(getWorldPosition()));
-                                    sf::Transformable::setRotation(radianToDegree(getBodyRotation()));
-                                  }
-                                }
+
+    virtual void                updateCurrent(sf::Time dt);
 
     virtual void                drawCurrent(sf::RenderTarget& target,
-                                              sf::RenderStates states) const
-                                {
-                                  target.draw(mSprite, states);
-                                }
+                                              sf::RenderStates states) const;
 
 public:
                                 Scenery(const sf::Texture& texture,
@@ -53,26 +44,11 @@ public:
                                         sf::Vector2f worldSize,
                                         b2Body* body,
                                         b2BodyType bodyType,
-                                        Scenery::Type type)
-                                : PhysicsBody(body,
-                                              bodyType,
-                                              pos,
-                                              worldSize)
-                                , mSceneryType(type)
-                                , mSprite(texture,
-                                          spriteRect)
-                                {
-                                  sf::FloatRect bounds = mSprite.getLocalBounds();
-                                  mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-
-                                  sf::Transformable::setPosition(meterToPixel(pos));
-
-//                                  mSprite.setPosition(meterToPixel(pos));
-
-//                                  mBodyBounds = mSprite.getLocalBounds();
-                                };
+                                        Scenery::Type type);
 
     virtual                     ~Scenery(){};
+
+    virtual void                addToQuadTree(QuadTree* quadTree);
 
     Scenery::Type               getSceneryType() {return mSceneryType;}
 

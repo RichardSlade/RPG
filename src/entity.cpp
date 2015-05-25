@@ -41,7 +41,11 @@ Entity::Entity(QuadTree* quadTree
 , mCurrentTarget(nullptr)
 , mText(".....", font, 12)
 , mHPText("100%", font, 12)
+, mWanderTarget(5.f)
+, mOrigin(5.f)
 {
+//  mWanderTarget.setPosition(sf::Vector2f(500.f, 500.f));
+
    mSprite.scale(scale, scale);
    sf::FloatRect bounds = mSprite.getLocalBounds();
    mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
@@ -49,6 +53,14 @@ Entity::Entity(QuadTree* quadTree
 
    sf::Transformable::setPosition(meterToPixel(startPos));
 
+  mWanderTarget.setFillColor(sf::Color::Magenta);
+  bounds = mWanderTarget.getLocalBounds();
+  mWanderTarget.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+
+  mOrigin.setFillColor(sf::Color::Green);
+  bounds = mOrigin.getLocalBounds();
+  mOrigin.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+  mOrigin.setPosition(0.f, 0.f);
 //   mBodyBounds = mSprite.getLocalBounds();
 
 //   float theta = randomClamped() * (2.f * PI);
@@ -105,9 +117,12 @@ void Entity::updateCurrent(sf::Time dt)
 void Entity::drawCurrent(sf::RenderTarget& target
                         , sf::RenderStates states) const
 {
-   target.draw(mSprite, states);
-   target.draw(mText, states);
-   target.draw(mHPText, states);
+  target.draw(mSprite, states);
+  target.draw(mText, states);
+  target.draw(mHPText, states);
+//  target.draw(mWanderTarget, states);
+  target.draw(mOrigin, states);
+  target.draw(mWanderTarget);
 }
 
 void Entity::updatePhysicsBody(sf::Time dt)
@@ -118,37 +133,39 @@ void Entity::updatePhysicsBody(sf::Time dt)
 
 //   mVelocity *= 0.99f;
 //   mVelocity += (acceleration * 2.f) * dt.asSeconds();
+//   mVelocity = acceleration * dt.asSeconds() * 10.f;
    mVelocity += acceleration * dt.asSeconds();
-//   mVelocity = acceleration * dt.asSeconds();
+//   mVelocity = acceleration * dt.asSeconds() * 20.f;
 
    truncateVec(mVelocity, mMaxSpeed);
-   mBody->SetLinearVelocity(b2Vec2(mVelocity.x,
-                                          mVelocity.y));
+   mBody->SetLinearVelocity(convertVec(mVelocity));
 
-   // Rotation
-   if(std::fabs(magVec(mVelocity)) > MINFLOAT)
-   {
-     int sign = signVec(mHeading, mVelocity);
+  // Rotation
+//  if(std::fabs(magVec(mVelocity)) > MINFLOAT)
+//  {
+    int sign = signVec(mHeading, mVelocity);
 
-//     float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
-     float angle = dotVec(mHeading, normVec(mVelocity));
-     angle *= sign;
+  //     float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
+    float angle = dotVec(mHeading, normVec(mVelocity));
+    angle *= sign;
 
-     clampRotation(angle
-                   , -mMaxTurnRate
-                   , mMaxTurnRate);
+  //     clampRotation(angle
+  //                   , -mMaxTurnRate
+  //                   , mMaxTurnRate);
 
-//     if(angle > MINFLOAT || angle < -MINFLOAT)
-//         rotate(angle * (180.f / PI));
+  //       sf::Vector2f toCursor = mVelocity;
+  //      angle = std::atan2(toCursor.x, -toCursor.y);
 
-      if(angle > MINFLOAT || angle < -MINFLOAT)
-         mBody->SetAngularVelocity(angle);
-   }
+  //     if(angle > MINFLOAT || angle < -MINFLOAT)
+  //         rotate(angle * (180.f / PI));
 
-//   float currentRotation = mPhysicsBody->GetAngle();
-//   mHeading = sf::Vector2f(std::sin(currentRotation), -std::cos(currentRotation));
-//
-//   sf::Transformable::setRotation((180 / PI) * currentRotation);
+//    mBody->SetAngularVelocity(0.f);
+
+    if(angle > MINFLOAT || angle < -MINFLOAT)
+      mBody->SetAngularVelocity(sign);
+//      mBody->ApplyAngularImpulse(angle, true);
+//  }
+
 }
 
 //void Entity::adjustPosition()

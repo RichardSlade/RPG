@@ -45,7 +45,9 @@ public:
     enum Feelers
     {
         Left,
+        LeftFront,
         Front,
+        RightFront,
         Right,
         NumFlr
     };

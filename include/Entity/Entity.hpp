@@ -69,7 +69,8 @@ protected:
     Entity*                     mCurrentTarget;
     sf::Text                    mText;
     sf::Text                    mHPText;
-
+  sf::CircleShape               mWanderTarget;
+  sf::CircleShape               mOrigin;
 
     virtual void                updateCurrent(sf::Time);
     virtual void                drawCurrent(sf::RenderTarget& target
@@ -178,6 +179,9 @@ public:
                                  mHPText.setString(msg);
                                  mHPText.setColor(sf::Color(255, 255, 255, 255));
                               }
+
+  void                          setWanderTargetPosition(sf::Vector2f pos) {mWanderTarget.setPosition(pos);}
+
 
    //    void                        setTargetPos(sf::Vector2f pos)
    //                                { mTargetPos = pos; }

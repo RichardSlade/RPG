@@ -32,6 +32,7 @@ private:
   int                                   mLevel;
   std::list<Scenery*>                   mScenery;
   std::list<Entity*>                    mEntities;
+  bool                                  mHasSplit;
 
   sf::FloatRect                         mBounds;
   std::array<QuadTree::upQuadTree, 4>   mChildren;

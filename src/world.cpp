@@ -251,7 +251,7 @@ void World::generateAgents(const Controller& controller)
 //      float size = controller.getTexture(Controller::Textures::Adventurer).getSize().x;
 
       b2Body* body = generatePhysicsBody(pos,
-                                         1.f,
+                                         0.5f,
                                          b2BodyType::b2_dynamicBody);
 
       std::unique_ptr<Adventurer> adventurerNode(new Adventurer(mWindow
@@ -278,12 +278,11 @@ void World::generateAgents(const Controller& controller)
     mCurrentAdventurer->setIsSelected(true);
 
     // Initialise enemy and add to scene graph
-    for(int i = 0 ; i < 0; i++)
+    for(int i = 0 ; i < 1; i++)
     {
       // Find square for enemy to start in
 //      LevelBlock* levelBlock;
-      sf::Vector2i index;
-      sf::Vector2f pos;
+      sf::Vector2f pos(mWorldBounds.width / 2.f, mWorldBounds.height / 2.f);
 
 //      int maxX = mLevel->getLevelX();
 
@@ -297,23 +296,23 @@ void World::generateAgents(const Controller& controller)
 //      float size = controller.getTexture(Controller::Textures::Enemy).getSize().x;
 
       b2Body* body = generatePhysicsBody(pos,
-                                         1.f,
+                                         0.5f,
                                          b2BodyType::b2_dynamicBody);
 
       std::unique_ptr<Enemy> enemyNode(new Enemy(mQuadTree.get()
-                                              , controller.getTexture(Controller::Textures::Enemy)
-                                              , controller.getFont(Controller::Fonts::Sansation)
-                                              , pos
-                                              , mEntityStats.at(World::Stats::EnemyStats)
-                                              , controller.getParams()
-                                              , mEnemyStates.at(Enemy::States::LookOut).get()
-                                              , mEnemyStates.at(Enemy::States::Relax).get()
-                                              , mEnemyStates
-                                              , Enemy::States::Relax
-                                              , body));
+                                                , controller.getTexture(Controller::Textures::Enemy)
+                                                , controller.getFont(Controller::Fonts::Sansation)
+                                                , pos
+                                                , mEntityStats.at(World::Stats::EnemyStats)
+                                                , controller.getParams()
+                                                , mEnemyStates.at(Enemy::States::LookOut).get()
+                                                , mEnemyStates.at(Enemy::States::Relax).get()
+                                                , mEnemyStates
+                                                , Enemy::States::Relax
+                                                , body));
 
 //        enemyNode->setMovingTarget(mAdventurers.at(0));
-//      mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(enemyNode));
+      mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(std::move(enemyNode));
    }
 }
 
@@ -434,13 +433,14 @@ void World::update(sf::Time dt)
 {
   mQuadTree->clear();
 
-    mSceneGraph.removeDeletedNodes();
-    mSceneGraph.update(dt);
+  mSceneGraph.removeDeletedNodes();
+  mSceneGraph.addToQuadTree(mQuadTree.get());
+  mSceneGraph.update(dt);
 
-    mTimeLeft -= dt;
-    mTimeTaken += dt;
+  mTimeLeft -= dt;
+  mTimeTaken += dt;
 
-    mHUD.update();
+  mHUD.update();
 
 //    if(mEnemyHerded == mNumEnemy)
 //        mGameState.levelComplete();

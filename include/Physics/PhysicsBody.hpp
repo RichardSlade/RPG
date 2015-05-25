@@ -40,12 +40,19 @@ public:
    sf::Transform           getWorldTransform() const
                            {
                               b2Transform b2dTrans = mBody->GetTransform();
-                              b2Vec2 pos = b2dTrans.p;
+                              sf::Vector2f pos = convertVec(b2dTrans.p);
 
-                              sf::Transform sfTrans;
-                              sfTrans.rotate(b2dTrans.q.GetAngle()).translate(pos.x, pos.y);
+//                              sf::Transform translation;
+//                              translation.translate(pos);
+//
+//                              sf::Transform rotation;
+//                              rotation.rotate(radianToDegree(b2dTrans.q.GetAngle()));
 
-                              return sfTrans;
+
+//                              sfTrans.translate(pos.x, pos.y).rotate(radianToDegree(b2dTrans.q.GetAngle()));
+
+//                              return translation * rotation;
+                              return sf::Transform().translate(pos).rotate(radianToDegree(b2dTrans.q.GetAngle()));
                            }
 
    sf::Vector2f            getWorldPosition() const {return convertVec(mBody->GetPosition());}

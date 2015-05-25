@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "SceneNode/SceneNode.hpp"
+#include "World/QuadTree.hpp"
 
 SceneNode::SceneNode()
 : mParent(nullptr)
@@ -22,22 +23,29 @@ void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	drawChildren(target, states);
 }
 
+void SceneNode::addToQuadTree(QuadTree* quadTree)
+{
+  for(upScNode& node : mChildren)
+    node->addToQuadTree(quadTree);
+}
+
 void SceneNode::updateChildren(sf::Time dt)
 {
-    for(upScNode& node : mChildren)
-        node->update(dt);
+  for(upScNode& node : mChildren)
+    node->update(dt);
 }
 
 void SceneNode::drawChildren(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    for(const upScNode& node : mChildren)
-        node->draw(target, states);
+  for(const upScNode& node : mChildren)
+    node->draw(target, states);
 }
 
 void SceneNode::update(sf::Time dt)
 {
-    updateCurrent(dt);
-    updateChildren(dt);
+//  addToQuadTree();
+  updateCurrent(dt);
+  updateChildren(dt);
 }
 
 void SceneNode::addChild(upScNode node)

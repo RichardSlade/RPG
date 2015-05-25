@@ -84,7 +84,6 @@
 		<Unit filename="src/gameCompleteScreen.cpp" />
 		<Unit filename="src/gameState.cpp" />
 		<Unit filename="src/hud.cpp" />
-		<Unit filename="src/level.cpp" />
 		<Unit filename="src/levelCompleteScreen.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/meleeFighter.cpp" />

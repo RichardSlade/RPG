@@ -15,10 +15,10 @@ sf::Vector2f normVec(sf::Vector2f vec)
 {
     float mag = magVec(vec);
 
-    if(mag > MINFLOAT)
+//    if(mag > MINFLOAT)
         return vec / magVec(vec);
-    else
-        return sf::Vector2f();
+//    else
+//        return sf::Vector2f();
 }
 
 sf::Vector2f normVec(float x, float y)

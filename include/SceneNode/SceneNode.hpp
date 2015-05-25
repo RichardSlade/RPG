@@ -10,6 +10,8 @@
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/System/Time.hpp>
 
+class QuadTree;
+
 class SceneNode : public sf::Transformable, public sf::Drawable
                 , private sf::NonCopyable
 {
@@ -41,6 +43,10 @@ public:
                                             SceneNode();
     virtual                                 ~SceneNode(){};
 
+  virtual void                              addToQuadTree(QuadTree* quadTree);
+
+
+//    void                                    addToQuadTree(QuadTree* quadTree);
     void                                    update(sf::Time);
 
     void                                    addChild(upScNode);

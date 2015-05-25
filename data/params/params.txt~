@@ -1,6 +1,6 @@
 WindowX 1024
 WindowY 640
-LevelBlockSize 2
+LevelBlockSize 1
 WorldDimMin 20
 WorldDimMax 20
 NumSheepMin 50
@@ -14,13 +14,13 @@ EnemyAngleOfVision 180
 EnemyPanicDistance 300
 CharacterPanicDistance 200
 PI 3.14159265358979
-WanderRadius 2.4
-WanderDistance 10
-WanderJitter 80
+WanderRadius 1.0
+WanderDistance 2.0
+WanderJitter 10.0
 InteractionRadius 0
-FeelerLength 50
+FeelerLength 2
 MinArriveDist 15
-WallAvoidanceMultiplier 20
+WallAvoidanceMultiplier 2
 ArriveMultiplier 1
 EvadeMultiplier 5
 WanderMultiplier 0.1
