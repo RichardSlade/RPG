@@ -39,7 +39,7 @@ Adventurer::Adventurer(const sf::RenderWindow& window
 , mIsSelected(false)
 , mMove(false)
 {
-    setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
+//    setSteeringTypes(SteeringBehaviour::Behaviour::FollowPath);
     mText.setString("....");
 }
 

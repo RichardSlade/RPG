@@ -69,11 +69,8 @@
 		<Unit filename="include/Physics/PhysicsBody.hpp" />
 		<Unit filename="include/SceneNode/SceneNode.hpp" />
 		<Unit filename="include/SceneNode/SpriteNode.hpp" />
-		<Unit filename="include/World/Level.hpp" />
-		<Unit filename="include/World/LevelBlock.hpp" />
 		<Unit filename="include/World/QuadTree.hpp" />
 		<Unit filename="include/World/Scenery.hpp" />
-		<Unit filename="include/World/WallBlock.hpp" />
 		<Unit filename="include/World/World.hpp" />
 		<Unit filename="src/adventurer.cpp" />
 		<Unit filename="src/adventurerStates.cpp" />
@@ -92,6 +89,7 @@
 		<Unit filename="src/pausedScreen.cpp" />
 		<Unit filename="src/quadTree.cpp" />
 		<Unit filename="src/sceneNode.cpp" />
+		<Unit filename="src/scenery.cpp" />
 		<Unit filename="src/spriteNode.cpp" />
 		<Unit filename="src/steeringBehaviour.cpp" />
 		<Unit filename="src/utility.cpp" />

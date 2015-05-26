@@ -121,7 +121,7 @@ void Entity::drawCurrent(sf::RenderTarget& target
   target.draw(mText, states);
   target.draw(mHPText, states);
 //  target.draw(mWanderTarget, states);
-  target.draw(mOrigin, states);
+//  target.draw(mOrigin, states);
   target.draw(mWanderTarget);
 }
 

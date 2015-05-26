@@ -26,6 +26,29 @@ Scenery::Scenery(const sf::Texture& texture,
 //                                  mBodyBounds = mSprite.getLocalBounds();
 };
 
+Scenery::Scenery(const sf::Texture& texture,
+        sf::Vector2f pos,
+        float radius,
+        b2Body* body,
+        b2BodyType bodyType,
+        Scenery::Type type)
+: PhysicsBody(body,
+              bodyType,
+              pos,
+              radius)
+, mSceneryType(type)
+, mSprite(texture)
+{
+  sf::FloatRect bounds = mSprite.getLocalBounds();
+  mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+
+  sf::Transformable::setPosition(meterToPixel(pos));
+
+//                                  mSprite.setPosition(meterToPixel(pos));
+
+//                                  mBodyBounds = mSprite.getLocalBounds();
+};
+
 void Scenery::addToQuadTree(QuadTree* quadTree)
 {
   // Add children

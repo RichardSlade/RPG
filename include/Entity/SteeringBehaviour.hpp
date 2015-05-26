@@ -63,8 +63,8 @@ private:
      const float                            mFeelerLength;
      const float                            mMinArriveDist;
 
-     const float                            mObstacleAvoidanceMultiplier;
      const float                            mWallAvoidanceMultiplier;
+     const float                            mObstacleAvoidanceMultiplier;
      const float                            mArriveMultiplier;
      const float                            mEvadeMultiplier;
      const float                            mWanderMultiplier;
@@ -133,7 +133,7 @@ public:
 
     // Setters
     void                                    setNewBehaviours(std::vector<SteeringBehaviour::Behaviour>);
-    void                                    setNewBehaviours(SteeringBehaviour::Behaviour);
+//    void                                    setNewBehaviours(SteeringBehaviour::Behaviour);
 };
 
 #endif // STEERINGBEHAVIOUR_HPP

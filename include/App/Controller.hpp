@@ -45,6 +45,7 @@ public:
         Exit,
         Brick,
         Stone,
+        Barrel,
 //        Ground,
         NumTextures
     };

@@ -162,8 +162,8 @@ public:
    void                       setSteeringTypes(std::vector<SteeringBehaviour::Behaviour> newBehaviours)
                               { mSteering.setNewBehaviours(newBehaviours); }
 
-   void                       setSteeringTypes(SteeringBehaviour::Behaviour newBehaviour)
-                              { mSteering.setNewBehaviours(newBehaviour); }
+//   void                       setSteeringTypes(SteeringBehaviour::Behaviour newBehaviour)
+//                              { mSteering.setNewBehaviours(newBehaviour); }
 
    void                       changeColour(sf::Color colour)
                               { mSprite.setColor(colour); }

@@ -32,6 +32,18 @@ public:
                            , mRadius(std::sqrt((size.x * size.x) + (size.y * size.y)))
                            {};
 
+                           PhysicsBody(b2Body* body,
+                                       b2BodyType type,
+                                       sf::Vector2f pos,
+                                       float radius)
+                           : mBody(body)
+                           , mBodyType(type)
+                           , mBodyBounds(pos.x - (radius / 2.f),
+                                     pos.y - (radius / 2.f),
+                                     radius, radius)
+                           , mRadius(radius)
+                           {};
+
    // Getters
 //   const b2Body*           getBody() const {return mBody;}
   const b2Fixture*         getFixtures() const {return mBody->GetFixtureList(); }

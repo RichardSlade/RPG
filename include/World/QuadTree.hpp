@@ -32,9 +32,10 @@ private:
   int                                   mLevel;
   std::list<Scenery*>                   mScenery;
   std::list<Entity*>                    mEntities;
-  bool                                  mHasSplit;
+//  bool                                  mHasSplit;
 
   sf::FloatRect                         mBounds;
+//  std::array<QuadTree::upQuadTree, 4>   mChildren;
   std::array<QuadTree::upQuadTree, 4>   mChildren;
 //  std::array<int, 4>   mChildren;
 //  std::vector<QuadTree::upQuadTree>     mChildren;
@@ -44,9 +45,8 @@ private:
   void                                  distributeObjects();
   int                                   getIndex(const PhysicsBody* body) const;
 
-
 public:
-                                        QuadTree(){};
+                                        QuadTree();
 
                                         QuadTree(int level,
                                                sf::FloatRect bounds);

@@ -67,13 +67,14 @@ World::World(GameState& gameState
 }
 
 b2Body* World::generatePhysicsBody(sf::Vector2f pos,
-                         sf::Vector2f size,
-                         b2BodyType type = b2_staticBody)
+                                   sf::Vector2f size,
+                                   b2BodyType type,
+                                   float dampening)
 {
    b2BodyDef bodyDef;
    bodyDef.type = type;
-   bodyDef.linearDamping = 4.f;
-   bodyDef.angularDamping = 4.f;
+   bodyDef.linearDamping = dampening;
+   bodyDef.angularDamping = dampening;
    bodyDef.position.Set(pos.x, pos.y);
 
    b2Body* body = mPhysicsEngine.CreateBody(&bodyDef);
@@ -102,13 +103,14 @@ b2Body* World::generatePhysicsBody(sf::Vector2f pos,
 }
 
 b2Body* World::generatePhysicsBody(sf::Vector2f pos,
-                      float radius,
-                      b2BodyType type = b2_staticBody)
+                                  float radius,
+                                  b2BodyType type,
+                                  float dampening)
 {
    b2BodyDef bodyDef;
    bodyDef.type = type;
-   bodyDef.linearDamping = 1.f;
-   bodyDef.angularDamping = 1.f;
+   bodyDef.linearDamping = dampening;
+   bodyDef.angularDamping = dampening;
    bodyDef.position.Set(pos.x, pos.y);
 
    b2Body* body = mPhysicsEngine.CreateBody(&bodyDef);
@@ -197,12 +199,14 @@ void World::buildScene(const Controller& controller)
                                                                                             pos,
                                                                                             spriteSize,
                                                                                             worldSize,
-                                                                                            generatePhysicsBody(pos, worldSize),
+                                                                                            generatePhysicsBody(pos,
+                                                                                                                worldSize,
+                                                                                                                b2BodyType::b2_staticBody,
+                                                                                                                0.f),
                                                                                             b2BodyType::b2_staticBody,
                                                                                             Scenery::Type::Wall)));
 
-    switch(i)
-    {
+    switch(i){
       case 0: pos.y = mWorldBounds.height; break;
       case 1:
       {
@@ -215,26 +219,32 @@ void World::buildScene(const Controller& controller)
     }
   }
 
+  // Place obstacles
+  float obstacleSize = 0.5f;
 
-//  for(int i = 0; i < 4; i++)
-//  {
-//    if(i == 2)
-//    {
-//      pos.x -= size.x;
-//      size = sf::Vector2f(size.y, size.x);
-//      pos.y += size.y;
-//    }
-//
-//    mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(Scenery::upScenery(new Scenery(controller.getTexture(Controller::Textures::Stone),
-//                                                                                            meterToPixel(pos),
-//                                                                                            generatePhysicsBody(pos, size),
-//                                                                                            b2BodyType::b2_staticBody)));
-//
-//     pos.x += size.x;
-//  }
-//    mLevel->generateLevel(mSceneLayers, controller);
+  for(int i =  0; i < 25; i++){
+    pos.x = rangedClamped(2.f, mWorldBounds.width - 2.f);
+    pos.y = rangedClamped(2.f, mWorldBounds.width - 2.f);
 
-    generateAgents(controller);
+//    sf::Vector2f pixelPos(meterToPixel(pos));
+//    sf::Vector2f pixelSize(meterToPixel(obstacleSize));
+//
+//    sf::IntRect spriteSize(sf::Vector2i(pos - (pixelSize / 2.f)),
+//                           sf::Vector2i(pixelSize));
+
+    mSceneLayers.at(SceneNode::Layers::Foreground)->addChild(Scenery::upScenery(new Scenery(controller.getTexture(Controller::Textures::Barrel),
+                                                                                            pos,
+                                                                                            obstacleSize,
+                                                                                            generatePhysicsBody(pos,
+                                                                                                                obstacleSize,
+                                                                                                                b2BodyType::b2_dynamicBody,
+                                                                                                                5.f),
+                                                                                            b2BodyType::b2_dynamicBody,
+                                                                                            Scenery::Type::Obstacle)));
+
+  }
+
+  generateAgents(controller);
 }
 
 void World::generateAgents(const Controller& controller)
@@ -252,7 +262,8 @@ void World::generateAgents(const Controller& controller)
 
       b2Body* body = generatePhysicsBody(pos,
                                          0.5f,
-                                         b2BodyType::b2_dynamicBody);
+                                         b2BodyType::b2_dynamicBody,
+                                         0.f);
 
       std::unique_ptr<Adventurer> adventurerNode(new Adventurer(mWindow
                                                                , mQuadTree.get()
@@ -297,7 +308,8 @@ void World::generateAgents(const Controller& controller)
 
       b2Body* body = generatePhysicsBody(pos,
                                          0.5f,
-                                         b2BodyType::b2_dynamicBody);
+                                         b2BodyType::b2_dynamicBody,
+                                         0.f);
 
       std::unique_ptr<Enemy> enemyNode(new Enemy(mQuadTree.get()
                                                 , controller.getTexture(Controller::Textures::Enemy)

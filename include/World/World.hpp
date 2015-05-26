@@ -89,12 +89,14 @@ private:
    unsigned int                                 mCurrentAdventurerIndex;
 
    b2Body*                                      generatePhysicsBody(sf::Vector2f pos,
-                                                             sf::Vector2f size,
-                                                             b2BodyType type);
+                                                                   sf::Vector2f size,
+                                                                   b2BodyType type,
+                                                                   float dampening);
 
    b2Body*                                      generatePhysicsBody(sf::Vector2f pos,
-                                                             float radius,
-                                                             b2BodyType type);
+                                                                   float radius,
+                                                                   b2BodyType type,
+                                                                   float dampening);
 
    void                                         initialiseStatesAndStats();
    void                                         buildScene(const Controller&);

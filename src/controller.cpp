@@ -68,6 +68,7 @@ void Controller::loadMedia()
 //    fileNames.push_back("media/textures/checkerMeter.png");
     fileNames.push_back("media/textures/brickLarge.png");
     fileNames.push_back("media/textures/stoneLarge.png");
+    fileNames.push_back("media/textures/barrel.png");
 
    assert(mTextures.size() >= fileNames.size());
 

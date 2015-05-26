@@ -23,6 +23,7 @@ public:
     enum Type
     {
       Wall,
+      Obstacle,
       All
     };
 
@@ -42,6 +43,13 @@ public:
                                         sf::Vector2f pos,
                                         sf::IntRect spriteRect,
                                         sf::Vector2f worldSize,
+                                        b2Body* body,
+                                        b2BodyType bodyType,
+                                        Scenery::Type type);
+
+                                Scenery(const sf::Texture& texture,
+                                        sf::Vector2f pos,
+                                        float radius,
                                         b2Body* body,
                                         b2BodyType bodyType,
                                         Scenery::Type type);

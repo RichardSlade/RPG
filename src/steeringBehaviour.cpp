@@ -24,8 +24,8 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
 , mFeelerLength(params.FeelerLength)
 //, mFeelerLength(1.f)
 , mMinArriveDist(params.MinArriveDist)
-, mObstacleAvoidanceMultiplier(2.f)
 , mWallAvoidanceMultiplier(params.WallAvoidanceMultiplier)
+, mObstacleAvoidanceMultiplier(params.ObstacleAvoidanceMultiplier)
 , mArriveMultiplier(params.ArriveMultiplier)
 , mEvadeMultiplier(params.EvadeMultiplier)
 , mWanderMultiplier(params.WanderMultiplier)
@@ -42,10 +42,12 @@ SteeringBehaviour::SteeringBehaviour(Entity* host
    for(bool& b : mBehaviourFlags)
      b = false;
 
-   mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
+    mBehaviourFlags.at(SteeringBehaviour::ObstacleAvoidance) = true;
+    mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
+    mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
 
-   if(mHost->getEntityType() != Entity::Type::Adventurer)
-      mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
+//   if(mHost->getEntityType() != Entity::Type::Adventurer)
+//      mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
 };
 
 bool SteeringBehaviour::accumulateForce(sf::Vector2f& runningTotal, sf::Vector2f forceToAdd){
@@ -230,70 +232,71 @@ sf::Vector2f SteeringBehaviour::followPath(){
 }
 
 sf::Vector2f SteeringBehaviour::obstacleAvoidance(){
-    float boxLength = mMinViewBoxLength
-                    + (mHost->getSpeed() / mHost->getMaxSpeed())
-                    * mMinViewBoxLength;
+  float boxLength = mMinViewBoxLength
+                + (mHost->getSpeed() / mHost->getMaxSpeed())
+                * mMinViewBoxLength;
 
-    std::list<Scenery*> obstacles;
-    mHost->getObstacles(obstacles,
-                        Scenery::Type::Wall);
+  std::list<Scenery*> obstacles;
+  mHost->getObstacles(obstacles,
+                    Scenery::Type::Obstacle);
 
-    Scenery* closestObstacle = nullptr;
+  Scenery* closestObstacle = nullptr;
 
-    float distToClosest = MAXFLOAT;
+  float distToClosest = MAXFLOAT;
 
-//    sf::Transform hostTrans = mHost->getInverseTransform();
-    sf::Transform hostTrans = mHost->getWorldTransform().getInverse();
+  //    sf::Transform hostTrans = mHost->getInverseTransform();
+  sf::Transform hostTrans = mHost->getWorldTransform().getInverse();
 
   std::list<Scenery*>::iterator iter;
 
-    for(iter = obstacles.begin();
-        iter != obstacles.end();
-        iter++)
-    {
-        sf::Vector2f obsPos = hostTrans * (*iter)->getWorldPosition();
+  for(iter = obstacles.begin();
+    iter != obstacles.end();
+    iter++)
+  {
+    sf::Vector2f obsPos = hostTrans * (*iter)->getWorldPosition();
 
-        if(obsPos.y <= 0.f)
+    if(obsPos.y <= 0.f)
+    {
+      float expandedRadius = (*iter)->getBodyRadius() + mHost->getBodyRadius();
+
+      if(std::fabs(obsPos.x) < expandedRadius)
+      {
+        float sqrtPart = std::sqrt((expandedRadius * expandedRadius) - (obsPos.x * obsPos.x));
+        float intersectionPoint = obsPos.y - sqrtPart;
+
+        if(intersectionPoint <= 0.f)
+          intersectionPoint = obsPos.y + sqrtPart;
+
+
+        if(intersectionPoint < distToClosest)
         {
-            float expandedRadius = (*iter)->getBodyRadius() + mHost->getBodyRadius();
-
-            if(std::fabs(obsPos.x) < expandedRadius)
-            {
-              float sqrtPart = std::sqrt((expandedRadius * expandedRadius) - (obsPos.x * obsPos.x));
-              float intersectionPoint = obsPos.y - sqrtPart;
-
-              if(intersectionPoint <= 0.f)
-              {
-                  intersectionPoint = obsPos.y + sqrtPart;
-              }
-
-              if(intersectionPoint < distToClosest)
-              {
-                  distToClosest = intersectionPoint;
-                  closestObstacle = *iter;
-              }
-            }
+          distToClosest = intersectionPoint;
+          closestObstacle = *iter;
         }
+      }
     }
+  }
 
-    sf::Vector2f steeringForce;
+  sf::Vector2f steeringForce;
 
-    if(closestObstacle)
-    {
-        sf::Vector2f closestPos = hostTrans * closestObstacle->getWorldPosition();
+  if(closestObstacle)
+  {
+    std::cout << "Obstacle found " << randomClamped() << std::endl;
 
-        float multiplier = 1.f + (boxLength - closestPos.y) / boxLength;
+    sf::Vector2f closestPos = hostTrans * closestObstacle->getWorldPosition();
 
-        steeringForce.x = (closestObstacle->getBodyRadius() - closestPos.x) * multiplier;
+    float multiplier = 1.f + (boxLength - closestPos.y) / boxLength;
 
-        const float brakingWeight = 0.02;
+    steeringForce.x = (closestObstacle->getBodyRadius() - closestPos.x) * multiplier;
 
-        steeringForce.y = (closestObstacle->getBodyRadius() - closestPos.y) * brakingWeight;
-    }
+    const float brakingWeight = 0.02;
 
-    sf::Vector2f worldForce = mHost->getWorldTransform() * steeringForce;
+    steeringForce.y = (closestObstacle->getBodyRadius() - closestPos.y) * brakingWeight;
+  }
 
-    return worldForce - mHost->getWorldPosition();
+  sf::Vector2f worldForce = mHost->getWorldTransform().transformPoint(steeringForce);
+
+  return worldForce - mHost->getWorldPosition();
 }
 
 sf::Vector2f SteeringBehaviour::wallAvoidance(){
@@ -341,7 +344,7 @@ sf::Vector2f SteeringBehaviour::wallAvoidance(){
 
         if(intersectionOccured)
         {
-          std::cout << "Intersection occured " << closestNorm.x << "," << closestNorm.y << std::endl;
+//          std::cout << "Intersection occured " << closestNorm.x << "," << closestNorm.y << std::endl;
 
             sf::Vector2f overShoot = closestFeeler - closestIntersection;
             steeringForce = closestNorm * magVec(overShoot);
@@ -430,89 +433,89 @@ sf::Vector2f SteeringBehaviour::flocking(){
 }
 
 sf::Vector2f SteeringBehaviour::calculate(sf::Time dt){
-    sf::Vector2f steeringForce;
+  sf::Vector2f steeringForce;
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::WallAvoidance))
-    {
-        sf::Vector2f force = wallAvoidance() * mWallAvoidanceMultiplier;
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::WallAvoidance))
+  {
+      sf::Vector2f force = wallAvoidance() * mWallAvoidanceMultiplier;
 
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
-    }
+      if(!accumulateForce(steeringForce, force))
+          return steeringForce;
+  }
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::ObstacleAvoidance))
-    {
-//        sf::Vector2f force = obstacleAvoidance() * mObstacleAvoidanceMultiplier;
-//
-//        if(!accumulateForce(steeringForce, force))
-//            return steeringForce;
-    }
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::ObstacleAvoidance))
+  {
+    sf::Vector2f force = obstacleAvoidance() * mObstacleAvoidanceMultiplier;
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Seperation))
-    {
-        sf::Vector2f force = seperation() * mSeperationMultiplier;
+    if(!accumulateForce(steeringForce, force))
+      return steeringForce;
+  }
 
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
-    }
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Seperation))
+  {
+    sf::Vector2f force = seperation() * mSeperationMultiplier;
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Arrive))
-    {
-        sf::Vector2f force = arrive(mHost->getCurrentTarget()->getWorldPosition(), Deceleration::Fast) * mArriveMultiplier;
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+  }
 
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
-    }
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Arrive))
+  {
+    sf::Vector2f force = arrive(mHost->getCurrentTarget()->getWorldPosition(), Deceleration::Fast) * mArriveMultiplier;
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Evade))
-    {
-        sf::Vector2f force = evade() * mEvadeMultiplier;
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+  }
 
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
-    }
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Evade))
+  {
+    sf::Vector2f force = evade() * mEvadeMultiplier;
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Flock))
-    {
-        sf::Vector2f force = flocking() * mFlockingMultiplier;
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+  }
 
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
-    }
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Flock))
+  {
+    sf::Vector2f force = flocking() * mFlockingMultiplier;
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::FollowPath))
-    {
-        sf::Vector2f force = followPath() * 1.f;
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+  }
 
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
-    }
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::FollowPath))
+  {
+    sf::Vector2f force = followPath() * 1.f;
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Wander))
-    {
-        sf::Vector2f force = wander(dt) * mWanderMultiplier;
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+  }
 
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
-    }
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Wander))
+  {
+    sf::Vector2f force = wander(dt) * mWanderMultiplier;
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Rest))
-    {
-        sf::Vector2f force = rest();
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+  }
 
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
-    }
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Rest))
+  {
+    sf::Vector2f force = rest();
 
-    if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Face))
-    {
-        sf::Vector2f force = face();
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+  }
 
-        if(!accumulateForce(steeringForce, force))
-            return steeringForce;
-    }
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Face))
+  {
+    sf::Vector2f force = face();
 
-    return steeringForce;
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+  }
+
+  return steeringForce;
 }
 
 void SteeringBehaviour::setNewBehaviours(std::vector<SteeringBehaviour::Behaviour> newTypes){
@@ -520,24 +523,22 @@ void SteeringBehaviour::setNewBehaviours(std::vector<SteeringBehaviour::Behaviou
         b = false;
 
     for(SteeringBehaviour::Behaviour& bh : newTypes)
-    {
         mBehaviourFlags.at(bh) = true;
-    }
 
     mBehaviourFlags.at(SteeringBehaviour::ObstacleAvoidance) = true;
     mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
     mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
 }
 
-void SteeringBehaviour::setNewBehaviours(SteeringBehaviour::Behaviour newType){
-    for(bool& b : mBehaviourFlags)
-        b = false;
-
-    mBehaviourFlags.at(newType) = true;
-
-   if(mHost->getEntityType() != Entity::Type::Adventurer)
-      mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
-
-   mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
-}
+//void SteeringBehaviour::setNewBehaviours(SteeringBehaviour::Behaviour newType){
+//    for(bool& b : mBehaviourFlags)
+//        b = false;
+//
+//    mBehaviourFlags.at(newType) = true;
+//
+//   if(mHost->getEntityType() != Entity::Type::Adventurer)
+//      mBehaviourFlags.at(SteeringBehaviour::Seperation) = true;
+//
+//   mBehaviourFlags.at(SteeringBehaviour::WallAvoidance) = true;
+//}
 

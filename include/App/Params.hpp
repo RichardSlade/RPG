@@ -48,6 +48,7 @@ public:
     float FeelerLength;
     float MinArriveDist;
     float WallAvoidanceMultiplier;
+    float ObstacleAvoidanceMultiplier;
     float ArriveMultiplier;
     float EvadeMultiplier;
     float WanderMultiplier;
@@ -132,6 +133,9 @@ public:
 
         in.ignore(255, ' ');
         in >> params.WallAvoidanceMultiplier;
+
+        in.ignore(255, ' ');
+        in >> params.ObstacleAvoidanceMultiplier;
 
         in.ignore(255, ' ');
         in >> params.ArriveMultiplier;
