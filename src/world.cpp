@@ -222,7 +222,7 @@ void World::buildScene(const Controller& controller)
   // Place obstacles
   float obstacleSize = 0.5f;
 
-  for(int i =  0; i < 25; i++){
+  for(int i =  0; i < 12; i++){
     pos.x = rangedClamped(2.f, mWorldBounds.width - 2.f);
     pos.y = rangedClamped(2.f, mWorldBounds.width - 2.f);
 

@@ -91,37 +91,37 @@ void QuadTree::distributeObjects(){
  * of the parent node
  */
 int QuadTree::getIndex(const PhysicsBody* body) const{
-   int index = -1;
-   double verticalMidpoint = mBounds.left + (mBounds.width / 2);
-   double horizontalMidpoint = mBounds.top + (mBounds.height / 2);
+  int index = -1;
+  double verticalMidpoint = mBounds.left + (mBounds.width / 2);
+  double horizontalMidpoint = mBounds.top + (mBounds.height / 2);
 
-   assert(body);
+  assert(body);
 
-   sf::FloatRect rect = body->getBodyBounds();
+  sf::FloatRect rect = body->getBodyBounds();
 
-   // Object can completely fit within the top quadrants
-   bool topQuadrant = (rect.top < horizontalMidpoint && rect.top + rect.height < horizontalMidpoint);
-   // Object can completely fit within the bottom quadrants
-   bool bottomQuadrant = (rect.top > horizontalMidpoint);
+  // Object can completely fit within the top quadrants
+  bool topQuadrant = (rect.top < horizontalMidpoint && rect.top + rect.height < horizontalMidpoint);
+  // Object can completely fit within the bottom quadrants
+  bool bottomQuadrant = (rect.top > horizontalMidpoint);
 
-   // Object can completely fit within the left quadrants
-   if (rect.left < verticalMidpoint && rect.left + rect.width < verticalMidpoint) {
-      if (topQuadrant) {
-        index = 1;
-      }
-      else if (bottomQuadrant) {
-        index = 2;
-      }
+  // Object can completely fit within the left quadrants
+  if(rect.left < verticalMidpoint && rect.left + rect.width < verticalMidpoint) {
+    if (topQuadrant) {
+      index = 1;
     }
-    // Object can completely fit within the right quadrants
-    else if (rect.left > verticalMidpoint) {
-     if (topQuadrant) {
-       index = 0;
-     }
-     else if (bottomQuadrant) {
-       index = 3;
-     }
-   }
+    else if (bottomQuadrant) {
+      index = 2;
+    }
+  }
+  // Object can completely fit within the right quadrants
+  else if (rect.left > verticalMidpoint) {
+    if (topQuadrant) {
+     index = 0;
+    }
+    else if (bottomQuadrant) {
+     index = 3;
+    }
+  }
 
 //  std::cout << "Index: " << index << std::endl;
 
@@ -143,14 +143,15 @@ void QuadTree::insert(Scenery* scenery){
     int index = getIndex(scenery);
 
     if(index != -1)
+    {
       mChildren.at(index)->insert(scenery);
-   }
-   else{
+      return;
+    }
+  }
 //          std::cout << "In scenery else" << std::endl;
 
-      mScenery.push_back(scenery);
-      checkForSplit();
-   }
+  mScenery.push_back(scenery);
+  checkForSplit();
 }
 
 /*
@@ -165,17 +166,19 @@ void QuadTree::insert(Entity* entity){
   {
 //        std::cout << "In entity if" << std::endl;
 
-      int index = getIndex(entity);
+    int index = getIndex(entity);
 
-      if(index != -1)
-        mChildren.at(index)->insert(entity);
+    std::cout << "inserting: " << index << std::endl;
+
+    if(index != -1)
+    {
+      mChildren.at(index)->insert(entity);
+      return;
+    }
   }
-  else
-  {
 //    std::cout << "In entity else" << std::endl;
-    mEntities.push_back(entity);
-    checkForSplit();
-  }
+  mEntities.push_back(entity);
+  checkForSplit();
 }
 
 /*

@@ -19,9 +19,9 @@ WanderDistance 2.0
 WanderJitter 10.0
 InteractionRadius 0
 FeelerLength 2
-MinArriveDist 15
+MinArriveDist 1
 WallAvoidanceMultiplier 2
-ObstacleAvoidanceMultiplier 2
+ObstacleAvoidanceMultiplier 0.5
 ArriveMultiplier 1
 EvadeMultiplier 5
 WanderMultiplier 0.5
@@ -29,7 +29,7 @@ SeperationMultiplier 10
 AlignmentMultiplier 5
 CohesionMultiplier 3
 FlockingMultiplier 2
-ViewMinBoxLength 10
+ViewMinBoxLength 5
 ExitRadius 100
 ExitWidth 10
 SeperationRadius 30

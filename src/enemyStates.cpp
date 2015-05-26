@@ -17,46 +17,50 @@ void LookOut::enter(Enemy* host)
 
 void LookOut::execute(Enemy* host)
 {
-	if(host->getCurrentStateType() == Enemy::States::Relax)
-	{
-      std::list<Entity*> chars;
+
+  if(host->getCurrentStateType() == Enemy::States::Relax)
+  {
+    std::list<Entity*> chars;
+
+    host->getNeighbours(chars
+                        , Entity::Type::Adventurer);
+
+    std::cout << "charSize: " << chars.size() << std::endl;
+
+    sf::Vector2f hostPos = host->getWorldPosition();
+
+    Entity* closestChar = nullptr;
+    float closestDist = 9999.f;
+
+    // Loop thorugh enemies to find closest
+    for(Entity* e : chars)
+    {
+       sf::Vector2f vecToEnemy = hostPos - e->getWorldPosition();
+       float mag = magVec(vecToEnemy);
+
+       if(mag < closestDist)
+       {
+          closestChar = e;
+          closestDist = mag;
+       }
+    }
+
+    // If host target exists set it as target
+    // and change state accordingly to health
+    if(closestChar)
+    {
+      host->setCurrentTarget(closestChar);
+    //         std::cout << "enemyStates.cpp: LookOut(): closest char pos = " << closestChar->getWorldPosition().x << ", " << closestChar->getWorldPosition().y << std::endl;
 
       bool isHealthy = host->getHealthPercentage() > 50.f ? true : false;
 
-      host->getNeighbours(chars
-                                  , Entity::Type::Adventurer);
+      std::cout << "isHealthy: " << isHealthy << std::endl;
 
-      sf::Vector2f hostPos = host->getWorldPosition();
-
-      Entity* closestChar = nullptr;
-      float closestDist = 9999.f;
-
-      // Loop thorugh enemies to find closest
-      for(Entity* e : chars)
-      {
-         sf::Vector2f vecToEnemy = hostPos - e->getWorldPosition();
-         float mag = magVec(vecToEnemy);
-
-         if(mag < closestDist)
-         {
-            closestChar = e;
-            closestDist = mag;
-         }
-      }
-
-      // If host target exists set it as target
-      // and change state accordingly to health
-      if(closestChar)
-      {
-         host->setCurrentTarget(closestChar);
-
-//         std::cout << "enemyStates.cpp: LookOut(): closest char pos = " << closestChar->getWorldPosition().x << ", " << closestChar->getWorldPosition().y << std::endl;
-
-         if(isHealthy)
-            host->changeState(Enemy::States::Attack);
-         else
-            host->changeState(Enemy::States::Evade);
-      }
+      if(isHealthy)
+        host->changeState(Enemy::States::Attack);
+      else
+        host->changeState(Enemy::States::Evade);
+    }
 	}
 }
 
@@ -150,6 +154,8 @@ void Attack::execute(Enemy* host)
    const Entity* curTarg = host->getCurrentTarget();
 //   Adventurer* curTarg = nullptr;
 
+  std::cout << "Attack execute()" << std::endl;
+
    if(curTarg
       && !curTarg->isDead()) // If there is current target
    {
@@ -181,6 +187,8 @@ void Attack::execute(Enemy* host)
             behaviours.push_back(SteeringBehaviour::Behaviour::Arrive);
             host->setSteeringTypes(behaviours);
          }
+
+        host->setText("arRRGHHH");
       }
    }
    else // If no target

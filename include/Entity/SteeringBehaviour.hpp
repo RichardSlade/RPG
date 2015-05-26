@@ -32,6 +32,7 @@ public:
         Rest,
         Face,
         Arrive,
+        Seek,
         Evade,
         Wander,
         FollowPath,

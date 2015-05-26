@@ -123,9 +123,10 @@ sf::Vector2f SteeringBehaviour::arrive(sf::Vector2f targ, Deceleration decelerat
 
       speed = std::min(speed, mHost->getMaxSpeed());
 
-      sf::Vector2f desiredVelocity = toTarget * speed / dist;
+      sf::Vector2f desiredVelocity = toTarget;// * speed / dist;
 
-      steeringForce = (desiredVelocity - mHost->getVelocity());
+//      steeringForce = (desiredVelocity - mHost->getVelocity());
+      steeringForce = toTarget;
    }
 
    return steeringForce;
@@ -240,6 +241,8 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance(){
   mHost->getObstacles(obstacles,
                     Scenery::Type::Obstacle);
 
+//std::cout << obstacles.size() << std::endl;
+
   Scenery* closestObstacle = nullptr;
 
   float distToClosest = MAXFLOAT;
@@ -281,8 +284,6 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance(){
 
   if(closestObstacle)
   {
-    std::cout << "Obstacle found " << randomClamped() << std::endl;
-
     sf::Vector2f closestPos = hostTrans * closestObstacle->getWorldPosition();
 
     float multiplier = 1.f + (boxLength - closestPos.y) / boxLength;
@@ -292,6 +293,8 @@ sf::Vector2f SteeringBehaviour::obstacleAvoidance(){
     const float brakingWeight = 0.02;
 
     steeringForce.y = (closestObstacle->getBodyRadius() - closestPos.y) * brakingWeight;
+
+//    std::cout << "steering: " << steeringForce.x << ", " << steeringForce.y << std::endl;
   }
 
   sf::Vector2f worldForce = mHost->getWorldTransform().transformPoint(steeringForce);
@@ -462,6 +465,14 @@ sf::Vector2f SteeringBehaviour::calculate(sf::Time dt){
   if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Arrive))
   {
     sf::Vector2f force = arrive(mHost->getCurrentTarget()->getWorldPosition(), Deceleration::Fast) * mArriveMultiplier;
+
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+  }
+
+ if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Seek))
+  {
+    sf::Vector2f force = seek(mHost->getCurrentTarget()->getWorldPosition()) * 1.f;
 
     if(!accumulateForce(steeringForce, force))
         return steeringForce;

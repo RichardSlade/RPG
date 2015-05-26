@@ -111,7 +111,7 @@ void Entity::updateCurrent(sf::Time dt)
 //   mCurrentBlock->deleteEntity(this);
 //   mCurrentBlock = mLevel->insertEntityIntoLevel(this);
 
-  mQuadTree->insert(this);
+//  mQuadTree->insert(this);
 }
 
 void Entity::drawCurrent(sf::RenderTarget& target
@@ -225,6 +225,16 @@ std::list<Scenery*>& Entity::getObstacles(std::list<Scenery*>& returnList,
   return mQuadTree->retrieveScenery(returnList,
                                      this,
                                      type);
+}
+
+void Entity::addToQuadTree(QuadTree* quadTree)
+{
+  // Add children
+  SceneNode::addToQuadTree(quadTree);
+
+//  std::cout << "adding entity to quad tree" << std::endl;
+
+  quadTree->insert(this);
 }
 
 //std::vector<LevelBlock*> Entity::getBlockTypeInRange(LevelBlock::Type blockType, float radius) const

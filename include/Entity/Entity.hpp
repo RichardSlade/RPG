@@ -45,41 +45,41 @@ protected:
 
 //    b2Body*                     mPhysicsBody;
 
-    const float                 mMass;
-    const float                 mHealth;
-    const float                 mWalkMaxSpeed;
-    const float                 mRunMaxSpeed;
-    const float                 mMaxForce;
-    const float                 mMaxTurnRate;
+  const float                 mMass;
+  const float                 mHealth;
+  const float                 mWalkMaxSpeed;
+  const float                 mRunMaxSpeed;
+  const float                 mMaxForce;
+  const float                 mMaxTurnRate;
 
-    float                       mMaxSpeed;
-    Type                        mEntityType;
+  float                       mMaxSpeed;
+  Type                        mEntityType;
 
-    LevelBlock*                 mCurrentBlock;
+  LevelBlock*                 mCurrentBlock;
 
-    sf::Sprite                  mSprite;
-    sf::Vector2f                mVelocity;
-    sf::Vector2f                mHeading;
+  sf::Sprite                  mSprite;
+  sf::Vector2f                mVelocity;
+  sf::Vector2f                mHeading;
 
-    float                       mRadius;
-    float                       mSpeed;
+  float                       mRadius;
+  float                       mSpeed;
 
-    SteeringBehaviour           mSteering;
-//    sf::Vector2f                mTargetPos;
-    Entity*                     mCurrentTarget;
-    sf::Text                    mText;
-    sf::Text                    mHPText;
+  SteeringBehaviour           mSteering;
+  //    sf::Vector2f                mTargetPos;
+  Entity*                     mCurrentTarget;
+  sf::Text                    mText;
+  sf::Text                    mHPText;
   sf::CircleShape               mWanderTarget;
   sf::CircleShape               mOrigin;
 
-    virtual void                updateCurrent(sf::Time);
-    virtual void                drawCurrent(sf::RenderTarget& target
-                                           , sf::RenderStates states) const;
+  virtual void                updateCurrent(sf::Time);
+  virtual void                drawCurrent(sf::RenderTarget& target
+                                         , sf::RenderStates states) const;
 
-   void                         updatePhysicsBody(sf::Time);
+  void                         updatePhysicsBody(sf::Time);
 
-    void                        adjustPosition();
-    void                        ensureZeroOverlap();
+  void                        adjustPosition();
+  void                        ensureZeroOverlap();
 
 public:
                                 Entity(QuadTree*
@@ -94,6 +94,8 @@ public:
                                        , float = 1.f);
 
     virtual                     ~Entity(){};
+
+    virtual void                addToQuadTree(QuadTree* quadTree);
 
     // Getters
     std::list<Entity*>&          getNeighbours(std::list<Entity*>& returnList,
