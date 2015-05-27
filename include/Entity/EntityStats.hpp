@@ -25,7 +25,8 @@ public:
    float       maxTurnRate;
    float       health;
    float       panicDistance;
-   float       agroDistance;
+   float       aggroDistance;
+   float       loseAggroDistance;
    float       attackDistance;
    float       attackDelay;
    float       baseDamage;
@@ -66,7 +67,10 @@ public:
         in >> stats.panicDistance;
 
         in.ignore(255, ' ');
-        in >> stats.agroDistance;
+        in >> stats.aggroDistance;
+
+        in.ignore(255, ' ');
+        in >> stats.loseAggroDistance;
 
         in.ignore(255, ' ');
         in >> stats.attackDistance;

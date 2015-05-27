@@ -1,11 +1,12 @@
 Mass 1.0
 WalkSpeed 5.0
-RunSpeed 10.0
-MaxForce 2.0
+RunSpeed 5.0
+MaxForce 20.0
 MaxTurnRate 50.0
 Health 10.0
 PanicDistance 1.0
-AgroDistance 250.0
-AttackDistance 100.0
+AgroDistance 5.0
+LoseAggroDistance 10.0
+AttackDistance 1.0
 AttackDelay 0.5
 BaseDamage 2.0

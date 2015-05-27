@@ -14,9 +14,9 @@ class MeleeFighter
 
 //   MovingEntity*     mHost;
 public:
-   const sf::Time    AttackDelay;
-   const float       BaseDmg;
-   const float       AttackDistance;
+   const sf::Time    mAttackDelay;
+   const float       mBaseDmg;
+   const float       mAttackDistance;
 
 protected:
    sf::Time          mAttackCountdown;

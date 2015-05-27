@@ -20,9 +20,9 @@ WanderJitter 10.0
 InteractionRadius 0
 FeelerLength 2
 MinArriveDist 1
-WallAvoidanceMultiplier 2
+WallAvoidanceMultiplier 4
 ObstacleAvoidanceMultiplier 0.5
-ArriveMultiplier 1
+ArriveMultiplier 3
 EvadeMultiplier 5
 WanderMultiplier 0.5
 SeperationMultiplier 10

@@ -150,7 +150,7 @@ void Attack::execute(Adventurer* host)
       float mag = magVec(vecToTarget);
 
       // If target close enough to attack
-      if(mag < host->AttackDistance)
+      if(mag < host->mAttackDistance)
       {
          // If not at stand still change steering behaviour
          if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Rest))

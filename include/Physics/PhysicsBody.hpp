@@ -72,6 +72,8 @@ public:
 
   float                    getBodyRadius() {return mRadius;}
 
+  sf::Vector2f              getBodyVelocity() {return convertVec(mBody->GetLinearVelocity());}
+
    // Setters
 //   void                    moveBody(sf::Vector2f vel) {mBody->SetLinearVelocity(convertVec(vec));}
 //   void                    rotateBody(float angle) {mBody->SetAngularVelocity(angle);}

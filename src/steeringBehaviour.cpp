@@ -93,7 +93,7 @@ void SteeringBehaviour::createFeelers(){
 sf::Vector2f SteeringBehaviour::rest(){
    sf::Vector2f steeringForce, hostVel = mHost->getVelocity();
 
-   steeringForce = -hostVel * 4.f;
+   steeringForce = -hostVel;
 
    return steeringForce;
 }
@@ -438,6 +438,20 @@ sf::Vector2f SteeringBehaviour::flocking(){
 sf::Vector2f SteeringBehaviour::calculate(sf::Time dt){
   sf::Vector2f steeringForce;
 
+  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Rest))
+  {
+    sf::Vector2f force = rest();
+
+    if(!accumulateForce(steeringForce, force))
+        return steeringForce;
+
+//    std::cout << "Resting" << std::endl;
+//    return -mHost->getBodyVelocity();
+//    return -mHost->getBodyVelocity();
+//    return sf::Vector2f();
+//    return -steeringForce;
+  }
+
   if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::WallAvoidance))
   {
       sf::Vector2f force = wallAvoidance() * mWallAvoidanceMultiplier;
@@ -472,7 +486,7 @@ sf::Vector2f SteeringBehaviour::calculate(sf::Time dt){
 
  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Seek))
   {
-    sf::Vector2f force = seek(mHost->getCurrentTarget()->getWorldPosition()) * 1.f;
+    sf::Vector2f force = seek(mHost->getCurrentTarget()->getWorldPosition()) * mArriveMultiplier;
 
     if(!accumulateForce(steeringForce, force))
         return steeringForce;
@@ -505,14 +519,6 @@ sf::Vector2f SteeringBehaviour::calculate(sf::Time dt){
   if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Wander))
   {
     sf::Vector2f force = wander(dt) * mWanderMultiplier;
-
-    if(!accumulateForce(steeringForce, force))
-        return steeringForce;
-  }
-
-  if(mBehaviourFlags.at(SteeringBehaviour::Behaviour::Rest))
-  {
-    sf::Vector2f force = rest();
 
     if(!accumulateForce(steeringForce, force))
         return steeringForce;

@@ -54,7 +54,7 @@ void LookOut::execute(Enemy* host)
 
       bool isHealthy = host->getHealthPercentage() > 50.f ? true : false;
 
-      std::cout << "isHealthy: " << isHealthy << std::endl;
+//      std::cout << "isHealthy: " << isHealthy << std::endl;
 
       if(isHealthy)
         host->changeState(Enemy::States::Attack);
@@ -154,7 +154,7 @@ void Attack::execute(Enemy* host)
    const Entity* curTarg = host->getCurrentTarget();
 //   Adventurer* curTarg = nullptr;
 
-  std::cout << "Attack execute()" << std::endl;
+//  std::cout << "Attack execute()" << std::endl;
 
    if(curTarg
       && !curTarg->isDead()) // If there is current target
@@ -163,7 +163,11 @@ void Attack::execute(Enemy* host)
       float mag = magVec(vecToTarget);
 
       // If target close enough to attack
-      if(mag < host->AttackDistance)
+      if(mag > host->LoseAggroDistance)
+      {
+        host->changeState(Enemy::States::Relax);
+      }
+      else if(mag < host->mAttackDistance)
       {
          // If not at stand still change steering behaviour
          if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Rest))
@@ -176,15 +180,14 @@ void Attack::execute(Enemy* host)
 
          // Attack current target (overloaded function)
          host->meleeAttack(const_cast<Entity*>(curTarg));
-
          host->setText("Yarrr!");
       }
       else // Approach target
       {
-         if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Arrive))
+         if(!host->checkSteeringBehaviour(SteeringBehaviour::Behaviour::Seek))
          {
             std::vector<SteeringBehaviour::Behaviour> behaviours;
-            behaviours.push_back(SteeringBehaviour::Behaviour::Arrive);
+            behaviours.push_back(SteeringBehaviour::Behaviour::Seek);
             host->setSteeringTypes(behaviours);
          }
 

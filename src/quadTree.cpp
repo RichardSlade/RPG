@@ -168,7 +168,7 @@ void QuadTree::insert(Entity* entity){
 
     int index = getIndex(entity);
 
-    std::cout << "inserting: " << index << std::endl;
+//    std::cout << "inserting: " << index << std::endl;
 
     if(index != -1)
     {

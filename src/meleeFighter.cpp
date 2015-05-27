@@ -9,10 +9,10 @@
 #include "Entity/Attribute/Killable.hpp"
 
 MeleeFighter::MeleeFighter(EntityStats stats)
-: AttackDelay(sf::seconds(stats.attackDelay))
-, BaseDmg(stats.baseDamage)
-, AttackDistance(stats.attackDistance)
-, mAttackCountdown(AttackDelay)
+: mAttackDelay(sf::seconds(stats.attackDelay))
+, mBaseDmg(stats.baseDamage)
+, mAttackDistance(stats.attackDistance)
+, mAttackCountdown(mAttackDelay)
 , mCanAttack(true)
 {}
 
@@ -29,11 +29,11 @@ void MeleeFighter::meleeAttack(Killable* target)
 {
    if(mCanAttack)
    {
-      float dmg = -BaseDmg;
+      float dmg = -mBaseDmg;
 
       target->changeHealth(dmg);
 
-      mAttackCountdown = AttackDelay;
+      mAttackCountdown = mAttackDelay;
       mCanAttack = false;
    }
 }

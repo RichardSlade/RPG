@@ -129,43 +129,33 @@ void Entity::updatePhysicsBody(sf::Time dt)
 {
    // Velocity
    sf::Vector2f steering = mSteering.calculate(dt);
-   sf::Vector2f acceleration = steering / mMass;
-
-//   mVelocity *= 0.99f;
-//   mVelocity += (acceleration * 2.f) * dt.asSeconds();
-//   mVelocity = acceleration * dt.asSeconds() * 10.f;
-   mVelocity += acceleration * dt.asSeconds();
-//   mVelocity = acceleration * dt.asSeconds() * 20.f;
+   mVelocity += steering * dt.asSeconds();
 
    truncateVec(mVelocity, mMaxSpeed);
    mBody->SetLinearVelocity(convertVec(mVelocity));
 
-  // Rotation
-//  if(std::fabs(magVec(mVelocity)) > MINFLOAT)
-//  {
     int sign = signVec(mHeading, mVelocity);
 
-  //     float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
-    float angle = dotVec(mHeading, normVec(mVelocity));
-    angle *= sign;
+    float angle = std::acos(dotVec(mHeading, normVec(mVelocity)));
+    float angle2 = dotVec(mHeading, normVec(mVelocity));
+//    angle *= sign;
 
-  //     clampRotation(angle
-  //                   , -mMaxTurnRate
-  //                   , mMaxTurnRate);
+//       clampRotation(angle
+//                     , -mMaxTurnRate
+//                     , mMaxTurnRate);
 
   //       sf::Vector2f toCursor = mVelocity;
-  //      angle = std::atan2(toCursor.x, -toCursor.y);
+//       float angle2 = std::atan2(mVelocity.x, -mVelocity.y);
 
-  //     if(angle > MINFLOAT || angle < -MINFLOAT)
-  //         rotate(angle * (180.f / PI));
+//  std::cout << "Entity angle 2: " << angle2 << std::endl
 
-//    mBody->SetAngularVelocity(0.f);
+    mBody->SetAngularVelocity(0.f);
 
-    if(angle > MINFLOAT || angle < -MINFLOAT)
-      mBody->SetAngularVelocity(sign);
-//      mBody->ApplyAngularImpulse(angle, true);
-//  }
+//  std::cout << "Angle: " << radianToDegree(angle) << std::endl;
+//  std::cout << "Angle2: " << angle2 << std::endl;
 
+  if(std::abs(radianToDegree(angle)) > 8.f)
+      mBody->ApplyAngularImpulse(sign * 0.4, true);
 }
 
 //void Entity::adjustPosition()
